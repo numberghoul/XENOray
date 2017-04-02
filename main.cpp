@@ -2,7 +2,7 @@
 
 int main(int /*argc*/, char */*argv*/[])
 {
-  screen(512, 384, 0, "Raycaster");
+  screen(1280, 720, 0, "XENO");
 
   RunGame();
 }

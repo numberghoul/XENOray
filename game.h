@@ -30,8 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace QuickCG;
 
 /*
-g++ *.cpp -lSDL -O3 -W -Wall -ansi -pedantic
-g++ *.cpp -lSDL
+g++ *.cpp -lSDL -O3 -W -Wall -ansi -pedantic -std=c++11
+g++ *.cpp -lSDL -std=c++11
 */
 
 //place the example code below here:
@@ -39,11 +39,10 @@ g++ *.cpp -lSDL
 #define mapWidth 24
 #define mapHeight 24
 
-double posX, posY;  //x and y start position
-double dirX, dirY; //initial direction vector
-double planeX, planeY; //the 2d raycaster version of camera plane
+extern int worldMap;
 
-double time; //time of current frame
-double oldTime; //time of previous frame
+extern double posX, posY;  //x and y start position
+extern double dirX, dirY; //initial direction vector
+extern double planeX, planeY; //the 2d raycaster version of camera plane
 
 void RunGame();
