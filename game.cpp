@@ -37,8 +37,13 @@ void RunGame()
   double time = 0; //time of current frame
   double oldTime = 0; //time of previous frame
 
+  float deltaMouse;
+
   while(!done())
   {
+    int oldmx, oldmy;
+    SDL_GetMouseState(&oldmx, &oldmy);
+
     for(int x = 0; x < w; x++)
     {
       //calculate ray position and direction
@@ -145,23 +150,23 @@ void RunGame()
     cls();
 
     //speed modifiers
-    double moveSpeed = frameTime * 5.0; //the constant value is in squares/second
-    double rotSpeed = frameTime * 3.0; //the constant value is in radians/second
+    double moveSpeed = frameTime * 7.0; //the constant value is in squares/second
+    double rotSpeed = frameTime * 4.0; //the constant value is in radians/second
     readKeys();
     //move forward if no wall in front of you
-    if (keyDown(SDLK_UP))
+    if (keyDown(SDLK_w))
     {
       if(worldMap[int(posX + dirX * moveSpeed)][int(posY)] == false) posX += dirX * moveSpeed;
       if(worldMap[int(posX)][int(posY + dirY * moveSpeed)] == false) posY += dirY * moveSpeed;
     }
     //move backwards if no wall behind you
-    if (keyDown(SDLK_DOWN))
+    if (keyDown(SDLK_s))
     {
       if(worldMap[int(posX - dirX * moveSpeed)][int(posY)] == false) posX -= dirX * moveSpeed;
       if(worldMap[int(posX)][int(posY - dirY * moveSpeed)] == false) posY -= dirY * moveSpeed;
     }
     //rotate to the right
-    if (keyDown(SDLK_RIGHT))
+    if (deltaMouse > 0)
     {
       //both camera direction and camera plane must be rotated
       double oldDirX = dirX;
@@ -172,7 +177,7 @@ void RunGame()
       planeY = oldPlaneX * sin(-rotSpeed) + planeY * cos(-rotSpeed);
     }
     //rotate to the left
-    if (keyDown(SDLK_LEFT))
+    if (deltaMouse < 0)
     {
       //both camera direction and camera plane must be rotated
       double oldDirX = dirX;
@@ -182,6 +187,14 @@ void RunGame()
       planeX = planeX * cos(rotSpeed) - planeY * sin(rotSpeed);
       planeY = oldPlaneX * sin(rotSpeed) + planeY * cos(rotSpeed);
     }
+
+    int mx, my;
+    SDL_GetMouseState(&mx, &my);
+
+    deltaMouse = mx - oldmx;
+
+    SDL_WarpMouse(1280/2, 720/2);
+    SDL_ShowCursor(0);
   }
 
 }
