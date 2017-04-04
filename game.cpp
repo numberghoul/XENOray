@@ -150,23 +150,35 @@ void RunGame()
     cls();
 
     //speed modifiers
-    double moveSpeed = frameTime * 7.0; //the constant value is in squares/second
-    double rotSpeed = frameTime * 4.0; //the constant value is in radians/second
+    double moveSpeed = frameTime * 6.5; //the constant value is in squares/second
+    double rotSpeed = frameTime * 4.5; //the constant value is in radians/second
     readKeys();
     //move forward if no wall in front of you
-    if (keyDown(SDLK_w))
+    if (keyDown(SDLK_w) || keyDown(SDLK_UP))
     {
       if(worldMap[int(posX + dirX * moveSpeed)][int(posY)] == false) posX += dirX * moveSpeed;
       if(worldMap[int(posX)][int(posY + dirY * moveSpeed)] == false) posY += dirY * moveSpeed;
     }
     //move backwards if no wall behind you
-    if (keyDown(SDLK_s))
+    if (keyDown(SDLK_s) || keyDown(SDLK_DOWN))
     {
       if(worldMap[int(posX - dirX * moveSpeed)][int(posY)] == false) posX -= dirX * moveSpeed;
       if(worldMap[int(posX)][int(posY - dirY * moveSpeed)] == false) posY -= dirY * moveSpeed;
     }
+    //Strafe right
+    if (keyDown(SDLK_d))
+    {
+      if(worldMap[int(posX + planeX * moveSpeed)][int(posY)] == false) posX += planeX * moveSpeed;
+      if(worldMap[int(posX)][int(posY + planeY * moveSpeed)] == false) posY += planeY * moveSpeed;
+    }
+    //Strafe left
+    if (keyDown(SDLK_a))
+    {
+      if(worldMap[int(posX - planeX * moveSpeed)][int(posY)] == false) posX -= planeX * moveSpeed;
+      if(worldMap[int(posX)][int(posY - planeY * moveSpeed)] == false) posY -= planeY * moveSpeed;
+    }
     //rotate to the right
-    if (deltaMouse > 0)
+    if (deltaMouse > 0 || keyDown(SDLK_RIGHT))
     {
       //both camera direction and camera plane must be rotated
       double oldDirX = dirX;
@@ -177,7 +189,7 @@ void RunGame()
       planeY = oldPlaneX * sin(-rotSpeed) + planeY * cos(-rotSpeed);
     }
     //rotate to the left
-    if (deltaMouse < 0)
+    if (deltaMouse < 0 || keyDown(SDLK_LEFT))
     {
       //both camera direction and camera plane must be rotated
       double oldDirX = dirX;
