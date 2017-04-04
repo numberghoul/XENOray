@@ -37,7 +37,7 @@ void RunGame()
   double time = 0; //time of current frame
   double oldTime = 0; //time of previous frame
 
-  float deltaMouse;
+  float deltaMouse = 0.0f;
 
   while(!done())
   {
@@ -204,6 +204,7 @@ void RunGame()
     SDL_GetMouseState(&mx, &my);
 
     deltaMouse = mx - oldmx;
+    deltaMouse /= 1000.0f;
 
     SDL_WarpMouse(1280/2, 720/2);
     SDL_ShowCursor(0);
