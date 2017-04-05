@@ -5,7 +5,6 @@ class Vector2
 {
 public:
 	T x, y;
-	float mMagnitude;
 
 	// Constructors
 	Vector2(T _x = 0.0f, T _y = 0.0f)
@@ -25,12 +24,12 @@ public:
 	// Getters
 	T getX() const { return x; }
 	T getY() const { return y; }
-	double getMagnitude() const { return mMagnitude; }
+	float getMagnitude() const { return std::sqrt(mMagnitude); }
 
 	// Setters
 	void setX(const T _x) { x = _x; }
 	void setY(const T _y) { y = _y; }
-	void updateMagnitude() { mMagnitude = std::sqrt(getX() * getX() + getY() * getY()); }
+	void updateMagnitude() { mMagnitude = getX() * getX() + getY() * getY(); }
 
 	float distanceTo(const Vector2 other)
 	{
@@ -43,4 +42,7 @@ public:
 		setY(getY() / getMagnitude());
 		updateMagnitude();
 	}
+
+private:
+	float mMagnitude;
 };
