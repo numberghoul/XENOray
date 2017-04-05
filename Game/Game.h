@@ -8,8 +8,10 @@
 #define mapHeight 24
 
 /*
-g++ *.cpp Game/*.cpp Player/*.cpp -lSDL -O3 -W -Wall -ansi -pedantic -std=c++11
-g++ *.cpp Game/*.cpp Player/*.cpp -lSDL -std=c++11
+g++ *.cpp Game/ *.cpp Player/ *.cpp -lSDL -O3 -W -Wall -ansi -pedantic -std=c++11
+g++ *.cpp Game/ *.cpp Player/ *.cpp -lSDL -std=c++11
+
+You need to remove the spaces between Game/ and * when actually using the command
 */
 
 class Game
