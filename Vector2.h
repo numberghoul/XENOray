@@ -36,11 +36,15 @@ public:
 		return std::sqrt(std::pow(getX() - other.getX(), 2) + std::pow(getY() - other.getY(), 2));
 	}
 
-	void normalize()
+	static Vector2<T> normalize(Vector2<T> vector)
 	{
-		setX(getX() / getMagnitude());
-		setY(getY() / getMagnitude());
-		updateMagnitude();
+		Vector2<T> newVector;
+
+		newVector.setX(vector.getX() / vector.getMagnitude());
+		newVector.setY(vector.getY() / vector.getMagnitude());
+		newVector.updateMagnitude();
+
+		return newVector;
 	}
 
 private:
