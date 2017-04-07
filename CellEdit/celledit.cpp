@@ -22,8 +22,3 @@ int Menu()
     return 0;
   }
 }
-
-void LoadImage(std::string path, std::vector<ColorRGB> mapImage)
-{
-
-}

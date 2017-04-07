@@ -2,46 +2,80 @@
 
 int main()
 {
-  int input = 0;
-  int colors = 0;
-  int level[30][30];
-  std::vector<ColorRGB> mapImage;
+	int input = 0;
+	int colors = 0;
+	int level[30][30];
+	std::vector<ColorRGB> mapImage;
 
-  input = Menu();
+	input = Menu();
 
-  if (input == 0)
-  {
-    return 0;
-  }
+	if (input == 0)
+	{
+		return 0;
+	}
 
-  cout << "Enter path for this map: " << endl;
-  std::string path;
-  cin >> path;
+	cout << "Enter file path: " << endl;
+	std::string path;
+	cin >> path;
 
-  LoadImage(path, mapImage);
+	unsigned long w, h;
 
-  cout << "How many colors are in this map?: " << endl;
-  while(colors < 1)
-  {
-    cin >> colors;
-  }
+	if(loadImage(mapImage, w, h, path))
+	{
+		cout << "Error.";
+		return 0;
+	}
 
-  std::vector<ColorRGB> listColors;
+	cout << "How many colors are in this map?: " << endl;
+	while(colors < 1)
+	{
+		cin >> colors;
+	}
 
-  for(int i = 0; i < colors; i++)
-  {
-    ColorRGB tempColor;
-    cout << "Enter R value for image" << i << ": ";
-    cin >> tempColor.r;
-    cout << "Enter G value for image" << i << ": ";
-    cin >> tempColor.g;
-    cout << "Enter B value for image" << i << ": ";
-    cin >> tempColor.b;
+	std::vector<ColorRGB> listColors;
 
-    listColors.push_back(tempColor);
-  }
+	for(int i = 0; i < colors; i++)
+	{
+		ColorRGB tempColor;
+		cout << "Enter R value for color " << i+1 << ": ";
+		cin >> tempColor.r;
+		cout << "Enter G value for color " << i+1 << ": ";
+		cin >> tempColor.g;
+		cout << "Enter B value for color " << i+1 << ": ";
+		cin >> tempColor.b;
 
+		listColors.push_back(tempColor);
+	}
 
+	for(int i = 0; i < mapImage.size(); i++)
+	{
+		for(int j = 0; j < listColors.size(); j++)
+		{
+			if(mapImage[i] == listColors[j])
+			{
+				level[i/30][i%30] = j + 1;
+				break;
+			}
+			else
+			{
+				level[i/30][i%30] = 0;
+			}
+		}
+	}
 
-  return 0;
+	for(int i = 0; i < 30; i++)
+	{
+		cout << "{";
+
+		for(int j = 0; j < 30; j++)
+		{
+			cout << level[i][j] << ",";
+		}
+
+		cout << "},";
+
+		cout << endl;
+	}
+
+	return 0;
 }
