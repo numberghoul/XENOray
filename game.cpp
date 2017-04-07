@@ -153,6 +153,10 @@ void RunGame()
     double moveSpeed = frameTime * 6.5; //the constant value is in squares/second
     double rotSpeed = frameTime * 4.5; //the constant value is in radians/second
     readKeys();
+
+    if(keyDown(SDLK_LSHIFT) || keyDown(SDLK_RSHIFT))
+    {
+      moveSpeed *= 1.5;    }
     //move forward if no wall in front of you
     if (keyDown(SDLK_w) || keyDown(SDLK_UP))
     {
