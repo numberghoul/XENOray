@@ -82,6 +82,12 @@ void Game::UpdateMovement(int worldMap[][mapHeight])
 	double dirX = mPlayer.getDirection().x, dirY = mPlayer.getDirection().y;
 	double planeX = mPlayer.getCameraPlane().x, planeY = mPlayer.getCameraPlane().y;
 
+	//Sprint
+	if (keyDown(SDLK_RSHIFT) || keyDown(SDLK_LSHIFT))
+	{
+		moveSpeed *= 2;
+	}
+
 	//move forward if no wall in front of you
 	if (keyDown(SDLK_w) || keyDown(SDLK_UP))
 	{
