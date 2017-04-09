@@ -23,6 +23,7 @@
 *.lib
 
 # Executables
+Xeno
 *.exe
 *.out
 *.app
