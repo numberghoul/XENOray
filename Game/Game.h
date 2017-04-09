@@ -6,16 +6,23 @@
 #include "../quickcg.h"
 using namespace QuickCG;
 
+#define screenWidth 600
+#define screenHeight 480
+
+#define texWidth 64
+#define texHeight 64
+
 #define mapWidth 30
 #define mapHeight 30
 
-#define screenWidth 800
-#define screenHeight 480
+#define numTextures 8
 
-#define texWidth 24
-#define texHeight 24
+enum Textures
+{
+	ShipCeiling, ShipWall, ShipWallBlood, ShipWallWindow, ShipFloor,
 
-#define numTextures 2
+	CaveWall, CaveWallMushroom, CaveWallMushroom2
+};
 
 #define numSprites 1
 
@@ -47,8 +54,10 @@ private:
 	void combSort(int* order, double* dist, int amount);
 
 	void LoadTextures();
-	void Render(int worldMap[][mapHeight]);
+	
 	void DrawSprites();
+
+	void RenderWalls(int worldMap[][mapHeight]);
 
 	void UpdateMovement(int worldMap[][mapHeight]);
 	void UpdateRotation(float deltaMouse);
