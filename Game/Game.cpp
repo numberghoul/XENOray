@@ -23,8 +23,6 @@ void Game::RunGame()
 		}
 	}
 
-	Uint32 buffer[screenHeight][screenWidth];
-
 	LoadTextures();
 
 	double time = 0; //time of current frame
@@ -37,9 +35,9 @@ void Game::RunGame()
 		int oldmx, oldmy;
 		SDL_GetMouseState(&oldmx, &oldmy);
 
-		Render(worldMap, buffer);
-		drawBuffer(buffer[0]);
-	    for(int x = 0; x < getWidth(); x++) for(int y = 0; y < getHeight(); y++) buffer[y][x] = 0; //clear the buffer instead of cls()
+		Render(worldMap);
+		drawBuffer(mBuffer[0]);
+	    for(int x = 0; x < getWidth(); x++) for(int y = 0; y < getHeight(); y++) mBuffer[y][x] = 0; //clear the buffer instead of cls()
 		redraw();
 
 		//timing for input and FPS counter
@@ -166,7 +164,7 @@ void Game::UpdateRotation(float deltaMouse)
 	mPlayer.setCameraPlane(planeX, planeY);
 }
 
-void Game::Render(int worldMap[][mapHeight], Uint32 buffer[][screenWidth])
+void Game::Render(int worldMap[][mapHeight])
 {
 	for(int x = 0; x < getWidth(); x++)
 	{
@@ -246,47 +244,28 @@ void Game::Render(int worldMap[][mapHeight], Uint32 buffer[][screenWidth])
 		int drawEnd = lineHeight / 2 + getHeight() / 2;
 		if(drawEnd >= getHeight())drawEnd = getHeight() - 1;
 
-		/*
-		//choose wall color
-		ColorRGB color;
-		switch(worldMap[mapPos.x][mapPos.y])
-		{
-			case 1:	color = RGB_Red;	break; //red
-			case 2:	color = RGB_Green;	break; //green
-			case 3:	color = RGB_Blue;	 break; //blue
-			case 4:	color = RGB_White;	break; //white
-			default: color = RGB_Yellow; break; //yellow
-		}
-
-		//give x and y sides different brightness
-		if (side == 1) {color = color / 2;}
-
-		//draw the pixels of the stripe as a vertical line
-		verLine(x, drawStart, drawEnd, color);
-		*/
-
 		//texturing calculations
-      int texNum = worldMap[mapPos.x][mapPos.y] - 1; //1 subtracted from it so that texture 0 can be used!
+		int texNum = worldMap[mapPos.x][mapPos.y] - 1; //1 subtracted from it so that texture 0 can be used!
 
-      //calculate value of wallX
-      double wallX; //where exactly the wall was hit
-      if (side == 0) wallX = rayPos.y + perpWallDist * rayDir.y;
-      else           wallX = rayPos.x + perpWallDist * rayDir.x;
-      wallX -= floor((wallX));
+		//calculate value of wallX
+		double wallX; //where exactly the wall was hit
+		if (side == 0) wallX = rayPos.y + perpWallDist * rayDir.y;
+		else           wallX = rayPos.x + perpWallDist * rayDir.x;
+		wallX -= floor((wallX));
 
-      //x coordinate on the texture
-      int texX = int(wallX * double(texWidth));
-      if(side == 0 && rayDir.x > 0) texX = texWidth - texX - 1;
-      if(side == 1 && rayDir.y < 0) texX = texWidth - texX - 1;
+		//x coordinate on the texture
+		int texX = int(wallX * double(texWidth));
+		if(side == 0 && rayDir.x > 0) texX = texWidth - texX - 1;
+		if(side == 1 && rayDir.y < 0) texX = texWidth - texX - 1;
 
-	  for(int y = drawStart; y<drawEnd; y++)
-      {
-        int d = y * 256 - getHeight() * 128 + lineHeight * 128;  //256 and 128 factors to avoid floats
-        int texY = ((d * texHeight) / lineHeight) / 256;
-        Uint32 color = mTextures[texNum][texHeight * texY + texX];
-        //make color darker for y-sides: R, G and B byte each divided through two with a "shift" and an "and"
-        if(side == 1) color = (color >> 1) & 8355711;
-        buffer[y][x] = color;
-      }
+		for(int y = drawStart; y<drawEnd; y++)
+		{
+			int d = y * 256 - getHeight() * 128 + lineHeight * 128;  //256 and 128 factors to avoid floats
+			int texY = ((d * texHeight) / lineHeight) / 256;
+			Uint32 color = mTextures[texNum][texHeight * texY + texX];
+			//make color darker for y-sides: R, G and B byte each divided through two with a "shift" and an "and"
+			if(side == 1) color = (color >> 1) & 8355711;
+			mBuffer[y][x] = color;
+		}
 	}
 }

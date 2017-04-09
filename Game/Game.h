@@ -34,9 +34,10 @@ private:
 	double mFrameTime;
 	int mScreenWidth, mScreenHeight;
 	std::vector<Uint32> mTextures[numTextures];
+	Uint32 mBuffer[screenHeight][screenWidth];
 
 	void LoadTextures();
-	void Render(int worldMap[][mapHeight], Uint32 buffer [][screenWidth]);
+	void Render(int worldMap[][mapHeight]);
 
 	void UpdateMovement(int worldMap[][mapHeight]);
 	void UpdateRotation(float deltaMouse);
