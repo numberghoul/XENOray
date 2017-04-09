@@ -35,10 +35,7 @@ void Game::RunGame()
 		int oldmx, oldmy;
 		SDL_GetMouseState(&oldmx, &oldmy);
 
-		Render(worldMap);
-		drawBuffer(mBuffer[0]);
-	    for(int x = 0; x < getWidth(); x++) for(int y = 0; y < getHeight(); y++) mBuffer[y][x] = 0; //clear the buffer instead of cls()
-		redraw();
+		RenderWalls(worldMap);
 
 		//timing for input and FPS counter
 		oldTime = time;
@@ -68,11 +65,17 @@ void Game::LoadTextures()
 	for(int i = 0; i < numTextures; i++) mTextures[i].resize(texWidth * texHeight);
 
 	unsigned long tw, th;
-    success = (loadImage(mTextures[0], tw, th, "textures/Wall.png") == 0) ? success : 1;
-    success = (loadImage(mTextures[1], tw, th, "textures/Holodeck.png") == 0) ? success : 1;
+    success = (loadImage(mTextures[0], tw, th, "textures/Ship/ceiling.png") == 0) ? success : 1;
+    success = (loadImage(mTextures[1], tw, th, "textures/Ship/wall.png") == 0) ? success : 1;
+    success = (loadImage(mTextures[2], tw, th, "textures/Ship/wallBlood.png") == 0) ? success : 1;
+    success = (loadImage(mTextures[3], tw, th, "textures/Ship/wallWindow.png") == 0) ? success : 1;
+    success = (loadImage(mTextures[4], tw, th, "textures/Ship/grate.png") == 0) ? success : 1;
+    success = (loadImage(mTextures[5], tw, th, "textures/Cave/normalCaveWall.png") == 0) ? success : 1;
+    success = (loadImage(mTextures[6], tw, th, "textures/Cave/normalCaveWallShroom.png") == 0) ? success : 1;
+    success = (loadImage(mTextures[7], tw, th, "textures/Cave/normalCaveWallShroom2.png") == 0) ? success : 1;
 
 	if (success == 0)
-		std::cout << "Textures loaded" << std::endl;
+		std::cout << "Textures Loaded" << std::endl;
 	else
 		std::cout << "Textures Not Loaded" << std::endl;
 }
@@ -152,7 +155,7 @@ void Game::UpdateRotation(float deltaMouse)
 	mPlayer.setCameraPlane(planeX, planeY);
 }
 
-void Game::Render(int worldMap[][mapHeight])
+void Game::RenderWalls(int worldMap[][mapHeight])
 {
 	for(int x = 0; x < getWidth(); x++)
 	{
@@ -256,4 +259,8 @@ void Game::Render(int worldMap[][mapHeight])
 			mBuffer[y][x] = color;
 		}
 	}
+	
+	drawBuffer(mBuffer[0]);
+	for(int x = 0; x < getWidth(); x++) for(int y = 0; y < getHeight(); y++) mBuffer[y][x] = 0; //clear the buffer instead of cls()
+	redraw();
 }
