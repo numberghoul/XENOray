@@ -6,8 +6,8 @@
 #include "../quickcg.h"
 using namespace QuickCG;
 
-#define mapWidth 24
-#define mapHeight 24
+#define mapWidth 30
+#define mapHeight 30
 
 #define screenWidth 600
 #define screenHeight 480
@@ -16,13 +16,6 @@ using namespace QuickCG;
 #define texHeight 64
 
 #define numTextures 8
-
-/*
-g++ *.cpp Game/ *.cpp Player/ *.cpp -lSDL -O3 -W -Wall -ansi -pedantic -std=c++11
-g++ *.cpp Game/ *.cpp Player/ *.cpp -lSDL -std=c++11
-
-You need to remove the spaces between Game/ and * when actually using the command
-*/
 
 class Game
 {
