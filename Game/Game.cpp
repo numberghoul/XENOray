@@ -263,9 +263,9 @@ void Game::RenderWalls(int worldMap[][mapHeight])
 		//SET THE mZBuffer FOR THE SPRITE CASTING
 		mZBuffer[x] = perpWallDist; //perpendicular distance is used
 
-		Game::DrawSprites();
+		//Game::DrawSprites();
 	}
-	
+
 	drawBuffer(mBuffer[0]);
 	for(int x = 0; x < getWidth(); x++) for(int y = 0; y < getHeight(); y++) mBuffer[y][x] = 0; //clear the buffer instead of cls()
 	redraw();
