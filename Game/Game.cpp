@@ -157,14 +157,15 @@ void Game::UpdateRotation(float deltaMouse)
 
 void Game::RenderWalls(int worldMap[][mapHeight])
 {
+	Vector2<double> playerPos = mPlayer.getPosition(), cameraPlane = mPlayer.getCameraPlane(), playerDir = mPlayer.getDirection();
+
 	for(int x = 0; x < getWidth(); x++)
 	{
 		//calculate ray position and direction
 		double cameraX = 2 * x / double(getWidth()) - 1; //x-coordinate in camera space
 
-		Vector2<double> rayPos(mPlayer.getPosition().x, mPlayer.getPosition().y);
-		Vector2<double> rayDir(mPlayer.getDirection().x + mPlayer.getCameraPlane().x * cameraX,
-							   mPlayer.getDirection().y + mPlayer.getCameraPlane().y * cameraX);
+		Vector2<double> rayPos(playerPos.x, playerPos.y);
+		Vector2<double> rayDir(playerDir.x + cameraPlane.x * cameraX, playerDir.y + cameraPlane.y * cameraX);
 
 		//which box of the map we're in
 		Vector2<int> mapPos(int(rayPos.x), int(rayPos.y));
@@ -227,7 +228,7 @@ void Game::RenderWalls(int worldMap[][mapHeight])
 		else		   perpWallDist = (mapPos.y - rayPos.y + (1 - stepDir.y) / 2) / rayDir.y;
 
 		//Calculate height of line to draw on screen
-		int lineHeight = (int)(getHeight() / perpWallDist);
+		int lineHeight = (int)(1.33 * getHeight() / perpWallDist);
 
 		//calculate lowest and highest pixel to fill in current stripe
 		int drawStart = -lineHeight / 2 + getHeight() / 2;
@@ -258,8 +259,59 @@ void Game::RenderWalls(int worldMap[][mapHeight])
 			if(side == 1) color = (color >> 1) & 8355711;
 			mBuffer[y][x] = color;
 		}
+
+		Vector2<double> floorPos; // Position of the floor texel at the bottom of the wall
+
+		//4 different wall directions possible
+		if(side == 0 && rayDir.x > 0)
+		{
+			floorPos.x = mapPos.x;
+			floorPos.y = mapPos.y + wallX;
+		}
+		else if(side == 0 && rayDir.x < 0)
+		{
+			floorPos.x = mapPos.x + 1.0;
+			floorPos.y = mapPos.y + wallX;
+		}
+		else if(side == 1 && rayDir.y > 0)
+		{
+			floorPos.x = mapPos.x + wallX;
+			floorPos.y = mapPos.y;
+		}
+		else
+		{
+			floorPos.x = mapPos.x + wallX;
+			floorPos.y = mapPos.y + 1.0;
+		}
+
+		double distWall, distPlayer, currentDist;
+
+		distWall = perpWallDist;
+		distPlayer = 0.0;
+
+		if (drawEnd < 0) drawEnd = getHeight(); //becomes < 0 when the integer overflows
+
+		//draw the floor from drawEnd to the bottom of the screen
+		for(int y = drawEnd + 1; y < getHeight(); y++)
+		{
+			currentDist = getHeight() / (2.0 * y - getHeight()); //you could make a small lookup table for this instead
+
+			double weight = (currentDist - distPlayer) / (distWall - distPlayer);
+
+			double currentFloorX = weight * floorPos.x + (1.0 - weight) * playerPos.x;
+			double currentFloorY = weight * floorPos.y + (1.0 - weight) * playerPos.y;
+
+			Vector2<int> floorTexPos;
+			floorTexPos.x = int(currentFloorX * texWidth) % texWidth;
+			floorTexPos.y = int(currentFloorY * texHeight) % texHeight;
+
+			//floor
+			mBuffer[y][x] = (mTextures[4][texWidth * floorTexPos.y + floorTexPos.x] >> 1) & 8355711;
+			//ceiling (symmetrical!)
+			mBuffer[getHeight() - y][x] = mTextures[0][texWidth * floorTexPos.y + floorTexPos.x];
+		}
 	}
-	
+
 	drawBuffer(mBuffer[0]);
 	for(int x = 0; x < getWidth(); x++) for(int y = 0; y < getHeight(); y++) mBuffer[y][x] = 0; //clear the buffer instead of cls()
 	redraw();

@@ -6,8 +6,8 @@
 #include "../quickcg.h"
 using namespace QuickCG;
 
-#define screenWidth 600
-#define screenHeight 480
+#define screenWidth 1280
+#define screenHeight 720
 
 #define texWidth 64
 #define texHeight 64
