@@ -12,10 +12,10 @@ using namespace QuickCG;
 #define screenWidth 600
 #define screenHeight 480
 
-#define texWidth 64
-#define texHeight 64
+#define texWidth 24
+#define texHeight 24
 
-#define numTextures 8
+#define numTextures 2
 
 class Game
 {

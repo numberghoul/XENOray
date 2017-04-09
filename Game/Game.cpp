@@ -63,30 +63,18 @@ void Game::RunGame()
 
 void Game::LoadTextures()
 {
-	// Init mTextures
-	for(int i = 0; i < 8; i++) mTextures[i].resize(texWidth * texHeight);
+	int success = 0;
 
-	//generate some textures
-	for(int x = 0; x < texWidth; x++)
-	{
-		for(int y = 0; y < texHeight; y++)
-		{
-			int xorcolor = (x * 256 / texWidth) ^ (y * 256 / texHeight);
-			//int xcolor = x * 256 / texWidth;
-			int ycolor = y * 256 / texHeight;
-			int xycolor = y * 128 / texHeight + x * 128 / texWidth;
-			mTextures[0][texWidth * y + x] = 65536 * 254 * (x != y && x != texWidth - y); //flat red texture with black cross
-			mTextures[1][texWidth * y + x] = xycolor + 256 * xycolor + 65536 * xycolor; //sloped greyscale
-			mTextures[2][texWidth * y + x] = 256 * xycolor + 65536 * xycolor; //sloped yellow gradient
-			mTextures[3][texWidth * y + x] = xorcolor + 256 * xorcolor + 65536 * xorcolor; //xor greyscale
-			mTextures[4][texWidth * y + x] = 256 * xorcolor; //xor green
-			mTextures[5][texWidth * y + x] = 65536 * 192 * (x % 16 && y % 16); //red bricks
-			mTextures[6][texWidth * y + x] = 65536 * ycolor; //red gradient
-			mTextures[7][texWidth * y + x] = 128 + 256 * 128 + 65536 * 128; //flat grey texture
-		}
-	}
+	for(int i = 0; i < numTextures; i++) mTextures[i].resize(texWidth * texHeight);
 
-	std::cout << "Textures loaded" << std::endl;
+	unsigned long tw, th;
+    success = (loadImage(mTextures[0], tw, th, "textures/Wall.png") == 0) ? success : 1;
+    success = (loadImage(mTextures[1], tw, th, "textures/Holodeck.png") == 0) ? success : 1;
+
+	if (success == 0)
+		std::cout << "Textures loaded" << std::endl;
+	else
+		std::cout << "Textures Not Loaded" << std::endl;
 }
 
 void Game::UpdateMovement(int worldMap[][mapHeight])
