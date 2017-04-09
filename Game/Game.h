@@ -15,6 +15,8 @@ using namespace QuickCG;
 #define texWidth 64
 #define texHeight 64
 
+#define numTextures 8
+
 /*
 g++ *.cpp Game/ *.cpp Player/ *.cpp -lSDL -O3 -W -Wall -ansi -pedantic -std=c++11
 g++ *.cpp Game/ *.cpp Player/ *.cpp -lSDL -std=c++11
@@ -38,8 +40,10 @@ private:
 	Player mPlayer;
 	double mFrameTime;
 	int mScreenWidth, mScreenHeight;
+	std::vector<Uint32> mTextures[numTextures];
 
-	void Render(int worldMap[][mapHeight], std::vector<Uint32> texture[], Uint32 buffer [][screenWidth]);
+	void LoadTextures();
+	void Render(int worldMap[][mapHeight], Uint32 buffer [][screenWidth]);
 
 	void UpdateMovement(int worldMap[][mapHeight]);
 	void UpdateRotation(float deltaMouse);
