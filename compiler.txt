@@ -1,2 +1,2 @@
-g++ *.cpp Game/*.cpp Player/*.cpp -lSDL -O3 -W -Wall -ansi -pedantic -std=c++11
-g++ *.cpp Game/*.cpp Player/*.cpp -lSDL -std=c++11
+g++ *.cpp -o Xeno Game/*.cpp Player/*.cpp -lSDL -O3 -W -Wall -ansi -pedantic -std=c++11
+g++ *.cpp -o Xeno Game/*.cpp Player/*.cpp -lSDL -std=c++11
