@@ -74,6 +74,7 @@ void Game::LoadTextures()
     success = (loadImage(mTextures[5], tw, th, "textures/Cave/normalCaveWall.png") == 0) ? success : 1;
     success = (loadImage(mTextures[6], tw, th, "textures/Cave/normalCaveWallShroom.png") == 0) ? success : 1;
     success = (loadImage(mTextures[7], tw, th, "textures/Cave/normalCaveWallShroom2.png") == 0) ? success : 1;
+	success = (loadImage(mTextures[8], tw, th, "sprites/27846.png") == 0) ? success : 1;
 
 	if (success == 0)
 		std::cout << "Textures Loaded" << std::endl;
@@ -262,10 +263,9 @@ void Game::RenderWalls(int worldMap[][mapHeight])
 
 		//SET THE mZBuffer FOR THE SPRITE CASTING
 		mZBuffer[x] = perpWallDist; //perpendicular distance is used
-
-		//Game::DrawSprites();
 	}
 
+	Game::DrawSprites();
 	drawBuffer(mBuffer[0]);
 	for(int x = 0; x < getWidth(); x++) for(int y = 0; y < getHeight(); y++) mBuffer[y][x] = 0; //clear the buffer instead of cls()
 	redraw();
@@ -336,7 +336,7 @@ void Game::RenderWalls(int worldMap[][mapHeight])
 		          int d = (y) * 256 - h * 128 + spriteHeight * 128; //256 and 128 factors to avoid floats
 		          int texY = ((d * texHeight) / spriteHeight) / 256;
 		          Uint32 color = mTextures[sprite[spriteOrder[i]].texture][texWidth * texY + texX]; //get current color from the texture
-		          if((color & 0x00FFFFFF) != 0) mBuffer[y][stripe] = color; //paint pixel if it isn't black, black is the invisible color
+		          if((color & 0xFF000000) != 0) mBuffer[y][stripe] = color; //paint pixel if it isn't black, black is the invisible color
 		        }
 			}
 		}
