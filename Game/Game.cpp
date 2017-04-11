@@ -35,7 +35,7 @@ void Game::RunGame()
 		int oldmx, oldmy;
 		SDL_GetMouseState(&oldmx, &oldmy);
 
-		RenderWalls(worldMap);
+		Render(worldMap);
 
 		//timing for input and FPS counter
 		oldTime = time;
@@ -155,7 +155,7 @@ void Game::UpdateRotation(float deltaMouse)
 	mPlayer.setCameraPlane(planeX, planeY);
 }
 
-void Game::RenderWalls(int worldMap[][mapHeight])
+void Game::Render(int worldMap[][mapHeight])
 {
 	Vector2<double> playerPos = mPlayer.getPosition(), cameraPlane = mPlayer.getCameraPlane(), playerDir = mPlayer.getDirection();
 
@@ -228,7 +228,7 @@ void Game::RenderWalls(int worldMap[][mapHeight])
 		else		   perpWallDist = (mapPos.y - rayPos.y + (1 - stepDir.y) / 2) / rayDir.y;
 
 		//Calculate height of line to draw on screen
-		int lineHeight = (int)(1.33 * getHeight() / perpWallDist);
+		int lineHeight = (int)(getHeight() / perpWallDist);
 
 		//calculate lowest and highest pixel to fill in current stripe
 		int drawStart = -lineHeight / 2 + getHeight() / 2;
@@ -260,6 +260,7 @@ void Game::RenderWalls(int worldMap[][mapHeight])
 			mBuffer[y][x] = color;
 		}
 
+		// Here lies the floor/ceiling code... be wary those who dwell
 		Vector2<double> floorPos; // Position of the floor texel at the bottom of the wall
 
 		//4 different wall directions possible

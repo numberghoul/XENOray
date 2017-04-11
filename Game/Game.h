@@ -6,8 +6,8 @@
 #include "../quickcg.h"
 using namespace QuickCG;
 
-#define screenWidth 1280
-#define screenHeight 720
+#define screenWidth 400
+#define screenHeight 300
 
 #define texWidth 64
 #define texHeight 64
@@ -44,7 +44,7 @@ private:
 	Uint32 mBuffer[screenHeight][screenWidth];
 
 	void LoadTextures();
-	void RenderWalls(int worldMap[][mapHeight]);
+	void Render(int worldMap[][mapHeight]);
 
 	void UpdateMovement(int worldMap[][mapHeight]);
 	void UpdateRotation(float deltaMouse);
