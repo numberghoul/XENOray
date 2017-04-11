@@ -230,7 +230,7 @@ void Game::Render(int worldMap[][mapHeight])
 		else		   perpWallDist = (mapPos.y - rayPos.y + (1 - stepDir.y) / 2) / rayDir.y;
 
 		//Calculate height of line to draw on screen
-		int lineHeight = (int)(1.33*getHeight() / perpWallDist);
+		int lineHeight = (int)(getHeight() / perpWallDist);
 
 		//calculate lowest and highest pixel to fill in current stripe
 		int drawStart = -lineHeight / 2 + getHeight() / 2;
@@ -261,6 +261,9 @@ void Game::Render(int worldMap[][mapHeight])
 			if(side == 1) color = (color >> 1) & 8355711;
 			mBuffer[y][x] = color;
 		}
+
+		//SET THE mZBuffer FOR THE SPRITE CASTING
+		mZBuffer[x] = perpWallDist; //perpendicular distance is used
 
 		// Here lies the floor/ceiling code... be wary those who dwell
 		Vector2<double> floorPos; // Position of the floor texel at the bottom of the wall
@@ -315,12 +318,8 @@ void Game::Render(int worldMap[][mapHeight])
 		}
 	}
 
-		//SET THE mZBuffer FOR THE SPRITE CASTING
-		mZBuffer[x] = perpWallDist; //perpendicular distance is used
-	}
-
 	Game::DrawSprites();
-	
+
 	drawBuffer(mBuffer[0]);
 	for(int x = 0; x < getWidth(); x++) for(int y = 0; y < getHeight(); y++) mBuffer[y][x] = 0; //clear the buffer instead of cls()
 	redraw();

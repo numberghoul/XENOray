@@ -6,13 +6,8 @@
 #include "../quickcg.h"
 using namespace QuickCG;
 
-<<<<<<< HEAD
-#define screenWidth 400
-#define screenHeight 300
-=======
-#define screenWidth 1280
-#define screenHeight 720
->>>>>>> 19cef2d0b4ec1c8ba24d0734c95ee8f616fc9090
+#define screenWidth 800
+#define screenHeight 600
 
 #define texWidth 64
 #define texHeight 64
@@ -59,14 +54,11 @@ private:
 	void combSort(int* order, double* dist, int amount);
 
 	void LoadTextures();
-<<<<<<< HEAD
+
 	void Render(int worldMap[][mapHeight]);
-=======
+
 
 	void DrawSprites();
-
-	void RenderWalls(int worldMap[][mapHeight]);
->>>>>>> 19cef2d0b4ec1c8ba24d0734c95ee8f616fc9090
 
 	void UpdateMovement(int worldMap[][mapHeight]);
 	void UpdateRotation(float deltaMouse);
