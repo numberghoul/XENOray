@@ -2,7 +2,7 @@
 #include <vector>
 #include <iostream>
 
-#include "../Player/Player.h"
+#include "../Character/Player.h"
 #include "../quickcg.h"
 using namespace QuickCG;
 
