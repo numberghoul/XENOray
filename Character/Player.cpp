@@ -38,3 +38,25 @@ void Player::setCameraPlane(const double camX, const double camY)
 	mCameraPlane.setX(camX);
 	mCameraPlane.setY(camY);
 }
+
+void Player::TakeDamage(int damage)
+{
+	mHealth -= damage;
+	if (mHealth <= 0)
+	{
+		mHealth = 0;
+		Die();
+	}
+}
+
+void Player::Move()
+{
+}
+
+void Player::Shoot()
+{
+}
+
+void Player::Die()
+{
+}

@@ -348,9 +348,9 @@ void Game::Render(int worldMap[][mapHeight])
 			floorTexPos.y = int(currentFloorY * texHeight) % texHeight;
 
 			//floor
-			mBuffer[y][x] = (mTextures[4][texWidth * floorTexPos.y + floorTexPos.x] >> 1) & 8355711;
+			mBuffer[y][x] = (mTextures[Textures::ShipRoomFloor][texWidth * floorTexPos.y + floorTexPos.x] >> 1) & 8355711;
 			//ceiling (symmetrical!)
-			mBuffer[getHeight() - y][x] = mTextures[0][texWidth * floorTexPos.y + floorTexPos.x];
+			mBuffer[getHeight() - y][x] = mTextures[Textures::ShipCeiling][texWidth * floorTexPos.y + floorTexPos.x];
 		}
 	}
 
