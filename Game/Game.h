@@ -15,13 +15,15 @@ using namespace QuickCG;
 #define mapWidth 30
 #define mapHeight 30
 
-#define numTextures 9
+#define numTextures 26
 
 enum Textures
 {
-	ShipCeiling, ShipWall, ShipWallBlood, ShipWallWindow, ShipFloor,
+	ShipCeiling, ShipCeilingLatch, ShipWallRaised, ShipWallStraight, ShipWallBloodRaised, ShipWallBloodStraight, ShipWallBloodStraight2,
+	ShipWallCircuit, ShipWallPort, ShipWallWindowLeft, ShipWallWindowRight, ShipWallWindow, ShipRoomFloor, ShipRoomFloorBlood,
+	ShipRoomFloorBlood2, ShipGrateBottomLeft, ShipGrateBottomRight, ShipGrateTopLeft, ShipGrateTopRight, ShipGrate,
 
-	CaveWall, CaveWallMushroom, CaveWallMushroom2, TestSprite
+	CaveCeiling, CaveWall, CaveWallMushroom, CaveWallMushroom2, CaveFloor, TestSprite
 };
 
 #define numSprites 1

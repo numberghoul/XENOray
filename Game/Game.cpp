@@ -66,15 +66,43 @@ void Game::LoadTextures()
 	for(int i = 0; i < numTextures; i++) mTextures[i].resize(texWidth * texHeight);
 
 	unsigned long tw, th;
-    success = (loadImage(mTextures[0], tw, th, "textures/Ship/ceiling.png") == 0) ? success : 1;
-    success = (loadImage(mTextures[1], tw, th, "textures/Ship/wall.png") == 0) ? success : 1;
-    success = (loadImage(mTextures[2], tw, th, "textures/Ship/wallBlood.png") == 0) ? success : 1;
-    success = (loadImage(mTextures[3], tw, th, "textures/Ship/wallWindow.png") == 0) ? success : 1;
-    success = (loadImage(mTextures[4], tw, th, "textures/Ship/grate.png") == 0) ? success : 1;
-    success = (loadImage(mTextures[5], tw, th, "textures/Cave/normalCaveWall.png") == 0) ? success : 1;
-    success = (loadImage(mTextures[6], tw, th, "textures/Cave/normalCaveWallShroom.png") == 0) ? success : 1;
-    success = (loadImage(mTextures[7], tw, th, "textures/Cave/normalCaveWallShroom2.png") == 0) ? success : 1;
-	success = (loadImage(mTextures[8], tw, th, "sprites/27846.png") == 0) ? success : 1;
+	// Ship Textures
+	// Ceiling Textures
+    success |= loadImage(mTextures[Textures::ShipCeiling], tw, th, "textures/Ship/ceiling.png");
+	success |= loadImage(mTextures[Textures::ShipCeilingLatch], tw, th, "textures/Ship/ceilingLatch.png");
+	// Wall Textures
+    success |= loadImage(mTextures[Textures::ShipWallRaised], tw, th, "textures/Ship/humanShipWall.png");
+    success |= loadImage(mTextures[Textures::ShipWallStraight], tw, th, "textures/Ship/humanShipWall2.png");
+    success |= loadImage(mTextures[Textures::ShipWallBloodRaised], tw, th, "textures/Ship/humanShipWall3.png");
+    success |= loadImage(mTextures[Textures::ShipWallBloodStraight], tw, th, "textures/Ship/humanShipWallBlood.png");
+    success |= loadImage(mTextures[Textures::ShipWallBloodStraight2], tw, th, "textures/Ship/humanShipWallBlood2.png");
+    success |= loadImage(mTextures[Textures::ShipWallCircuit], tw, th, "textures/Ship/humanShipWallCircuit.png");
+    success |= loadImage(mTextures[Textures::ShipWallPort], tw, th, "textures/Ship/humanShipWallGateClosed.png");
+    success |= loadImage(mTextures[Textures::ShipWallWindowLeft], tw, th, "textures/Ship/humanShipWallSideLeft.png");
+    success |= loadImage(mTextures[Textures::ShipWallWindowRight], tw, th, "textures/Ship/humanShipWallSideRight.png");
+    success |= loadImage(mTextures[Textures::ShipWallWindow], tw, th, "textures/Ship/humanShipWallWindow.png");
+	// Floor Textures
+    success |= loadImage(mTextures[Textures::ShipRoomFloor], tw, th, "textures/Ship/roomFloor.png");
+    success |= loadImage(mTextures[Textures::ShipRoomFloorBlood], tw, th, "textures/Ship/roomFloorBlood.png");
+    success |= loadImage(mTextures[Textures::ShipRoomFloorBlood2], tw, th, "textures/Ship/roomFloorBlood2.png");
+    success |= loadImage(mTextures[Textures::ShipGrateBottomLeft], tw, th, "textures/Ship/hallFloorBottomLeft.png");
+    success |= loadImage(mTextures[Textures::ShipGrateBottomRight], tw, th, "textures/Ship/hallFloorBottomRight.png");
+    success |= loadImage(mTextures[Textures::ShipGrateTopLeft], tw, th, "textures/Ship/hallFloorTopLeft.png");
+    success |= loadImage(mTextures[Textures::ShipGrateTopRight], tw, th, "textures/Ship/hallFloorTopRight.png");
+    success |= loadImage(mTextures[Textures::ShipGrate], tw, th, "textures/Ship/grate.png");
+
+	// Cave Textures
+	//Ceiling Textures
+    success |= loadImage(mTextures[Textures::CaveCeiling], tw, th, "textures/Cave/caveCeiling.png");
+	// Wall Textures
+    success |= loadImage(mTextures[Textures::CaveWall], tw, th, "textures/Cave/normalCaveWall.png");
+    success |= loadImage(mTextures[Textures::CaveWallMushroom], tw, th, "textures/Cave/normalCaveWallShroom.png");
+    success |= loadImage(mTextures[Textures::CaveWallMushroom2], tw, th, "textures/Cave/normalCaveWallShroom2.png");
+	// Floor Textures
+    success |= loadImage(mTextures[Textures::CaveFloor], tw, th, "textures/Cave/alienCaveFloor.png");
+
+	// Sprites
+	success |= loadImage(mTextures[8], tw, th, "sprites/27846.png");
 
 	if (success == 0)
 		std::cout << "Textures Loaded" << std::endl;
