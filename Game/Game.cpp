@@ -10,6 +10,8 @@ Game::Game(int width, int height)
 	mPlayer.setPosition(26, 26);
 	mPlayer.setDirection(-1, 0);
 	mPlayer.setCameraPlane(0, 0.66);
+
+	mQuit = false;
 }
 
 void Game::RunGame()
@@ -31,7 +33,7 @@ void Game::RunGame()
 
 	float deltaMouse = 0.0f;
 
-	while(!done())
+	while(!mQuit)
 	{
 		int oldmx, oldmy;
 		SDL_GetMouseState(&oldmx, &oldmy);
@@ -45,6 +47,7 @@ void Game::RunGame()
 		print(1.0 / mFrameTime); //FPS counter
 
 		readKeys();
+		CheckQuit();
 		UpdateMovement(worldMap);
 		UpdateRotation(deltaMouse);
 
@@ -57,6 +60,12 @@ void Game::RunGame()
 		SDL_WarpMouse(screenWidth/2, screenHeight/2);
 		SDL_ShowCursor(0);
 	}
+}
+
+void Game::CheckQuit()
+{
+	if (keyDown(SDLK_ESCAPE))
+		mQuit = true;
 }
 
 void Game::LoadTextures()

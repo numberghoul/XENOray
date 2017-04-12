@@ -51,6 +51,7 @@ private:
 	//arrays used to sort the sprites
 	int spriteOrder[numSprites];
 	double spriteDistance[numSprites];
+	bool mQuit;
 
 	//function used to sort the sprites
 	void combSort(int* order, double* dist, int amount);
@@ -58,7 +59,7 @@ private:
 	void LoadTextures();
 
 	void Render(int worldMap[][mapHeight]);
-
+	void CheckQuit();
 
 	void DrawSprites();
 
