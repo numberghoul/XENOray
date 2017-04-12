@@ -1,4 +1,4 @@
-#include "../Vector2.h"
+#include "Character.h"
 
 class Player
 {
@@ -21,13 +21,9 @@ public:
 	void setCameraPlane(const double camX, const double camY);
 
 private:
-	Vector2<double> mPosition,
-	 				mDirection,
+	Vector2<double> mDirection,
 					mCameraPlane;
 
-	int mHealth,
-		mArmor,
+	int mArmor,
 		mBattery;
-
-	double mSpeed;
 };

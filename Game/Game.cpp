@@ -64,8 +64,7 @@ void Game::RunGame()
 
 void Game::CheckQuit()
 {
-	if (keyDown(SDLK_ESCAPE))
-		mQuit = true;
+	mQuit = keyDown(SDLK_ESCAPE);
 }
 
 void Game::LoadTextures()
