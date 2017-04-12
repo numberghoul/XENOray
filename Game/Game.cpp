@@ -7,7 +7,7 @@ Game::Game(int width, int height)
 	setWidth(width);
 	setHeight(height);
 
-	mPlayer.setPosition(1, 1);
+	mPlayer.setPosition(26, 26);
 	mPlayer.setDirection(-1, 0);
 	mPlayer.setCameraPlane(0, 0.66);
 }
