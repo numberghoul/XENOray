@@ -112,7 +112,7 @@ void Game::LoadTextures()
 
 void Game::UpdateMovement(int worldMap[][mapHeight])
 {
-	double moveSpeed = mFrameTime * 6.5; //the constant value is in squares/second
+	double moveSpeed = mFrameTime * 5.0; //the constant value is in squares/second
 	double posX = mPlayer.getPosition().x, posY = mPlayer.getPosition().y;
 	double dirX = mPlayer.getDirection().x, dirY = mPlayer.getDirection().y;
 	double planeX = mPlayer.getCameraPlane().x, planeY = mPlayer.getCameraPlane().y;
@@ -120,7 +120,7 @@ void Game::UpdateMovement(int worldMap[][mapHeight])
 	//Sprint
 	if (keyDown(SDLK_RSHIFT) || keyDown(SDLK_LSHIFT))
 	{
-		moveSpeed *= 2;
+		moveSpeed *= 1.75;
 	}
 
 	//move forward if no wall in front of you
