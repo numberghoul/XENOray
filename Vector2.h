@@ -14,7 +14,7 @@ public:
 		updateMagnitude();
 	}
 
-	Vector2(const Vector2 &copy)
+	Vector2(const Vector2<T> &copy)
 	{
 		setX(copy.getX());
 		setY(copy.getY());
