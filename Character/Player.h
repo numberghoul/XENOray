@@ -21,7 +21,7 @@ public:
 	void setCameraPlane(const double camX, const double camY);
 
 	void TakeDamage(int damage) override;
-	void Move() override;
+	void Move(double x, double y) override; // x and y represent the differences in the position vector components
 	void Shoot() override;
 
 private:

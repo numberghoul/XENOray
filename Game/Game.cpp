@@ -156,7 +156,7 @@ void Game::UpdateMovement(int worldMap[][mapHeight])
 		if(worldMap[int(posX)][int(posY - planeY * moveSpeed)] == false) posY -= planeY * moveSpeed;
 	}
 
-	mPlayer.setPosition(posX, posY);
+	mPlayer.Move(posX, posY);
 }
 
 void Game::UpdateRotation(float deltaMouse)

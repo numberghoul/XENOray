@@ -49,8 +49,10 @@ void Player::TakeDamage(int damage)
 	}
 }
 
-void Player::Move()
+void Player::Move(double x, double y)
 {
+	mPosition.setX(x);
+	mPosition.setY(y);
 }
 
 void Player::Shoot()
