@@ -134,26 +134,26 @@ void Game::UpdateMovement(int worldMap[][mapHeight])
 	//move forward if no wall in front of you
 	if (keyDown(SDLK_w) || keyDown(SDLK_UP))
 	{
-		if(worldMap[int(posX + dirX * moveSpeed)][int(posY)] == false) posX += dirX * moveSpeed;
-		if(worldMap[int(posX)][int(posY + dirY * moveSpeed)] == false) posY += dirY * moveSpeed;
+		if(worldMap[int(posX + (dirX * moveSpeed * 20))][int(posY)] == false) posX += dirX * moveSpeed;
+		if(worldMap[int(posX)][int(posY + (dirY * moveSpeed * 20))] == false) posY += dirY * moveSpeed;
 	}
 	//move backwards if no wall behind you
 	if (keyDown(SDLK_s) || keyDown(SDLK_DOWN))
 	{
-		if(worldMap[int(posX - dirX * moveSpeed)][int(posY)] == false) posX -= dirX * moveSpeed;
-		if(worldMap[int(posX)][int(posY - dirY * moveSpeed)] == false) posY -= dirY * moveSpeed;
+		if(worldMap[int(posX - (dirX * moveSpeed * 20))][int(posY)] == false) posX -= dirX * moveSpeed;
+		if(worldMap[int(posX)][int(posY - (dirY * moveSpeed * 20))] == false) posY -= dirY * moveSpeed;
 	}
 	//Strafe right
 	if (keyDown(SDLK_d))
 	{
-		if(worldMap[int(posX + planeX * moveSpeed)][int(posY)] == false) posX += planeX * moveSpeed;
-		if(worldMap[int(posX)][int(posY + planeY * moveSpeed)] == false) posY += planeY * moveSpeed;
+		if(worldMap[int(posX + (planeX * moveSpeed * 20))][int(posY)] == false) posX += planeX * moveSpeed;
+		if(worldMap[int(posX)][int(posY + (planeY * moveSpeed * 20))] == false) posY += planeY * moveSpeed;
 	}
 	//Strafe left
 	if (keyDown(SDLK_a))
 	{
-		if(worldMap[int(posX - planeX * moveSpeed)][int(posY)] == false) posX -= planeX * moveSpeed;
-		if(worldMap[int(posX)][int(posY - planeY * moveSpeed)] == false) posY -= planeY * moveSpeed;
+		if(worldMap[int(posX - (planeX * moveSpeed * 20))][int(posY)] == false) posX -= planeX * moveSpeed;
+		if(worldMap[int(posX)][int(posY - (planeY * moveSpeed * 20))] == false) posY -= planeY * moveSpeed;
 	}
 
 	mPlayer.Move(posX, posY);
