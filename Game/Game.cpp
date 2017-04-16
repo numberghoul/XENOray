@@ -152,9 +152,7 @@ void Game::UpdateMovement()
 void Game::UpdateRotation(float deltaMouse)
 {
 	//speed modifiers
-	double rotSpeed = mFrameTime * 4.5; //the constant value is in radians/second
-	//double planeX = mPlayer.getCameraPlane().x, planeY = mPlayer.getCameraPlane().y;
-	//double dirX = mPlayer.getDirection().x, dirY = mPlayer.getDirection().y;
+	double rotSpeed = mFrameTime * 4.5 * (deltaMouse != 0 ? 2 : 1); //the constant value is in radians/second
 
 	if (deltaMouse > 0 || keyDown(SDLK_RIGHT))
 		rotSpeed *= -1;
