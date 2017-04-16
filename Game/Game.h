@@ -4,6 +4,7 @@
 #include <fstream>
 
 #include "../Character/Player.h"
+#include "../HelperClasses/List.h"
 #include "../quickcg.h"
 using namespace QuickCG;
 
@@ -35,13 +36,11 @@ typedef struct mapTile
 	int ceiling;
 }mapTile;
 
-struct Sprite
+typedef struct sprite
 {
-  double x;
-  double y;
-  int texture;
-};
-
+	double x, y;
+	int texture;
+} Sprite;
 
 #define numSprites 1
 
@@ -63,8 +62,10 @@ private:
 	int mScreenWidth, mScreenHeight;
 	std::vector<Uint32> mTextures[numTextures];
 	Uint32 mBuffer[screenHeight][screenWidth];
+
 	//1D Zbuffer
 	double mZBuffer[screenWidth];
+
 	//arrays used to sort the sprites
 	int spriteOrder[numSprites];
 	double spriteDistance[numSprites];
@@ -72,6 +73,9 @@ private:
 
 	mapTile mMap[mapWidth][mapHeight];
 
+	List<Character *> mEnemies;
+	List<Sprite> mDoors,
+			  	 mPickups;
 	Sprite sprite[numSprites] =
 	{
 	  {5, 5, TestSprite}

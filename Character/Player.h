@@ -22,6 +22,7 @@ public:
 
 	void TakeDamage(int damage) override;
 	void Move(double x, double y) override; // x and y represent the differences in the position vector components
+	void Rotate(double rotSpeed);
 	void Shoot() override;
 
 private:

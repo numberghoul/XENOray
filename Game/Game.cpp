@@ -153,34 +153,17 @@ void Game::UpdateRotation(float deltaMouse)
 {
 	//speed modifiers
 	double rotSpeed = mFrameTime * 4.5; //the constant value is in radians/second
-	double planeX = mPlayer.getCameraPlane().x, planeY = mPlayer.getCameraPlane().y;
-	double dirX = mPlayer.getDirection().x, dirY = mPlayer.getDirection().y;
+	//double planeX = mPlayer.getCameraPlane().x, planeY = mPlayer.getCameraPlane().y;
+	//double dirX = mPlayer.getDirection().x, dirY = mPlayer.getDirection().y;
 
-	//rotate to the right
 	if (deltaMouse > 0 || keyDown(SDLK_RIGHT))
-	{
-		//both camera direction and camera plane must be rotated
-		double oldDirX = dirX;
-		dirX = dirX * cos(-rotSpeed) - dirY * sin(-rotSpeed);
-		dirY = oldDirX * sin(-rotSpeed) + dirY * cos(-rotSpeed);
-		double oldPlaneX = planeX;
-		planeX = planeX * cos(-rotSpeed) - planeY * sin(-rotSpeed);
-		planeY = oldPlaneX * sin(-rotSpeed) + planeY * cos(-rotSpeed);
-	}
-	//rotate to the left
-	if (deltaMouse < 0 || keyDown(SDLK_LEFT))
-	{
-		//both camera direction and camera plane must be rotated
-		double oldDirX = dirX;
-		dirX = dirX * cos(rotSpeed) - dirY * sin(rotSpeed);
-		dirY = oldDirX * sin(rotSpeed) + dirY * cos(rotSpeed);
-		double oldPlaneX = planeX;
-		planeX = planeX * cos(rotSpeed) - planeY * sin(rotSpeed);
-		planeY = oldPlaneX * sin(rotSpeed) + planeY * cos(rotSpeed);
-	}
+		rotSpeed *= -1;
+	else if (deltaMouse < 0 || keyDown(SDLK_LEFT))
+		rotSpeed *= 1;
+	else if (deltaMouse == 0)
+		rotSpeed = 0;
 
-	mPlayer.setDirection(dirX, dirY);
-	mPlayer.setCameraPlane(planeX, planeY);
+	mPlayer.Rotate(rotSpeed);
 }
 
 void Game::Render()
