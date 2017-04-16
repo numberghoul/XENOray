@@ -1,5 +1,6 @@
 #include "../Vector2.h"
 #include <SDL/SDL.h>
+#include "SDL/SDL_mixer.h"
 
 class Character
 {
@@ -13,9 +14,9 @@ private:
 	Vector2<double> mPosition,
 	 				mVelocity;
 
-	Mix_Chunk mDamageSound = NULL,
-			   mTauntSound = NULL,
-			   mDeathSound = NULL;
+	Mix_Chunk *mDamageSound = NULL,
+			   *mTauntSound = NULL,
+			   *mDeathSound = NULL;
 
 	int mHealth;
 
