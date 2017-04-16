@@ -81,14 +81,10 @@ private:
 
 	void loadMap(std::string mapName);
 
-<<<<<<< HEAD
 	void LoadTextures();
 
 	void Render();
-=======
-	void Render(int worldMap[][mapHeight]);
 	void CheckQuit();
->>>>>>> a8434dad32336f03a347f82a7a7d1e9f7bbf43cd
 
 	void DrawSprites();
 
