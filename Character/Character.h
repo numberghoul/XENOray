@@ -1,4 +1,4 @@
-#include "../Vector2.h"
+#include "../HelperClasses/Vector2.h"
 #include <SDL/SDL.h>
 #include <SDL/SDL_mixer.h>
 
