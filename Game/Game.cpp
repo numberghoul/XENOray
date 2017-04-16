@@ -1,6 +1,4 @@
 #include "Game.h"
-#include "../level.h"
-#include "../sprites.h"
 
 Game::Game(int width, int height)
 {
@@ -14,17 +12,9 @@ Game::Game(int width, int height)
 	mQuit = false;
 }
 
-void Game::RunGame()
+void Game::RunGame(std::string mapName)
 {
-	int worldMap[mapWidth][mapHeight];
-
-	for(int i = 0; i < mapWidth; i++)
-	{
-		for(int j = 0; j < mapHeight; j++)
-		{
-			worldMap[i][j] = levels[0][i][j];
-		}
-	}
+	loadMap(mapName);
 
 	LoadTextures();
 
@@ -38,7 +28,7 @@ void Game::RunGame()
 		int oldmx, oldmy;
 		SDL_GetMouseState(&oldmx, &oldmy);
 
-		Render(worldMap);
+		Render();
 
 		//timing for input and FPS counter
 		oldTime = time;
@@ -47,8 +37,8 @@ void Game::RunGame()
 		print(1.0 / mFrameTime); //FPS counter
 
 		readKeys();
+		UpdateMovement();
 		CheckQuit();
-		UpdateMovement(worldMap);
 		UpdateRotation(deltaMouse);
 
 		int mx, my;
@@ -110,7 +100,7 @@ void Game::LoadTextures()
     success |= loadImage(mTextures[Textures::CaveFloor], tw, th, "textures/Cave/alienCaveFloor.png");
 
 	// Sprites
-	success |= loadImage(mTextures[8], tw, th, "sprites/27846.png");
+	success |= loadImage(mTextures[Textures::TestSprite], tw, th, "sprites/27846.png");
 
 	if (success == 0)
 		std::cout << "Textures Loaded" << std::endl;
@@ -118,7 +108,7 @@ void Game::LoadTextures()
 		std::cout << "Textures Not Loaded" << std::endl;
 }
 
-void Game::UpdateMovement(int worldMap[][mapHeight])
+void Game::UpdateMovement()
 {
 	double moveSpeed = mFrameTime * 5.0; //the constant value is in squares/second
 	double posX = mPlayer.getPosition().x, posY = mPlayer.getPosition().y;
@@ -134,26 +124,26 @@ void Game::UpdateMovement(int worldMap[][mapHeight])
 	//move forward if no wall in front of you
 	if (keyDown(SDLK_w) || keyDown(SDLK_UP))
 	{
-		if(worldMap[int(posX + (dirX * moveSpeed * 20))][int(posY)] == false) posX += dirX * moveSpeed;
-		if(worldMap[int(posX)][int(posY + (dirY * moveSpeed * 20))] == false) posY += dirY * moveSpeed;
+		if(mMap[int(posX + dirX * moveSpeed)][int(posY)].object == false) posX += dirX * moveSpeed;
+		if(mMap[int(posX)][int(posY + dirY * moveSpeed)].object == false) posY += dirY * moveSpeed;
 	}
 	//move backwards if no wall behind you
 	if (keyDown(SDLK_s) || keyDown(SDLK_DOWN))
 	{
-		if(worldMap[int(posX - (dirX * moveSpeed * 20))][int(posY)] == false) posX -= dirX * moveSpeed;
-		if(worldMap[int(posX)][int(posY - (dirY * moveSpeed * 20))] == false) posY -= dirY * moveSpeed;
+		if(mMap[int(posX - dirX * moveSpeed)][int(posY)].object == false) posX -= dirX * moveSpeed;
+		if(mMap[int(posX)][int(posY - dirY * moveSpeed)].object == false) posY -= dirY * moveSpeed;
 	}
 	//Strafe right
 	if (keyDown(SDLK_d))
 	{
-		if(worldMap[int(posX + (planeX * moveSpeed * 20))][int(posY)] == false) posX += planeX * moveSpeed;
-		if(worldMap[int(posX)][int(posY + (planeY * moveSpeed * 20))] == false) posY += planeY * moveSpeed;
+		if(mMap[int(posX + planeX * moveSpeed)][int(posY)].object == false) posX += planeX * moveSpeed;
+		if(mMap[int(posX)][int(posY + planeY * moveSpeed)].object == false) posY += planeY * moveSpeed;
 	}
 	//Strafe left
 	if (keyDown(SDLK_a))
 	{
-		if(worldMap[int(posX - (planeX * moveSpeed * 20))][int(posY)] == false) posX -= planeX * moveSpeed;
-		if(worldMap[int(posX)][int(posY - (planeY * moveSpeed * 20))] == false) posY -= planeY * moveSpeed;
+		if(mMap[int(posX - planeX * moveSpeed)][int(posY)].object == false) posX -= planeX * moveSpeed;
+		if(mMap[int(posX)][int(posY - planeY * moveSpeed)].object == false) posY -= planeY * moveSpeed;
 	}
 
 	mPlayer.Move(posX, posY);
@@ -193,7 +183,7 @@ void Game::UpdateRotation(float deltaMouse)
 	mPlayer.setCameraPlane(planeX, planeY);
 }
 
-void Game::Render(int worldMap[][mapHeight])
+void Game::Render()
 {
 	Vector2<double> playerPos = mPlayer.getPosition(), cameraPlane = mPlayer.getCameraPlane(), playerDir = mPlayer.getDirection();
 
@@ -259,7 +249,7 @@ void Game::Render(int worldMap[][mapHeight])
 				side = 1;
 			}
 			//Check if ray has hit a wall
-			if (worldMap[mapPos.x][mapPos.y] > 0) hit = 1;
+			if (mMap[mapPos.x][mapPos.y].object > 0) hit = 1;
 		}
 		//Calculate distance projected on camera direction (oblique distance will give fisheye effect!)
 		if (side == 0) perpWallDist = (mapPos.x - rayPos.x + (1 - stepDir.x) / 2) / rayDir.x;
@@ -275,7 +265,7 @@ void Game::Render(int worldMap[][mapHeight])
 		if(drawEnd >= getHeight())drawEnd = getHeight() - 1;
 
 		//texturing calculations
-		int texNum = worldMap[mapPos.x][mapPos.y] - 1; //1 subtracted from it so that texture 0 can be used!
+		int texNum = mMap[mapPos.x][mapPos.y].object - 1; //1 subtracted from it so that texture 0 can be used!
 
 		//calculate value of wallX
 		double wallX; //where exactly the wall was hit
@@ -343,14 +333,17 @@ void Game::Render(int worldMap[][mapHeight])
 			double currentFloorX = weight * floorPos.x + (1.0 - weight) * playerPos.x;
 			double currentFloorY = weight * floorPos.y + (1.0 - weight) * playerPos.y;
 
+			int texNumCeiling = mMap[int(currentFloorY)][int(currentFloorY)].ceiling - 1,
+				texNumFloor = mMap[int(currentFloorX)][int(currentFloorY)].floor - 1;
+
 			Vector2<int> floorTexPos;
 			floorTexPos.x = int(currentFloorX * texWidth) % texWidth;
 			floorTexPos.y = int(currentFloorY * texHeight) % texHeight;
 
 			//floor
-			mBuffer[y][x] = (mTextures[Textures::ShipRoomFloor][texWidth * floorTexPos.y + floorTexPos.x] >> 1) & 8355711;
+			mBuffer[y][x] = (mTextures[texNumFloor][texWidth * floorTexPos.y + floorTexPos.x] >> 1) & 8355711;
 			//ceiling (symmetrical!)
-			mBuffer[getHeight() - y][x] = mTextures[Textures::ShipCeiling][texWidth * floorTexPos.y + floorTexPos.x];
+			mBuffer[getHeight() - y][x] = mTextures[texNumCeiling][texWidth * floorTexPos.y + floorTexPos.x];
 		}
 	}
 
@@ -367,6 +360,7 @@ void Game::DrawSprites()
 	double dirX = mPlayer.getDirection().x, dirY = mPlayer.getDirection().y;
 	double planeX = mPlayer.getCameraPlane().x, planeY = mPlayer.getCameraPlane().y;
 
+<<<<<<< HEAD
 	//SPRITE CASTING
 	//sort sprites from far to close
 	for(int i = 0; i < numSprites; i++)
@@ -429,6 +423,67 @@ void Game::DrawSprites()
 	          if((color & 0xFF000000) != 0) mBuffer[y][stripe] = color; //paint pixel if it isn't black, black is the invisible color
 	        }
 		}
+=======
+	void Game::loadMap(std::string mapName)
+	{
+		std::string filepath = "./maps/" + mapName + ".txt";
+		std::ifstream infile(filepath);
+
+		for(int k = 0; k < 3; k++)
+		{
+			for(int i = 0; i < 30; i++)
+			{
+				for(int j = 0; j < 30; j++)
+				{
+					std::string line;
+					std::getline(infile, line, ',');
+					std::cout << line << std::endl;
+
+					if (line == "")
+					{
+					std::cout << "Finished" << std::endl;
+						continue;}
+
+					switch(k)
+					{
+						case 0:
+							mMap[i][j].floor = std::stoi(line);
+							break;
+						case 1:
+							mMap[i][j].object = std::stoi(line);
+							break;
+						case 2:
+							mMap[i][j].ceiling = std::stoi(line);
+							break;
+					}
+				}
+			}
+		}
+	}
+
+	void Game::combSort(int* order, double* dist, int amount)
+	{
+		int gap = amount;
+ 		bool swapped = false;
+ 		while(gap > 1 || swapped)
+ 		{
+   			//shrink factor 1.3
+   			gap = (gap * 10) / 13;
+   			if(gap == 9 || gap == 10) gap = 11;
+   			if (gap < 1) gap = 1;
+			swapped = false;
+			for(int i = 0; i < amount - gap; i++)
+   			{
+				int j = i + gap;
+				if(dist[i] < dist[j])
+	 			{
+					std::swap(dist[i], dist[j]);
+	   				std::swap(order[i], order[j]);
+	   				swapped = true;
+	 			}
+   			}
+  		}
+>>>>>>> fb529a83f6e75663db20e04273b443fa96ec9cae
 	}
 	}
 

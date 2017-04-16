@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <fstream>
 
 #include "../Character/Player.h"
 #include "../quickcg.h"
@@ -26,6 +27,21 @@ enum Textures
 	CaveCeiling, CaveWall, CaveWallMushroom, CaveWallMushroom2, CaveFloor, TestSprite
 };
 
+typedef struct mapTile
+{
+	int floor;
+	int object;
+	int ceiling;
+}mapTile;
+
+struct Sprite
+{
+  double x;
+  double y;
+  int texture;
+};
+
+
 #define numSprites 1
 
 class Game
@@ -39,7 +55,7 @@ public:
 	void setWidth(const int width) { mScreenWidth = width; }
 	void setHeight(const int height) { mScreenHeight = height; }
 
-	void RunGame();
+	void RunGame(std::string mapName);
 private:
 	Player mPlayer;
 	double mFrameTime;
@@ -53,16 +69,29 @@ private:
 	double spriteDistance[numSprites];
 	bool mQuit;
 
+	mapTile mMap[mapWidth][mapHeight];
+
+	Sprite sprite[numSprites] =
+	{
+	  {5, 5, TestSprite}
+	};
+
 	//function used to sort the sprites
 	void combSort(int* order, double* dist, int amount);
 
+	void loadMap(std::string mapName);
+
+<<<<<<< HEAD
 	void LoadTextures();
 
+	void Render();
+=======
 	void Render(int worldMap[][mapHeight]);
 	void CheckQuit();
+>>>>>>> a8434dad32336f03a347f82a7a7d1e9f7bbf43cd
 
 	void DrawSprites();
 
-	void UpdateMovement(int worldMap[][mapHeight]);
+	void UpdateMovement();
 	void UpdateRotation(float deltaMouse);
 };
