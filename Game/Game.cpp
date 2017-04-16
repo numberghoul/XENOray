@@ -37,9 +37,9 @@ void Game::RunGame(std::string mapName)
 		print(1.0 / mFrameTime); //FPS counter
 
 		readKeys();
+		UpdateRotation(deltaMouse);
 		UpdateMovement();
 		CheckQuit();
-		UpdateRotation(deltaMouse);
 
 		int mx, my;
 		SDL_GetMouseState(&mx, &my);
@@ -124,26 +124,27 @@ void Game::UpdateMovement()
 	//move forward if no wall in front of you
 	if (keyDown(SDLK_w) || keyDown(SDLK_UP))
 	{
-		if(mMap[int(posX + dirX * moveSpeed)][int(posY)].object == false) posX += dirX * moveSpeed;
-		if(mMap[int(posX)][int(posY + dirY * moveSpeed)].object == false) posY += dirY * moveSpeed;
+		
+		if(mMap[int(posX + dirX * moveSpeed * 20)][int(posY)].object == false) posX += dirX * moveSpeed;
+		if(mMap[int(posX)][int(posY + dirY * moveSpeed * 20)].object == false) posY += dirY * moveSpeed;
 	}
 	//move backwards if no wall behind you
 	if (keyDown(SDLK_s) || keyDown(SDLK_DOWN))
 	{
-		if(mMap[int(posX - dirX * moveSpeed)][int(posY)].object == false) posX -= dirX * moveSpeed;
-		if(mMap[int(posX)][int(posY - dirY * moveSpeed)].object == false) posY -= dirY * moveSpeed;
+		if(mMap[int(posX - dirX * moveSpeed * 20)][int(posY)].object == false) posX -= dirX * moveSpeed;
+		if(mMap[int(posX)][int(posY - dirY * moveSpeed * 20)].object == false) posY -= dirY * moveSpeed;
 	}
 	//Strafe right
 	if (keyDown(SDLK_d))
 	{
-		if(mMap[int(posX + planeX * moveSpeed)][int(posY)].object == false) posX += planeX * moveSpeed;
-		if(mMap[int(posX)][int(posY + planeY * moveSpeed)].object == false) posY += planeY * moveSpeed;
+		if(mMap[int(posX + planeX * moveSpeed * 20)][int(posY)].object == false) posX += planeX * moveSpeed;
+		if(mMap[int(posX)][int(posY + planeY * moveSpeed * 20)].object == false) posY += planeY * moveSpeed;
 	}
 	//Strafe left
 	if (keyDown(SDLK_a))
 	{
-		if(mMap[int(posX - planeX * moveSpeed)][int(posY)].object == false) posX -= planeX * moveSpeed;
-		if(mMap[int(posX)][int(posY - planeY * moveSpeed)].object == false) posY -= planeY * moveSpeed;
+		if(mMap[int(posX - planeX * moveSpeed * 20)][int(posY)].object == false) posX -= planeX * moveSpeed;
+		if(mMap[int(posX)][int(posY - planeY * moveSpeed * 20)].object == false) posY -= planeY * moveSpeed;
 	}
 
 	mPlayer.Move(posX, posY);
@@ -324,7 +325,7 @@ void Game::Render()
 		if (drawEnd < 0) drawEnd = getHeight(); //becomes < 0 when the integer overflows
 
 		//draw the floor from drawEnd to the bottom of the screen
-		for(int y = drawEnd + 1; y < getHeight(); y++)
+		for(int y = drawEnd; y < getHeight(); y++)
 		{
 			currentDist = getHeight() / (2.0 * y - getHeight()); //you could make a small lookup table for this instead
 

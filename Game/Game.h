@@ -20,9 +20,10 @@ using namespace QuickCG;
 
 enum Textures
 {
-	ShipCeiling, ShipCeilingLatch, ShipWallRaised, ShipWallStraight, ShipWallBloodRaised, ShipWallBloodStraight, ShipWallBloodStraight2,
-	ShipWallCircuit, ShipWallPort, ShipWallWindowLeft, ShipWallWindowRight, ShipWallWindow, ShipRoomFloor, ShipRoomFloorBlood,
-	ShipRoomFloorBlood2, ShipGrateBottomLeft, ShipGrateBottomRight, ShipGrateTopLeft, ShipGrateTopRight, ShipGrate,
+	ShipWallRaised, ShipWallStraight, ShipWallBloodRaised, ShipWallBloodStraight, ShipWallBloodStraight2,
+	ShipWallCircuit, ShipWallPort, ShipWallWindowLeft, ShipWallWindowRight, ShipWallWindow, ShipGrate,
+	ShipGrateBottomLeft, ShipGrateBottomRight, ShipGrateTopLeft, ShipGrateTopRight, ShipRoomFloor, ShipRoomFloorBlood2,
+	ShipRoomFloorBlood, ShipCeiling, ShipCeilingLatch,
 
 	CaveCeiling, CaveWall, CaveWallMushroom, CaveWallMushroom2, CaveFloor, TestSprite
 };
@@ -81,14 +82,10 @@ private:
 
 	void loadMap(std::string mapName);
 
-<<<<<<< HEAD
 	void LoadTextures();
 
 	void Render();
-=======
-	void Render(int worldMap[][mapHeight]);
 	void CheckQuit();
->>>>>>> a8434dad32336f03a347f82a7a7d1e9f7bbf43cd
 
 	void DrawSprites();
 

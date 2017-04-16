@@ -2,7 +2,7 @@
 
 int main(int /*argc*/, char */*argv*/[])
 {
-	screen(screenWidth, screenHeight, 0, "EPITOME");
+	screen(screenWidth, screenHeight, 1, "EPITOME");
 
 	Game game;
 	game.RunGame("e1m1");
