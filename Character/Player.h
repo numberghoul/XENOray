@@ -1,6 +1,6 @@
-#include "../Vector2.h"
+#include "Character.h"
 
-class Player
+class Player : public Character
 {
 public:
 	Player(double posX = 0.0, double posY = 0.0, double dirX = 0.0, double dirY = 0.0, double cameraX = 0.0, double cameraY = 0.0);
@@ -20,14 +20,16 @@ public:
 	void setCameraPlane(const Vector2<double> cam);
 	void setCameraPlane(const double camX, const double camY);
 
+	void TakeDamage(int damage) override;
+	void Move(double x, double y) override; // x and y represent the differences in the position vector components
+	void Shoot() override;
+
 private:
-	Vector2<double> mPosition,
-	 				mDirection,
+	Vector2<double> mDirection,
 					mCameraPlane;
 
-	int mHealth,
-		mArmor,
+	int mArmor,
 		mBattery;
 
-	double mSpeed;
+	void Die();
 };

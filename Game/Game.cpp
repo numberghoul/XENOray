@@ -8,6 +8,8 @@ Game::Game(int width, int height)
 	mPlayer.setPosition(26, 26);
 	mPlayer.setDirection(-1, 0);
 	mPlayer.setCameraPlane(0, 0.66);
+
+	mQuit = false;
 }
 
 void Game::RunGame(std::string mapName)
@@ -21,7 +23,7 @@ void Game::RunGame(std::string mapName)
 
 	float deltaMouse = 0.0f;
 
-	while(!done())
+	while(!mQuit)
 	{
 		int oldmx, oldmy;
 		SDL_GetMouseState(&oldmx, &oldmy);
@@ -36,6 +38,7 @@ void Game::RunGame(std::string mapName)
 
 		readKeys();
 		UpdateMovement();
+		CheckQuit();
 		UpdateRotation(deltaMouse);
 
 		int mx, my;
@@ -47,6 +50,11 @@ void Game::RunGame(std::string mapName)
 		SDL_WarpMouse(screenWidth/2, screenHeight/2);
 		SDL_ShowCursor(0);
 	}
+}
+
+void Game::CheckQuit()
+{
+	mQuit = keyDown(SDLK_ESCAPE);
 }
 
 void Game::LoadTextures()
@@ -138,7 +146,7 @@ void Game::UpdateMovement()
 		if(mMap[int(posX)][int(posY - planeY * moveSpeed)].object == false) posY -= planeY * moveSpeed;
 	}
 
-	mPlayer.setPosition(posX, posY);
+	mPlayer.Move(posX, posY);
 }
 
 void Game::UpdateRotation(float deltaMouse)
