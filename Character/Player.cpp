@@ -55,6 +55,16 @@ void Player::Move(double x, double y)
 	mPosition.setY(y);
 }
 
+void Player::Rotate(double rotSpeed)
+{
+	double oldDirX = mDirection.x;
+	mDirection.x = mDirection.x * cos(rotSpeed) - mDirection.y * sin(rotSpeed);
+	mDirection.y = oldDirX * sin(rotSpeed) + mDirection.y * cos(rotSpeed);
+	double oldPlaneX = mCameraPlane.x;
+	mCameraPlane.x = mCameraPlane.x * cos(rotSpeed) - mCameraPlane.y * sin(rotSpeed);
+	mCameraPlane.y = oldPlaneX * sin(rotSpeed) + mCameraPlane.y * cos(rotSpeed);
+}
+
 void Player::Shoot()
 {
 }
