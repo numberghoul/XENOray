@@ -1,49 +1,43 @@
 #include "Object.h"
 
-Object::Object(double posX, double posY, int angle, int texture)
+Object::Object(double posX, double posY, double directionX, double directionY, int texture, bool rotates)
 {
-	setPosX(posX);
-	setPosY(posY);
-	setAngle(angle);
+	setPosition(posX, posY);
+	setDirection(directionX, directionY);
+	setRotation(rotates);
 	setTexture(texture);
 }
 
-double Object::getPosX() const
+Object::Object(Vector2<double> pos, Vector2<double> dir, int texture, bool rotates)
 {
-	return mPosX;
+	setPosition(pos);
+	setDirection(dir);
+	setRotation(rotates);
+	setTexture(texture);
 }
 
-double Object::getPosY() const
+Vector2<double> Object::getDirection() const { return mDirection; }
+Vector2<double> Object::getPosition() const { return mPosition; }
+int Object::getTexture() const { return mTexture; }
+bool Object::rotates() const { return mRotates; }
+
+void Object::setDirection(const Vector2<double> &dir) { setPosition(dir.x, dir.y); }
+void Object::setDirection(const double &dirX, const double &dirY)
 {
-	return mPosY;
+	mDirection.setX(dirX);
+	mDirection.setY(dirY);
 }
 
-int Object::getAngle() const
+void Object::setPosition(const Vector2<double> &pos) { setPosition(pos.x, pos.y); }
+void Object::setPosition(const double &posX, const double &posY)
 {
-	return mAngle;
-}
-
-int Object::getTexture() const
-{
-	return mTexture;
-}
-
-void Object::setPosX(const double &posY)
-{
-	mPosY = posY;
-}
-
-void Object::setPosY(const double &posX)
-{
-	mPosX = posX;
-}
-
-void Object::setAngle(const int &angle)
-{
-	mAngle = angle;
+	mPosition.setX(posX);
+	mPosition.setY(posY);
 }
 
 void Object::setTexture(const int &texture)
 {
 	mTexture = texture;
 }
+
+void Object::setRotation(const bool &rotates) { mRotates = rotates; }

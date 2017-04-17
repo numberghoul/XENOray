@@ -6,16 +6,25 @@ Game::Game(int width, int height)
 	setWidth(width);
 	setHeight(height);
 
+	// Player Class Members
+	mPlayer.setArmor(0);
+	mPlayer.setBattery(100);
+	mPlayer.setCameraPlane(0, 0.66);
+
+	// Character Class Members
+	mPlayer.setHealth(100);
+	mPlayer.setSpeed(1);
+
+	// Object Class Members
 	mPlayer.setPosition(26, 26);
 	mPlayer.setDirection(-1, 0);
-	mPlayer.setCameraPlane(0, 0.66);
 
 	mQuit = false;
 }
 
 void Game::RunGame(std::string mapName)
 {
-	loadMap(mapName);
+	LoadMap(mapName);
 
 	LoadTextures();
 

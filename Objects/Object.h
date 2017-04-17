@@ -1,21 +1,28 @@
+#pragma once
+#include "../HelperClasses/Vector2.h"
+
 class Object
 {
 public:
-	Object(double posX, double posY, int angle, int texture);
+	Object(double posX, double posY, double directionX, double directionY, int texture, bool rotates = true);
+	Object(Vector2<double> pos, Vector2<double> dir, int texture, bool rotates = true);
 
-	double getPosX() const;
-	double getPosY() const;
-	int getAngle() const;
+	Vector2<double> getDirection() const;
+	Vector2<double> getPosition() const;
 	int getTexture() const;
+	bool rotates() const;
 
-	void setPosX(const double &posY);
-	void setPosY(const double &posX);
-	void setAngle(const int &angle);
+	void setDirection(const Vector2<double> &dir);
+	void setDirection(const double &dirX, const double &dirY);
+
+	void setPosition(const Vector2<double> &pos);
+	void setPosition(const double &posX, const double &posY);
+
 	void setTexture(const int &texture);
+	void setRotation(const bool &rotates);
 
-private:
-	double  mPosX,
-			mPosY;
-	int  mTexture, mAngle;
+protected:
+	Vector2<double>  mPosition, mDirection;
+	int  mTexture;
 	bool mRotates;
 };
