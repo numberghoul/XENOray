@@ -1,15 +1,16 @@
-#include "HelperFunctions.h"
+#include "../E_Def.h"
 
-Vector2<int> Raycast(Vector2<int> rayPos, Vector2<double> &rayDir, int &hit, int &side)
+Vector2<int> Raycast(mapTile map[][mapHeight], Vector2<double> rayPos, Vector2<double> rayDir,	Vector2<double> &stepDir,
+	int &hit, int &side)
 {
 	//length of ray from current position to next x or y-side
 	Vector2<double> sideDist;
-	//what direction to step in x or y-direction (either +1 or -1)
-	Vector2<double> stepDir;
-	Vector2<int> mapPos(int(rayPos.x), int(rayPos.y));
 
-	int hit = 0; //was there a wall hit?
-	int side; //was a NS or a EW wall hit?
+	//length of ray from one x or y-side to next x or y-side
+   Vector2<double> deltaDist(sqrt(1 + (rayDir.y * rayDir.y) / (rayDir.x * rayDir.x)),
+							 sqrt(1 + (rayDir.x * rayDir.x) / (rayDir.y * rayDir.y)));
+
+	Vector2<int> mapPos(int(rayPos.x), int(rayPos.y));
 
 	//calculate step and initial sideDist
 	if (rayDir.x < 0)
@@ -50,6 +51,13 @@ Vector2<int> Raycast(Vector2<int> rayPos, Vector2<double> &rayDir, int &hit, int
 			side = 1;
 		}
 		//Check if ray has hit a wall
-		if (mMap[mapPos.x][mapPos.y].object > 0) hit = 1;
+		if (map[mapPos.x][mapPos.y].object > 0) hit = 1;
 	}
+
+	return mapPos;
+}
+
+void BAD() // WHEN DID HAPPEN BAD?!
+{
+	std::cout << "BAD" << std::endl;
 }

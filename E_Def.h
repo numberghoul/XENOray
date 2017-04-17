@@ -1,10 +1,11 @@
 //Shoutout to WL_DEF.H
-
+#pragma once
 #include <string>
 #include <vector>
 #include <iostream>
 #include <fstream>
 
+#include "HelperClasses/Vector2.h"
 #include "quickcg.h"
 
 using namespace QuickCG;
@@ -20,6 +21,13 @@ using namespace QuickCG;
 
 #define numTextures 26
 
+typedef struct mapTile
+{
+	int floor;
+	int object;
+	int ceiling;
+}mapTile;
+
 enum Textures
 {
 	ShipWallRaised, ShipWallStraight, ShipWallBloodRaised, ShipWallBloodStraight, ShipWallBloodStraight2,
@@ -29,3 +37,8 @@ enum Textures
 
 	CaveCeiling, CaveWall, CaveWallMushroom, CaveWallMushroom2, CaveFloor, TestSprite
 };
+
+Vector2<int> Raycast(mapTile map[][mapHeight], Vector2<double> rayPos, Vector2<double> rayDir,	Vector2<double> &stepDir,
+	int &hit, int &side);
+
+void BAD();
