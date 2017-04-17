@@ -1,2 +1,2 @@
-g++ *.cpp -o Epitome Game/*.cpp Character/*.cpp -lSDL -O3 -W -Wall -ansi -pedantic -std=c++11
+g++ *.cpp -o Epitome Game/*.cpp Character/*.cpp Menu/*.cpp  -lSDL -O3 -W -Wall -ansi -pedantic -std=c++11
 g++ *.cpp -o Epitome Game/*.cpp Character/*.cpp -lSDL -std=c++11

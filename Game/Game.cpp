@@ -102,6 +102,9 @@ void Game::LoadTextures()
 	// Sprites
 	success |= loadImage(mTextures[Textures::TestSprite], tw, th, "sprites/27846.png");
 
+	// Menu
+	success |= loadImage(mTextures[Textures::GameLogo], tw, th, "textures/gamelogo.png");
+
 	if (success == 0)
 		std::cout << "Textures Loaded" << std::endl;
 	else

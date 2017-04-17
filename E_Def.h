@@ -1,4 +1,5 @@
 //Shoutout to WL_DEF.H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -9,8 +10,8 @@
 
 using namespace QuickCG;
 
-#define screenWidth 800
-#define screenHeight 600
+#define screenWidth 400
+#define screenHeight 300
 
 #define texWidth 64
 #define texHeight 64
@@ -18,7 +19,7 @@ using namespace QuickCG;
 #define mapWidth 30
 #define mapHeight 30
 
-#define numTextures 26
+#define numTextures 27
 
 enum Textures
 {
@@ -27,5 +28,7 @@ enum Textures
 	ShipGrateBottomLeft, ShipGrateBottomRight, ShipGrateTopLeft, ShipGrateTopRight, ShipRoomFloor, ShipRoomFloorBlood2,
 	ShipRoomFloorBlood, ShipCeiling, ShipCeilingLatch,
 
-	CaveCeiling, CaveWall, CaveWallMushroom, CaveWallMushroom2, CaveFloor, TestSprite
+	CaveCeiling, CaveWall, CaveWallMushroom, CaveWallMushroom2, CaveFloor, TestSprite,
+
+	GameLogo
 };
