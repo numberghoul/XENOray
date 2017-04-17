@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 #include <vector>
 #include <iostream>
@@ -5,6 +6,7 @@
 
 #include "../Character/Player.h"
 #include "../HelperClasses/List.h"
+#include "../HelperClasses/HelperFunctions.h"
 #include "../quickcg.h"
 using namespace QuickCG;
 
@@ -95,4 +97,7 @@ private:
 
 	void UpdateMovement();
 	void UpdateRotation(float deltaMouse);
+
+	// Friend Functions
+	friend Vector2<int> Raycast(Vector2<int> &rayPos, Vector2<double> &rayDir, int &hit, int &side);
 };
