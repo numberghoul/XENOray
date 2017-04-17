@@ -15,7 +15,7 @@ Game::Game(int width, int height)
 
 void Game::RunGame(std::string mapName)
 {
-	loadMap(mapName);
+	LoadMap(mapName);
 
 	LoadTextures();
 

@@ -11,8 +11,8 @@
 
 using namespace QuickCG;
 
-#define screenWidth 400
-#define screenHeight 300
+#define screenWidth 800
+#define screenHeight 600
 
 #define texWidth 64
 #define texHeight 64
