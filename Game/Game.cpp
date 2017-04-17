@@ -1,4 +1,5 @@
 #include "Game.h"
+#include <exception>
 
 Game::Game(int width, int height)
 {
@@ -118,6 +119,8 @@ void Game::UpdateMovement()
 	double dirX = mPlayer.getDirection().x, dirY = mPlayer.getDirection().y;
 	double planeX = mPlayer.getCameraPlane().x, planeY = mPlayer.getCameraPlane().y;
 
+	int newMapPosX, newMapPosY;
+
 	//Sprint
 	if (keyDown(SDLK_RSHIFT) || keyDown(SDLK_LSHIFT))
 	{
@@ -127,29 +130,43 @@ void Game::UpdateMovement()
 	//move forward if no wall in front of you
 	if (keyDown(SDLK_w) || keyDown(SDLK_UP))
 	{
-		if(mMap[int(posX + dirX * moveSpeed * 20)][int(posY)].object == false) posX += dirX * moveSpeed;
-		if(mMap[int(posX)][int(posY + dirY * moveSpeed * 20)].object == false) posY += dirY * moveSpeed;
+		newMapPosX = int(posX + dirX * moveSpeed * 20);
+		newMapPosY = int(posY + dirY * moveSpeed * 20);
+
+		if(newMapPosX < mapWidth && newMapPosX >= 0 && mMap[newMapPosX][int(posY)].object == false) posX += dirX * moveSpeed;
+		if(newMapPosY < mapHeight && newMapPosY >= 0 && mMap[int(posX)][newMapPosY].object == false) posY += dirY * moveSpeed;
 	}
 	//move backwards if no wall behind you
 	if (keyDown(SDLK_s) || keyDown(SDLK_DOWN))
 	{
-		if(mMap[int(posX - dirX * moveSpeed * 20)][int(posY)].object == false) posX -= dirX * moveSpeed;
-		if(mMap[int(posX)][int(posY - dirY * moveSpeed * 20)].object == false) posY -= dirY * moveSpeed;
+		newMapPosX = int(posX - dirX * moveSpeed * 20);
+		newMapPosY = int(posY - dirY * moveSpeed * 20);
+
+		if(newMapPosX < mapWidth && newMapPosX >= 0 && mMap[newMapPosX][int(posY)].object == false) posX -= dirX * moveSpeed;
+		if(newMapPosY < mapHeight && newMapPosY >= 0 && mMap[int(posX)][newMapPosY].object == false) posY -= dirY * moveSpeed;
 	}
 	//Strafe right
 	if (keyDown(SDLK_d))
 	{
-		if(mMap[int(posX + planeX * moveSpeed * 20)][int(posY)].object == false) posX += planeX * moveSpeed;
-		if(mMap[int(posX)][int(posY + planeY * moveSpeed * 20)].object == false) posY += planeY * moveSpeed;
+		newMapPosX = int(posX + planeX * moveSpeed * 20);
+		newMapPosY = int(posY + planeY * moveSpeed * 20);
+
+		if(newMapPosX < mapWidth && newMapPosX >= 0 && mMap[newMapPosX][int(posY)].object == false) posX += planeX * moveSpeed;
+		if(newMapPosY < mapHeight && newMapPosY >= 0 && mMap[int(posX)][newMapPosY].object == false) posY += planeY * moveSpeed;
 	}
 	//Strafe left
 	if (keyDown(SDLK_a))
 	{
-		if(mMap[int(posX - planeX * moveSpeed * 20)][int(posY)].object == false) posX -= planeX * moveSpeed;
-		if(mMap[int(posX)][int(posY - planeY * moveSpeed * 20)].object == false) posY -= planeY * moveSpeed;
+		newMapPosX = int(posX - planeX * moveSpeed * 20);
+		newMapPosY = int(posY - planeY * moveSpeed * 20);
+
+		if(newMapPosX < mapWidth && newMapPosX >= 0 && mMap[newMapPosX][int(posY)].object == false) posX -= planeX * moveSpeed;
+		if(newMapPosY < mapHeight && newMapPosY >= 0 && mMap[int(posX)][newMapPosY].object == false) posY -= planeY * moveSpeed;
 	}
 
 	mPlayer.Move(posX, posY);
+
+	//std::cout << posX << " " << posY << std::endl;
 }
 
 void Game::UpdateRotation(float deltaMouse)
@@ -179,62 +196,13 @@ void Game::Render()
 		Vector2<double> rayPos(playerPos.x, playerPos.y);
 		Vector2<double> rayDir(playerDir.x + cameraPlane.x * cameraX, playerDir.y + cameraPlane.y * cameraX);
 
-		//which box of the map we're in
-		Vector2<int> mapPos(int(rayPos.x), int(rayPos.y));
-
-		//length of ray from current position to next x or y-side
-		Vector2<double> sideDist;
-
-		 //length of ray from one x or y-side to next x or y-side
-		Vector2<double> deltaDist(sqrt(1 + (rayDir.y * rayDir.y) / (rayDir.x * rayDir.x)),
-								  sqrt(1 + (rayDir.x * rayDir.x) / (rayDir.y * rayDir.y)));
 		double perpWallDist;
-
-		//what direction to step in x or y-direction (either +1 or -1)
-		Vector2<int> stepDir;
 
 		int hit = 0; //was there a wall hit?
 		int side; //was a NS or a EW wall hit?
-		//calculate step and initial sideDist
-		if (rayDir.x < 0)
-		{
-			stepDir.x = -1;
-			sideDist.x = (rayPos.x - mapPos.x) * deltaDist.x;
-		}
-		else
-		{
-			stepDir.x = 1;
-			sideDist.x = (mapPos.x + 1.0 - rayPos.x) * deltaDist.x;
-		}
-		if (rayDir.y < 0)
-		{
-			stepDir.y = -1;
-			sideDist.y = (rayPos.y - mapPos.y) * deltaDist.y;
-		}
-		else
-		{
-			stepDir.y = 1;
-			sideDist.y = (mapPos.y + 1.0 - rayPos.y) * deltaDist.y;
-		}
-		//perform DDA
-		while (hit == 0)
-		{
-			//jump to next map square, OR in x-direction, OR in y-direction
-			if (sideDist.x < sideDist.y)
-			{
-				sideDist.x += deltaDist.x;
-				mapPos.x += stepDir.x;
-				side = 0;
-			}
-			else
-			{
-				sideDist.y += deltaDist.y;
-				mapPos.y += stepDir.y;
-				side = 1;
-			}
-			//Check if ray has hit a wall
-			if (mMap[mapPos.x][mapPos.y].object > 0) hit = 1;
-		}
+		Vector2<double> stepDir; //what direction to step in x or y-direction (either +1 or -1)
+		Vector2<int> mapPos = Raycast(mMap, rayPos, rayDir, stepDir, hit, side);
+
 		//Calculate distance projected on camera direction (oblique distance will give fisheye effect!)
 		if (side == 0) perpWallDist = (mapPos.x - rayPos.x + (1 - stepDir.x) / 2) / rayDir.x;
 		else		   perpWallDist = (mapPos.y - rayPos.y + (1 - stepDir.y) / 2) / rayDir.y;
@@ -262,7 +230,7 @@ void Game::Render()
 		if(side == 0 && rayDir.x > 0) texX = texWidth - texX - 1;
 		if(side == 1 && rayDir.y < 0) texX = texWidth - texX - 1;
 
-		for(int y = drawStart; y<drawEnd; y++)
+		for(int y = drawStart; y < drawEnd; y++)
 		{
 			int d = y * 256 - getHeight() * 128 + lineHeight * 128;  //256 and 128 factors to avoid floats
 			int texY = ((d * texHeight) / lineHeight) / 256;
@@ -324,6 +292,9 @@ void Game::Render()
 			floorTexPos.x = int(currentFloorX * texWidth) % texWidth;
 			floorTexPos.y = int(currentFloorY * texHeight) % texHeight;
 
+			if ((texNumCeiling >= numTextures || texNumCeiling < 0) || (texNumFloor >= numTextures || texNumFloor < 0))
+				continue;
+
 			//floor
 			mBuffer[y][x] = (mTextures[texNumFloor][texWidth * floorTexPos.y + floorTexPos.x] >> 1) & 8355711;
 			//ceiling (symmetrical!)
@@ -334,7 +305,7 @@ void Game::Render()
 	Game::DrawSprites();
 
 	drawBuffer(mBuffer[0]);
-	for(int x = 0; x < getWidth(); x++) for(int y = 0; y < getHeight(); y++) mBuffer[y][x] = 0; //clear the buffer instead of cls()
+	//for(int x = 0; x < getWidth(); x++) for(int y = 0; y < getHeight(); y++) mBuffer[y][x] = 0; //clear the buffer instead of cls()
 	redraw();
 }
 
@@ -408,64 +379,64 @@ void Game::DrawSprites()
 		}
 	}
 }
-	void Game::loadMap(std::string mapName)
+
+void Game::loadMap(std::string mapName)
+{
+	std::string filepath = "./maps/" + mapName + ".txt";
+	std::ifstream infile(filepath);
+
+	for(int k = 0; k < 3; k++)
 	{
-		std::string filepath = "./maps/" + mapName + ".txt";
-		std::ifstream infile(filepath);
-
-		for(int k = 0; k < 3; k++)
+		for(int i = 0; i < 30; i++)
 		{
-			for(int i = 0; i < 30; i++)
+			for(int j = 0; j < 30; j++)
 			{
-				for(int j = 0; j < 30; j++)
+				std::string line;
+				std::getline(infile, line, ',');
+
+				if (line == "")
 				{
-					std::string line;
-					std::getline(infile, line, ',');
-					std::cout << line << std::endl;
+				std::cout << "Finished" << std::endl;
+					continue;}
 
-					if (line == "")
-					{
-					std::cout << "Finished" << std::endl;
-						continue;}
-
-					switch(k)
-					{
-						case 0:
-							mMap[i][j].floor = std::stoi(line);
-							break;
-						case 1:
-							mMap[i][j].object = std::stoi(line);
-							break;
-						case 2:
-							mMap[i][j].ceiling = std::stoi(line);
-							break;
-					}
+				switch(k)
+				{
+					case 0:
+						mMap[i][j].floor = std::stoi(line);
+						break;
+					case 1:
+						mMap[i][j].object = std::stoi(line);
+						break;
+					case 2:
+						mMap[i][j].ceiling = std::stoi(line);
+						break;
 				}
 			}
 		}
 	}
+}
 
-	void Game::combSort(int* order, double* dist, int amount)
+void Game::combSort(int* order, double* dist, int amount)
+{
+	int gap = amount;
+	bool swapped = false;
+	while(gap > 1 || swapped)
 	{
-		int gap = amount;
- 		bool swapped = false;
- 		while(gap > 1 || swapped)
- 		{
-   			//shrink factor 1.3
-   			gap = (gap * 10) / 13;
-   			if(gap == 9 || gap == 10) gap = 11;
-   			if (gap < 1) gap = 1;
-			swapped = false;
-			for(int i = 0; i < amount - gap; i++)
-   			{
-				int j = i + gap;
-				if(dist[i] < dist[j])
-	 			{
-					std::swap(dist[i], dist[j]);
-	   				std::swap(order[i], order[j]);
-	   				swapped = true;
-	 			}
-   			}
-  		}
+		//shrink factor 1.3
+		gap = (gap * 10) / 13;
+		if(gap == 9 || gap == 10) gap = 11;
+		if (gap < 1) gap = 1;
 
+		swapped = false;
+		for(int i = 0; i < amount - gap; i++)
+		{
+			int j = i + gap;
+			if(dist[i] < dist[j])
+			{
+				std::swap(dist[i], dist[j]);
+				std::swap(order[i], order[j]);
+				swapped = true;
+			}
+		}
 	}
+}

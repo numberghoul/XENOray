@@ -1,17 +1,8 @@
 #pragma once
 
 #include "../E_Def.h"
-
 #include "../Character/Player.h"
 #include "../HelperClasses/List.h"
-#include "../quickcg.h"
-
-typedef struct mapTile
-{
-	int floor;
-	int object;
-	int ceiling;
-}mapTile;
 
 typedef struct sprite
 {
