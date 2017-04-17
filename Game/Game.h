@@ -52,7 +52,7 @@ private:
 	//function used to sort the sprites
 	void combSort(int* order, double* dist, int amount);
 
-	void loadMap(std::string mapName);
+	void LoadMap(std::string mapName);
 
 	void LoadTextures();
 

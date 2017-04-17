@@ -380,7 +380,7 @@ void Game::DrawSprites()
 	}
 }
 
-void Game::loadMap(std::string mapName)
+void Game::LoadMap(std::string mapName)
 {
 	std::string filepath = "./Maps/" + mapName + ".txt";
 	std::ifstream infile(filepath);

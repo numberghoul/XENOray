@@ -5,7 +5,7 @@ void DisplayMenu()
 	std::vector<ColorRGB> BG;
 	int success =0;
 	unsigned long mw, mh;
-  	success = loadImage(BG, mw, mh, "textures/gamelogo.png");
+  	success = loadImage(BG, mw, mh, "Textures/gamelogo.png");
 
 	if (success == 0)
 		std::cout << "Textures Loaded" << std::endl;
