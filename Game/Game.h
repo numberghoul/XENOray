@@ -1,4 +1,5 @@
 #pragma once
+
 #include "../E_Def.h"
 #include "../Character/Player.h"
 #include "../HelperClasses/List.h"

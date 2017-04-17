@@ -1,5 +1,6 @@
 //Shoutout to WL_DEF.H
 #pragma once
+
 #include <string>
 #include <vector>
 #include <iostream>
@@ -10,8 +11,8 @@
 
 using namespace QuickCG;
 
-#define screenWidth 800
-#define screenHeight 600
+#define screenWidth 400
+#define screenHeight 300
 
 #define texWidth 64
 #define texHeight 64
@@ -19,7 +20,7 @@ using namespace QuickCG;
 #define mapWidth 30
 #define mapHeight 30
 
-#define numTextures 26
+#define numTextures 27
 
 typedef struct mapTile
 {
@@ -35,7 +36,9 @@ enum Textures
 	ShipGrateBottomLeft, ShipGrateBottomRight, ShipGrateTopLeft, ShipGrateTopRight, ShipRoomFloor, ShipRoomFloorBlood2,
 	ShipRoomFloorBlood, ShipCeiling, ShipCeilingLatch,
 
-	CaveCeiling, CaveWall, CaveWallMushroom, CaveWallMushroom2, CaveFloor, TestSprite
+	CaveCeiling, CaveWall, CaveWallMushroom, CaveWallMushroom2, CaveFloor, TestSprite,
+
+	GameLogo
 };
 
 Vector2<int> Raycast(mapTile map[][mapHeight], Vector2<double> rayPos, Vector2<double> rayDir,	Vector2<double> &stepDir,
