@@ -67,41 +67,41 @@ void Game::LoadTextures()
 	unsigned long tw, th;
 	// Ship Textures
 	// Ceiling Textures
-    success |= loadImage(mTextures[Textures::ShipCeiling], tw, th, "textures/Ship/ceiling.png");
-	success |= loadImage(mTextures[Textures::ShipCeilingLatch], tw, th, "textures/Ship/ceilingLatch.png");
+    success |= loadImage(mTextures[Textures::ShipCeiling], tw, th, "Textures/Ship/ceiling.png");
+	success |= loadImage(mTextures[Textures::ShipCeilingLatch], tw, th, "Textures/Ship/ceilingLatch.png");
 	// Wall Textures
-    success |= loadImage(mTextures[Textures::ShipWallRaised], tw, th, "textures/Ship/humanShipWall.png");
-    success |= loadImage(mTextures[Textures::ShipWallStraight], tw, th, "textures/Ship/humanShipWall2.png");
-    success |= loadImage(mTextures[Textures::ShipWallBloodRaised], tw, th, "textures/Ship/humanShipWall3.png");
-    success |= loadImage(mTextures[Textures::ShipWallBloodStraight], tw, th, "textures/Ship/humanShipWallBlood.png");
-    success |= loadImage(mTextures[Textures::ShipWallBloodStraight2], tw, th, "textures/Ship/humanShipWallBlood2.png");
-    success |= loadImage(mTextures[Textures::ShipWallCircuit], tw, th, "textures/Ship/humanShipWallCircuit.png");
-    success |= loadImage(mTextures[Textures::ShipWallPort], tw, th, "textures/Ship/humanShipWallGateClosed.png");
-    success |= loadImage(mTextures[Textures::ShipWallWindowLeft], tw, th, "textures/Ship/humanShipWallSideLeft.png");
-    success |= loadImage(mTextures[Textures::ShipWallWindowRight], tw, th, "textures/Ship/humanShipWallSideRight.png");
-    success |= loadImage(mTextures[Textures::ShipWallWindow], tw, th, "textures/Ship/humanShipWallWindow.png");
+    success |= loadImage(mTextures[Textures::ShipWallRaised], tw, th, "Textures/Ship/humanShipWall.png");
+    success |= loadImage(mTextures[Textures::ShipWallStraight], tw, th, "Textures/Ship/humanShipWall2.png");
+    success |= loadImage(mTextures[Textures::ShipWallBloodRaised], tw, th, "Textures/Ship/humanShipWall3.png");
+    success |= loadImage(mTextures[Textures::ShipWallBloodStraight], tw, th, "Textures/Ship/humanShipWallBlood.png");
+    success |= loadImage(mTextures[Textures::ShipWallBloodStraight2], tw, th, "Textures/Ship/humanShipWallBlood2.png");
+    success |= loadImage(mTextures[Textures::ShipWallCircuit], tw, th, "Textures/Ship/humanShipWallCircuit.png");
+    success |= loadImage(mTextures[Textures::ShipWallPort], tw, th, "Textures/Ship/humanShipWallGateClosed.png");
+    success |= loadImage(mTextures[Textures::ShipWallWindowLeft], tw, th, "Textures/Ship/humanShipWallSideLeft.png");
+    success |= loadImage(mTextures[Textures::ShipWallWindowRight], tw, th, "Textures/Ship/humanShipWallSideRight.png");
+    success |= loadImage(mTextures[Textures::ShipWallWindow], tw, th, "Textures/Ship/humanShipWallWindow.png");
 	// Floor Textures
-    success |= loadImage(mTextures[Textures::ShipRoomFloor], tw, th, "textures/Ship/roomFloor.png");
-    success |= loadImage(mTextures[Textures::ShipRoomFloorBlood], tw, th, "textures/Ship/roomFloorBlood.png");
-    success |= loadImage(mTextures[Textures::ShipRoomFloorBlood2], tw, th, "textures/Ship/roomFloorBlood2.png");
-    success |= loadImage(mTextures[Textures::ShipGrateBottomLeft], tw, th, "textures/Ship/hallFloorBottomLeft.png");
-    success |= loadImage(mTextures[Textures::ShipGrateBottomRight], tw, th, "textures/Ship/hallFloorBottomRight.png");
-    success |= loadImage(mTextures[Textures::ShipGrateTopLeft], tw, th, "textures/Ship/hallFloorTopLeft.png");
-    success |= loadImage(mTextures[Textures::ShipGrateTopRight], tw, th, "textures/Ship/hallFloorTopRight.png");
-    success |= loadImage(mTextures[Textures::ShipGrate], tw, th, "textures/Ship/grate.png");
+    success |= loadImage(mTextures[Textures::ShipRoomFloor], tw, th, "Textures/Ship/roomFloor.png");
+    success |= loadImage(mTextures[Textures::ShipRoomFloorBlood], tw, th, "Textures/Ship/roomFloorBlood.png");
+    success |= loadImage(mTextures[Textures::ShipRoomFloorBlood2], tw, th, "Textures/Ship/roomFloorBlood2.png");
+    success |= loadImage(mTextures[Textures::ShipGrateBottomLeft], tw, th, "Textures/Ship/hallFloorBottomLeft.png");
+    success |= loadImage(mTextures[Textures::ShipGrateBottomRight], tw, th, "Textures/Ship/hallFloorBottomRight.png");
+    success |= loadImage(mTextures[Textures::ShipGrateTopLeft], tw, th, "Textures/Ship/hallFloorTopLeft.png");
+    success |= loadImage(mTextures[Textures::ShipGrateTopRight], tw, th, "Textures/Ship/hallFloorTopRight.png");
+    success |= loadImage(mTextures[Textures::ShipGrate], tw, th, "Textures/Ship/grate.png");
 
 	// Cave Textures
 	//Ceiling Textures
-    success |= loadImage(mTextures[Textures::CaveCeiling], tw, th, "textures/Cave/caveCeiling.png");
+    success |= loadImage(mTextures[Textures::CaveCeiling], tw, th, "Textures/Cave/caveCeiling.png");
 	// Wall Textures
-    success |= loadImage(mTextures[Textures::CaveWall], tw, th, "textures/Cave/normalCaveWall.png");
-    success |= loadImage(mTextures[Textures::CaveWallMushroom], tw, th, "textures/Cave/normalCaveWallShroom.png");
-    success |= loadImage(mTextures[Textures::CaveWallMushroom2], tw, th, "textures/Cave/normalCaveWallShroom2.png");
+    success |= loadImage(mTextures[Textures::CaveWall], tw, th, "Textures/Cave/normalCaveWall.png");
+    success |= loadImage(mTextures[Textures::CaveWallMushroom], tw, th, "Textures/Cave/normalCaveWallShroom.png");
+    success |= loadImage(mTextures[Textures::CaveWallMushroom2], tw, th, "Textures/Cave/normalCaveWallShroom2.png");
 	// Floor Textures
-    success |= loadImage(mTextures[Textures::CaveFloor], tw, th, "textures/Cave/alienCaveFloor.png");
+    success |= loadImage(mTextures[Textures::CaveFloor], tw, th, "Textures/Cave/alienCaveFloor.png");
 
 	// Sprites
-	success |= loadImage(mTextures[Textures::TestSprite], tw, th, "sprites/27846.png");
+	success |= loadImage(mTextures[Textures::TestSprite], tw, th, "Textures/Sprites/27846.png");
 
 	if (success == 0)
 		std::cout << "Textures Loaded" << std::endl;
@@ -379,7 +379,7 @@ void Game::DrawSprites()
 
 void Game::loadMap(std::string mapName)
 {
-	std::string filepath = "./maps/" + mapName + ".txt";
+	std::string filepath = "./Maps/" + mapName + ".txt";
 	std::ifstream infile(filepath);
 
 	for(int k = 0; k < 3; k++)
