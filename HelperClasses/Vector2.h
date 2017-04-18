@@ -1,5 +1,6 @@
 #pragma once
 #include <cmath>
+#include <iostream>
 
 template <class T>
 class Vector2
@@ -51,3 +52,11 @@ public:
 private:
 	float mMagnitude;
 };
+
+template <class T>
+std::ostream &operator<<(std::ostream &out, const Vector2<T> &vec)
+{
+	out << vec.x << " " << vec.y;
+
+	return out;
+}

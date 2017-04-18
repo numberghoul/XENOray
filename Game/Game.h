@@ -2,6 +2,7 @@
 
 #include "../E_Def.h"
 #include "../Character/Player.h"
+#include "../Character/Enemy.h"
 #include "../HelperClasses/List.h"
 
 typedef struct sprite
@@ -10,7 +11,7 @@ typedef struct sprite
 	int texture;
 } Sprite;
 
-#define numSprites 1
+//#define numSprites 1
 
 class Game
 {
@@ -35,24 +36,23 @@ private:
 	double mZBuffer[screenWidth];
 
 	//arrays used to sort the sprites
-	int spriteOrder[numSprites];
-	double spriteDistance[numSprites];
+	//int spriteOrder[numSprites];
+	//double spriteDistance[numSprites];
+
+	// Keeps track on whether the user has pressed escape
 	bool mQuit;
 
 	mapTile mMap[mapWidth][mapHeight];
 
-	List<Character *> mEnemies;
-	List<Sprite> mDoors,
-			  	 mPickups;
-	Sprite sprite[numSprites] =
-	{
-	  {5, 5, TestSprite}
-	};
+	List<Enemy *> mEnemies;
+	List<Object *> mDoors,
+			  	   mPickups;
 
 	//function used to sort the sprites
-	void combSort(int* order, double* dist, int amount);
+	void combSort(std::vector<int> order, std::vector<double> dist, int amount);
 
 	void LoadMap(std::string mapName);
+	void LoadEnemies(std::string mapName);
 
 	void LoadTextures();
 
