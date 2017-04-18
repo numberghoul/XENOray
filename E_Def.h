@@ -5,6 +5,8 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <exception>
+#include <cmath>
 
 #include "HelperClasses/Vector2.h"
 #include "quickcg.h"

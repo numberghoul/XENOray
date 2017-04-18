@@ -13,7 +13,7 @@ Button::Button(Vector2<double> pos, Vector2<double> size, std::vector<Uint32> sp
 bool Button::OnClick(Vector2<double> click)
 {
 	if (click.x < mLowerRight.x && click.x > mUpperLeft.x
-	&& click.y < mLowerRight.y && > mUpperLeft.y)
+	&& click.y < mLowerRight.y && click.y > mUpperLeft.y)
 	{
 		Do();
 	}

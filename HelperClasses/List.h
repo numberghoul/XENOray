@@ -1,5 +1,6 @@
 #pragma once
 #include "Node.h"
+#include "../E_Def.h"
 
 template <class T>
 class List
@@ -10,6 +11,8 @@ public:
 		mpHead = nullptr;
 		mpTail = nullptr;
 	}
+
+	Node<T> *getHead() const { return mpHead; }
 
 	void print()
 	{
@@ -118,7 +121,51 @@ public:
 		return true;
 	}
 
+	bool deleteAt(int index)
+	{
+		Node<T> *curNode = mpHead, *prevNode, *nextNode;
+
+		for (int i = 0; i < index && curNode != nullptr; ++i)
+			curNode = curNode->getNext();
+
+		if (curNode == nullptr)
+			return false;
+
+		prevNode = curNode->getPrev();
+		nextNode = curNode->getNext();
+
+		if (prevNode == nullptr)
+			return deleteFromFront();
+		else if (nextNode == nullptr)
+			return deleteFromEnd();
+
+		curNode->setNext(nullptr);
+		curNode->setPrev(nullptr);
+
+		prevNode->setNext(nextNode);
+		nextNode->setPrev(prevNode);
+
+		delete curNode;
+
+		return true;
+	}
+
+	T &operator[](int index)
+	{
+		Node<T> *curNode = mpHead;
+		for (int i = 0; i < index && curNode != nullptr; ++i)
+			curNode = curNode->getNext();
+
+		if (curNode == nullptr)
+		{
+			std::string ex = "Data does not exist at index " + std::to_string(index);
+			throw std::out_of_range(ex);
+		}
+
+		return curNode->getData();
+	}
+
 private:
 	Node<T> *mpHead,
-				*mpTail;
+			*mpTail;
 };

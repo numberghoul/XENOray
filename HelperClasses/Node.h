@@ -21,7 +21,7 @@ public:
 
 	Node<T> *getPrev() const { return mpPrev; }
 	Node<T> *getNext() const { return mpNext; }
-	T getData() const { return mData; }
+	T &getData() { return mData; }
 
 	void setData(const T &data) { mData = data; }
 	void setNext(Node<T> *next) { mpNext = next; }

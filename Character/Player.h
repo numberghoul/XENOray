@@ -4,34 +4,35 @@
 class Player : public Character
 {
 public:
-	Player(double posX = 0.0, double posY = 0.0, double dirX = 0.0, double dirY = 0.0, double cameraX = 0.0, double cameraY = 0.0);
+	// Constructors
+	Player();
+	Player(int health, int armor, int battery, double speed, double posX = 0.0, double posY = 0.0, double dirX = 0.0, double dirY = 0.0,
+		   double cameraX = 0.0, double cameraY = 0.0);
+	Player(int health, int armor, int battery, double speed, Vector2<double> pos, Vector2<double> dir, Vector2<double> camera);
 
-	Player(Vector2<double> pos, Vector2<double> dir, Vector2<double> camera);
-
-	Vector2<double> getPosition() const;
-	Vector2<double> getDirection() const;
+	// Accessors
+	// Getters
 	Vector2<double> getCameraPlane() const;
+	int getArmor() const;
+	int getBattery() const;
 
-	void setPosition(const Vector2<double> pos);
-	void setPosition(const double posX, const double posY);
+	// Setters
+	void setCameraPlane(const Vector2<double> &cam);
+	void setCameraPlane(const double &camX, const double &camY);
 
-	void setDirection(const Vector2<double> dir);
-	void setDirection(const double dirX, const double dirY);
+	void setArmor(const int &armor);
+	void setBattery(const int &battery);
 
-	void setCameraPlane(const Vector2<double> cam);
-	void setCameraPlane(const double camX, const double camY);
-
+	// Member Functions
 	void TakeDamage(int damage) override;
 	void Move(double x, double y) override; // x and y represent the differences in the position vector components
 	void Rotate(double rotSpeed);
 	void Shoot() override;
 
 private:
-	Vector2<double> mDirection,
-					mCameraPlane;
+	Vector2<double> mCameraPlane;
 
-	int mArmor,
-		mBattery;
+	int mArmor, mBattery;
 
 	void Die();
 };
