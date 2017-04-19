@@ -13,6 +13,8 @@
 
 using namespace QuickCG;
 
+#define GAMENAME "EPITOME"
+
 #define screenWidth 800
 #define screenHeight 600
 
