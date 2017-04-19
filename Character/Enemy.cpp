@@ -3,6 +3,7 @@
 Enemy::Enemy(int health, int damage, double speed, int texture) :
 	Character(health, speed, 0, 0, 0, 0, texture)
 {
+	mNumInstances = 0;
 	setDamage(damage);
 }
 
@@ -11,13 +12,17 @@ Node<Vector2<double>> *Enemy::getFirstLocation()
 	return mLocations.getHead();
 }
 
+Vector2<double> Enemy::getLocationAtIndex(int index)
+{
+	return mLocations[index];
+}
 int Enemy::getNumInstances() const { return mNumInstances; }
 int Enemy::getDamage() const { return mDamage; }
 void Enemy::setDamage(const int &damage) { mDamage = damage; }
 
 void Enemy::addLocation(const Vector2<double> &newLocation)
 {
-	mLocations.insertAtFront(newLocation);
+	mLocations.insertAtEnd(newLocation);
 	mNumInstances++;
 }
 

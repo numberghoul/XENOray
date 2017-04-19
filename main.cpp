@@ -3,7 +3,7 @@
 
 int main(int /*argc*/, char */*argv*/[])
 {
-	screen(screenWidth, screenHeight, 1, "EPITOME");
+	screen(screenWidth, screenHeight, 0, "EPITOME");
 
 	//DisplayMenu();
 	Game game;

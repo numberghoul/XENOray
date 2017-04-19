@@ -44,12 +44,12 @@ private:
 
 	mapTile mMap[mapWidth][mapHeight];
 
-	List<Enemy *> mEnemies;
+	List<Enemy *>  mEnemies;
 	List<Object *> mDoors,
 			  	   mPickups;
 
 	//function used to sort the sprites
-	void combSort(std::vector<int> order, std::vector<double> dist, int amount);
+	void combSort(std::vector<int> &order, std::vector<double> &dist, int amount);
 
 	void LoadMap(std::string mapName);
 	void LoadEnemies(std::string mapName);

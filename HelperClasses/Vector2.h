@@ -60,3 +60,17 @@ std::ostream &operator<<(std::ostream &out, const Vector2<T> &vec)
 
 	return out;
 }
+
+template <class T>
+Vector2<T> operator+(const Vector2<T> &v1, const Vector2<T> &v2)
+{
+	Vector2<T> v3(v1.x + v2.x, v1.y + v2.y);
+	return v3;
+}
+
+template <class T>
+Vector2<T> operator-(const Vector2<T> &v1, const Vector2<T> &v2)
+{
+	Vector2<T> v3(v1.x - v2.x, v1.y - v2.y);
+	return v3;
+}

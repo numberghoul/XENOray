@@ -10,7 +10,10 @@ public:
 	{
 		mpHead = nullptr;
 		mpTail = nullptr;
+		mCount = 0;
 	}
+
+	int size() const { return mCount; }
 
 	Node<T> *getHead() const { return mpHead; }
 
@@ -58,6 +61,7 @@ public:
 			newHead->setNext(mpHead);
 			mpHead->setPrev(newHead);
 		}
+		mCount++;
 
 		mpHead = newHead;
 	}
@@ -68,13 +72,14 @@ public:
 
 		if (mpTail == nullptr)
 		{
-			mpTail = newTail;
+			mpHead = newTail;
 		}
 		else
 		{
 			newTail->setPrev(mpTail);
 			mpTail->setNext(newTail);
 		}
+		mCount++;
 
 		mpTail = newTail;
 	}
@@ -96,6 +101,7 @@ public:
 		mpHead = newHead;
 		if (mpHead == nullptr)
 			mpTail = newHead;
+		mCount--;
 
 		return true;
 	}
@@ -117,6 +123,7 @@ public:
 		mpTail = newTail;
 		if (mpTail == nullptr)
 			mpHead = newTail;
+		mCount--;
 
 		return true;
 	}
@@ -146,6 +153,7 @@ public:
 		nextNode->setPrev(prevNode);
 
 		delete curNode;
+		mCount--;
 
 		return true;
 	}
@@ -168,4 +176,5 @@ public:
 private:
 	Node<T> *mpHead,
 			*mpTail;
+	int mCount;
 };

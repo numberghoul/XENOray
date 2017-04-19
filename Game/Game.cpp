@@ -314,78 +314,81 @@ void Game::Render()
 	Game::DrawSprites();
 
 	drawBuffer(mBuffer[0]);
-	//for(int x = 0; x < getWidth(); x++) for(int y = 0; y < getHeight(); y++) mBuffer[y][x] = 0; //clear the buffer instead of cls()
+	for(int x = 0; x < getWidth(); x++) for(int y = 0; y < getHeight(); y++) mBuffer[y][x] = 0; //clear the buffer instead of cls()
 	redraw();
 }
 
 void Game::DrawSprites()
 {
-	double posX = mPlayer.getPosition().x, posY = mPlayer.getPosition().y;
-	double dirX = mPlayer.getDirection().x, dirY = mPlayer.getDirection().y;
-	double planeX = mPlayer.getCameraPlane().x, planeY = mPlayer.getCameraPlane().y;
+	Vector2<double> pos = mPlayer.getPosition(),
+	 				dir = mPlayer.getDirection(),
+					plane = mPlayer.getCameraPlane();
+	int enemyIndex = 0;
 
 	Node<Enemy *> *curEnemy = mEnemies.getHead();
 	Node<Vector2<double>> *curLocation;
 
-	std::vector<int> spriteOrder;
-	std::vector<double> spriteDistance;
+	std::vector<std::vector<int>> spriteOrder;
+	std::vector<std::vector<double>> spriteDistance;
 
-	int numSprites;
+	spriteOrder.resize(mEnemies.size());
+	spriteDistance.resize(mEnemies.size());
 
 	//SPRITE CASTING
 	//sort sprites from far to close
-	for (numSprites = 0; curEnemy != nullptr;)
+	for (enemyIndex = 0; curEnemy != nullptr; enemyIndex++)
 	{
-		for(curLocation = curEnemy->getData()->getFirstLocation(); curLocation != nullptr; numSprites++)
+		int index = 0;
+		for(curLocation = curEnemy->getData()->getFirstLocation(); curLocation != nullptr; index++)
 	    {
-			spriteOrder.push_back(numSprites);
-			spriteDistance.push_back(((posX - curLocation->getData().x) * (posX - curLocation->getData().x) + (posY - curLocation->getData().y) * (posY - curLocation->getData().y))); //sqrt not taken, unneeded
+			spriteOrder[enemyIndex].push_back(index);
+			spriteDistance[enemyIndex].push_back(((pos.x - curLocation->getData().x) * (pos.x - curLocation->getData().x) + (pos.y - curLocation->getData().y) * (pos.y - curLocation->getData().y))); //sqrt not taken, unneeded
 
 			curLocation = curLocation->getNext();
 	    }
 		curEnemy = curEnemy->getNext();
+	    combSort(spriteOrder[enemyIndex], spriteDistance[enemyIndex], index);
 	}
-
-    combSort(spriteOrder, spriteDistance, numSprites);
 
 	curEnemy = mEnemies.getHead();
     //after sorting the sprites, do the projection and draw them
-	for (int i = 0; curEnemy != nullptr;)
+	for (enemyIndex = 0; curEnemy != nullptr; enemyIndex++)
 	{
-		for(curLocation = curEnemy->getData()->getFirstLocation(); i < numSprites && curLocation != nullptr; i++)
+		int numInstances = curEnemy->getData()->getNumInstances();
+		for(int i = 0; i < numInstances; i++)
 		{
-			Vector2<double> location = curLocation->getData();
+			Vector2<double> location = curEnemy->getData()->getLocationAtIndex(spriteOrder[enemyIndex][i]);
 
 			//translate sprite position to relative to camera
-			double spriteX = location.x - posX;
-			double spriteY = location.y - posY;
+			Vector2<double> spritePos = location - pos;
 
 			//transform sprite with the inverse camera matrix
 			// [ planeX   dirX ] -1                                       [ dirY      -dirX ]
 			// [               ]       =  1/(planeX*dirY-dirX*planeY) *   [                 ]
 			// [ planeY   dirY ]                                          [ -planeY  planeX ]
 
-			double invDet = 1.0 / (planeX * dirY - dirX * planeY); //required for correct matrix multiplication
+			double invDet = 1.0 / (plane.x * dir.y - dir.x * plane.y); //required for correct matrix multiplication
 
-			double transformX = invDet * (dirY * spriteX - dirX * spriteY);
-			double transformY = invDet * (-planeY * spriteX + planeX * spriteY); //this is actually the depth inside the screen, that what Z is in 3D
+			//this is actually the depth inside the screen, that what Z is in 3D
+			Vector2<double> transform(invDet * (dir.y * spritePos.x - dir.x * spritePos.y),
+									  invDet * (-plane.y * spritePos.x + plane.x * spritePos.y));
 
-			int spriteScreenX = int((w / 2) * (1 + transformX / transformY));
+			int spriteScreenX = int((getWidth() / 2) * (1 + transform.x / transform.y));
 
 			//calculate height of the sprite on screen
-			int spriteHeight = abs(int(h / (transformY))); //using "transformY" instead of the real distance prevents fisheye
+			int spriteHeight = abs(int(getHeight() / (transform.y))); //using "transformY" instead of the real distance prevents fisheye
 			//calculate lowest and highest pixel to fill in current stripe
-			int drawStartY = -spriteHeight / 2 + h / 2;
+			int drawStartY = -spriteHeight / 2 + getHeight() / 2;
 			if(drawStartY < 0) drawStartY = 0;
-			int drawEndY = spriteHeight / 2 + h / 2;
-			if(drawEndY >= h) drawEndY = h - 1;
+			int drawEndY = spriteHeight / 2 + getHeight() / 2;
+			if(drawEndY >= getHeight()) drawEndY = getHeight() - 1;
 
 			//calculate width of the sprite
-			int spriteWidth = abs( int (h / (transformY)));
+			int spriteWidth = abs( int (getHeight() / (transform.y)));
 			int drawStartX = -spriteWidth / 2 + spriteScreenX;
 			if(drawStartX < 0) drawStartX = 0;
 			int drawEndX = spriteWidth / 2 + spriteScreenX;
-			if(drawEndX >= w) drawEndX = w - 1;
+			if(drawEndX >= getWidth()) drawEndX = getWidth() - 1;
 
 			//loop through every vertical stripe of the sprite on screen
 			for(int stripe = drawStartX; stripe < drawEndX; stripe++)
@@ -396,7 +399,7 @@ void Game::DrawSprites()
 				//2) it's on the screen (left)
 				//3) it's on the screen (right)
 				//4) mZBuffer, with perpendicular distance
-				if(transformY > 0 && stripe > 0 && stripe < w && transformY < mZBuffer[stripe])
+				if(transform.y > 0 && stripe > 0 && stripe < getWidth() && transform.y < mZBuffer[stripe])
 				for(int y = drawStartY; y < drawEndY; y++) //for every pixel of the current stripe
 				{
 					int d = (y) * 256 - h * 128 + spriteHeight * 128; //256 and 128 factors to avoid floats
@@ -405,8 +408,6 @@ void Game::DrawSprites()
 					if((color & 0xFF000000) != 0) mBuffer[y][stripe] = color; //paint pixel if it isn't black, black is the invisible color
 		        }
 			}
-
-			curLocation = curLocation->getNext();
 		}
 
 		curEnemy = curEnemy->getNext();
@@ -459,9 +460,10 @@ void Game::LoadEnemies(std::string mapName)
 	mEnemies[0]->addLocation(pos);
 }
 
-void Game::combSort(std::vector<int> order, std::vector<double> dist, int amount)
+void Game::combSort(std::vector<int> &order, std::vector<double> &dist, int amount)
 {
-	int gap = amount;
+	int gap = amount, temp = 0;
+	double tempDist = 0;
 	bool swapped = false;
 	while(gap > 1 || swapped)
 	{
@@ -476,8 +478,16 @@ void Game::combSort(std::vector<int> order, std::vector<double> dist, int amount
 			int j = i + gap;
 			if(dist[i] < dist[j])
 			{
-				std::swap(dist[i], dist[j]);
-				std::swap(order[i], order[j]);
+				//std::swap(dist[i], dist[j]);
+				//std::swap(order[i], order[j]);
+				tempDist = dist[i];
+				dist[i] = dist[j];
+				dist[j] = tempDist;
+
+				temp = order[i];
+				order[i] = order[j];
+				order[j] = temp;
+
 				swapped = true;
 			}
 		}
