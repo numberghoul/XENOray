@@ -44,7 +44,7 @@ private:
 
 	mapTile mMap[mapWidth][mapHeight];
 
-	List<Enemy *>  mEnemies;
+	List<Enemy>  mEnemies;
 	List<Object *> mDoors,
 			  	   mPickups;
 

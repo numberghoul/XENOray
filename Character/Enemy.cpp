@@ -1,39 +1,20 @@
 #include "Enemy.h"
 
-Enemy::Enemy(int health, int damage, double speed, int texture) :
+Enemy::Enemy(int health, int damage, double speed, Vector2<double> pos, int texture) :
 	Character(health, speed, 0, 0, 0, 0, texture)
 {
-	mNumInstances = 0;
+	setPosition(pos);
 	setDamage(damage);
 }
 
-Node<Vector2<double>> *Enemy::getFirstLocation()
+Enemy::Enemy(int health, int damage, double speed, double posX, double posY, int texture) :
+	Character(health, speed, posX, posY, 0, 0, texture)
 {
-	return mLocations.getHead();
+	setDamage(damage);
 }
 
-Vector2<double> Enemy::getLocationAtIndex(int index)
-{
-	return mLocations[index];
-}
-int Enemy::getNumInstances() const { return mNumInstances; }
 int Enemy::getDamage() const { return mDamage; }
 void Enemy::setDamage(const int &damage) { mDamage = damage; }
-
-void Enemy::addLocation(const Vector2<double> &newLocation)
-{
-	mLocations.insertAtEnd(newLocation);
-	mNumInstances++;
-}
-
-bool Enemy::removeLocation(int indexToRemoveAt)
-{
-	if (mLocations.deleteAt(indexToRemoveAt))
-		mNumInstances--;
-	else
-		return false;
-	return true;
-}
 
 void Enemy::TakeDamage(int damage)
 {
