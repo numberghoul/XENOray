@@ -12,6 +12,25 @@ void DisplayMenu()
 	else
 		std::cout << "Textures Not Loaded" << std::endl;
 
+	Vector2<double> startPos(0, 0);
+	Vector2<double> startSize(100, 60);
+	std::vector<Uint32> startImg;
+	Button StartButton(startPos, startSize, startImg, &StartGame);
+
+	success = 0;
+	while(!success)
+	{
+		SDL_Event event;
+		SDL_PollEvent(&event);
+
+		if( event.type == SDL_MOUSEBUTTONUP )
+		{
+			int mx, my;
+			SDL_GetMouseState(&mx, &my);
+			StartButton.OnClick(mx, my);
+			success = 1;
+		}
+
 	double skipX = screenWidth / mw;
 	double skipY = screenHeight / mh;
 	std::cout << skipX << " " << skipX << std::endl;
@@ -32,5 +51,11 @@ void DisplayMenu()
 	}
 
 	redraw();
-	sleep();
+}
+}
+
+void StartGame()
+{
+	Game game;
+	game.RunGame("e1m1");
 }
