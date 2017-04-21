@@ -63,4 +63,5 @@ private:
 
 	void UpdateMovement();
 	void UpdateRotation(float deltaMouse);
+	void CheckShoot();
 };

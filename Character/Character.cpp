@@ -6,6 +6,7 @@ Character::Character(int health, double speed, double posX, double posY, double 
 {
 	setHealth(health);
 	setSpeed(speed);
+	mIsDead = false;
 }
 
 Character::Character(int health, double speed, Vector2<double> pos, Vector2<double> dir, int texture) :
@@ -15,6 +16,14 @@ Character::Character(int health, double speed, Vector2<double> pos, Vector2<doub
 	setSpeed(speed);
 }
 
+// Destructor
+Character::~Character()
+{
+	Mix_FreeChunk(mDamageSound);
+	Mix_FreeChunk(mTauntSound);
+	Mix_FreeChunk(mDeathSound);
+}
+
 // Getters
 int Character::getHealth() const { return mHealth; }
 double Character::getSpeed() const { return mSpeed; }
@@ -22,3 +31,9 @@ double Character::getSpeed() const { return mSpeed; }
 //Setters
 void Character::setHealth(int health) { mHealth = health; }
 void Character::setSpeed(double speed) { mSpeed = speed; }
+
+void Character::loadDamageSound(std::string fileName) { mDamageSound = Mix_LoadWAV(fileName.c_str()); }
+void Character::loadTauntSound(std::string fileName) { mTauntSound = Mix_LoadWAV(fileName.c_str()); }
+void Character::loadDeathSound(std::string fileName) { mDeathSound = Mix_LoadWAV(fileName.c_str()); }
+
+bool Character::isDead() { return mIsDead; }

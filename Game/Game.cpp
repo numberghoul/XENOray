@@ -1,5 +1,4 @@
 #include "Game.h"
-#include <exception>
 
 Game::Game(int width, int height)
 {
@@ -19,6 +18,9 @@ Game::Game(int width, int height)
 	mPlayer.setPosition(26, 26);
 	mPlayer.setDirection(-1, 0);
 
+	// Audio
+	Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096);
+    
 	mQuit = false;
 }
 
@@ -49,6 +51,7 @@ void Game::RunGame(std::string mapName)
 		readKeys();
 		UpdateRotation(deltaMouse);
 		UpdateMovement();
+		CheckShoot();
 		CheckQuit();
 
 		int mx, my;
@@ -59,6 +62,8 @@ void Game::RunGame(std::string mapName)
 
 		SDL_WarpMouse(screenWidth/2, screenHeight/2);
 		SDL_ShowCursor(0);
+
+		//std::cout << mEnemies[0].isVisible() << " " << mEnemies[1].isVisible() << std::endl;
 	}
 }
 
@@ -121,6 +126,51 @@ void Game::LoadTextures()
 		std::cout << "Textures Not Loaded" << std::endl;
 }
 
+void Game::LoadEnemies(std::string mapName)
+{
+	Enemy e(3, 20, 0, 4.0, 4.0, Textures::TestSprite);
+	mEnemies.insertAtFront(e);
+
+	e.setPosition(22.5, 3);
+	mEnemies.insertAtFront(e);
+}
+
+void Game::LoadMap(std::string mapName)
+{
+	std::string filepath = "./Maps/" + mapName + ".txt";
+	std::ifstream infile(filepath);
+
+	for(int k = 0; k < 3; k++)
+	{
+		for(int i = 0; i < 30; i++)
+		{
+			for(int j = 0; j < 30; j++)
+			{
+				std::string line;
+				std::getline(infile, line, ',');
+
+				if (line == "")
+				{
+				std::cout << "Finished" << std::endl;
+					continue;}
+
+				switch(k)
+				{
+					case 0:
+						mMap[i][j].floor = std::stoi(line);
+						break;
+					case 1:
+						mMap[i][j].object = std::stoi(line);
+						break;
+					case 2:
+						mMap[i][j].ceiling = std::stoi(line);
+						break;
+				}
+			}
+		}
+	}
+}
+
 void Game::UpdateMovement()
 {
 	double moveSpeed = mFrameTime * 4.5; //the constant value is in squares/second
@@ -139,8 +189,8 @@ void Game::UpdateMovement()
 	//move forward if no wall in front of you
 	if (keyDown(SDLK_w) || keyDown(SDLK_UP))
 	{
-		newMapPosX = int(posX + dirX * moveSpeed * 20);
-		newMapPosY = int(posY + dirY * moveSpeed * 20);
+		newMapPosX = int(posX + dirX * moveSpeed);
+		newMapPosY = int(posY + dirY * moveSpeed);
 
 		if(newMapPosX < mapWidth && newMapPosX >= 0 && mMap[newMapPosX][int(posY)].object == false) posX += dirX * moveSpeed;
 		if(newMapPosY < mapHeight && newMapPosY >= 0 && mMap[int(posX)][newMapPosY].object == false) posY += dirY * moveSpeed;
@@ -148,8 +198,8 @@ void Game::UpdateMovement()
 	//move backwards if no wall behind you
 	if (keyDown(SDLK_s) || keyDown(SDLK_DOWN))
 	{
-		newMapPosX = int(posX - dirX * moveSpeed * 20);
-		newMapPosY = int(posY - dirY * moveSpeed * 20);
+		newMapPosX = int(posX - dirX * moveSpeed);
+		newMapPosY = int(posY - dirY * moveSpeed);
 
 		if(newMapPosX < mapWidth && newMapPosX >= 0 && mMap[newMapPosX][int(posY)].object == false) posX -= dirX * moveSpeed;
 		if(newMapPosY < mapHeight && newMapPosY >= 0 && mMap[int(posX)][newMapPosY].object == false) posY -= dirY * moveSpeed;
@@ -157,8 +207,8 @@ void Game::UpdateMovement()
 	//Strafe right
 	if (keyDown(SDLK_d))
 	{
-		newMapPosX = int(posX + planeX * moveSpeed * 20);
-		newMapPosY = int(posY + planeY * moveSpeed * 20);
+		newMapPosX = int(posX + planeX * moveSpeed);
+		newMapPosY = int(posY + planeY * moveSpeed);
 
 		if(newMapPosX < mapWidth && newMapPosX >= 0 && mMap[newMapPosX][int(posY)].object == false) posX += planeX * moveSpeed;
 		if(newMapPosY < mapHeight && newMapPosY >= 0 && mMap[int(posX)][newMapPosY].object == false) posY += planeY * moveSpeed;
@@ -166,8 +216,8 @@ void Game::UpdateMovement()
 	//Strafe left
 	if (keyDown(SDLK_a))
 	{
-		newMapPosX = int(posX - planeX * moveSpeed * 20);
-		newMapPosY = int(posY - planeY * moveSpeed * 20);
+		newMapPosX = int(posX - planeX * moveSpeed);
+		newMapPosY = int(posY - planeY * moveSpeed);
 
 		if(newMapPosX < mapWidth && newMapPosX >= 0 && mMap[newMapPosX][int(posY)].object == false) posX -= planeX * moveSpeed;
 		if(newMapPosY < mapHeight && newMapPosY >= 0 && mMap[int(posX)][newMapPosY].object == false) posY -= planeY * moveSpeed;
@@ -193,6 +243,44 @@ void Game::UpdateRotation(float deltaMouse)
 	mPlayer.Rotate(rotSpeed);
 }
 
+void Game::CheckShoot()
+{
+	double cameraX;
+	Vector2<double> stepDir, rayDir,
+					rayPos(mPlayer.getPosition().x, mPlayer.getPosition().y);
+	Vector2<int> hitPos;
+	int hit, side;
+
+	if (keyDown(SDLK_SPACE))
+	{
+		for (int i = 0; i < mEnemies.size() && mEnemies.at(i).isVisible(); ++i)
+		{
+			Enemy &e = mEnemies.at(i);
+			bool isHit = false;
+			for (int x = getWidth() - 80; x <= getWidth() + 80 && !isHit; x++)
+			{
+				cameraX = 2 * x / double(getWidth()) - 1;
+				rayDir.setX(mPlayer.getDirection().x + mPlayer.getCameraPlane().x * cameraX);
+				rayDir.setY(mPlayer.getDirection().y + mPlayer.getCameraPlane().y * cameraX);
+
+				mPlayer.Shoot();
+				hitPos = Raycast(mMap, rayPos, rayDir, stepDir, hit, side);
+
+				double dist =  SqrDistFromPointToRay(rayPos, hitPos, e.getPosition());
+
+				if (dist <= 1.5)
+				{
+					std::cout << "HIT" << std::endl;
+					isHit = true;
+					e.TakeDamage(2);
+					if (e.isDead())
+						mEnemies.deleteAt(i);
+				}
+			}
+		}
+	}
+}
+
 void Game::Render()
 {
 	Vector2<double> playerPos = mPlayer.getPosition(), cameraPlane = mPlayer.getCameraPlane(), playerDir = mPlayer.getDirection();
@@ -202,8 +290,8 @@ void Game::Render()
 		//calculate ray position and direction
 		double cameraX = 2 * x / double(getWidth()) - 1; //x-coordinate in camera space
 
-		Vector2<double> rayPos(playerPos.x, playerPos.y);
-		Vector2<double> rayDir(playerDir.x + cameraPlane.x * cameraX, playerDir.y + cameraPlane.y * cameraX);
+		Vector2<double> rayPos(playerPos.x, playerPos.y),
+						rayDir(playerDir.x + cameraPlane.x * cameraX, playerDir.y + cameraPlane.y * cameraX);
 
 		double perpWallDist;
 
@@ -336,10 +424,18 @@ void Game::DrawSprites()
 	//sort sprites from far to close
 	for (int i = 0; i < mEnemies.size(); ++i)
 	{
-		curLocation = mEnemies[i].getPosition();
+		try
+		{
+			curLocation = mEnemies.at(i).getPosition();
 
-		spriteOrder[i] = i;
-		spriteDistance[i] = ((pos.x - curLocation.x) * (pos.x - curLocation.x) + (pos.y - curLocation.y) * (pos.y - curLocation.y)); //sqrt not taken, unneeded
+			spriteOrder.at(i) = i;
+			spriteDistance.at(i) = ((pos.x - curLocation.x) * (pos.x - curLocation.x) + (pos.y - curLocation.y) * (pos.y - curLocation.y)); //sqrt not taken, unneeded
+		}
+		catch (std::out_of_range &oore)
+		{
+			std::cout << oore.what() << std::endl << "EXCEPTION IN SPRITE CASTING" << std::endl;
+			return;
+		}
 	}
 
 	combSort(spriteOrder, spriteDistance, mEnemies.size());
@@ -347,103 +443,85 @@ void Game::DrawSprites()
     //after sorting the sprites, do the projection and draw them
 	for (int i = 0; i < mEnemies.size(); i++)
 	{
-		curLocation = mEnemies[spriteOrder[i]].getPosition();
-
-		//translate sprite position to relative to camera
-		Vector2<double> spritePos = curLocation - pos;
-
-		//transform sprite with the inverse camera matrix
-		// [ planeX   dirX ] -1                                       [ dirY      -dirX ]
-		// [               ]       =  1/(planeX*dirY-dirX*planeY) *   [                 ]
-		// [ planeY   dirY ]                                          [ -planeY  planeX ]
-
-		double invDet = 1.0 / (plane.x * dir.y - dir.x * plane.y); //required for correct matrix multiplication
-
-		//this is actually the depth inside the screen, that what Z is in 3D
-		Vector2<double> transform(invDet * (dir.y * spritePos.x - dir.x * spritePos.y),
-									invDet * (-plane.y * spritePos.x + plane.x * spritePos.y));
-
-		int spriteScreenX = int((getWidth() / 2) * (1 + transform.x / transform.y));
-
-		//calculate height of the sprite on screen
-		int spriteHeight = abs(int(getHeight() / (transform.y))); //using "transformY" instead of the real distance prevents fisheye
-		//calculate lowest and highest pixel to fill in current stripe
-		int drawStartY = -spriteHeight / 2 + getHeight() / 2;
-		if(drawStartY < 0) drawStartY = 0;
-		int drawEndY = spriteHeight / 2 + getHeight() / 2;
-		if(drawEndY >= getHeight()) drawEndY = getHeight() - 1;
-
-		//calculate width of the sprite
-		int spriteWidth = abs( int (getHeight() / (transform.y)));
-		int drawStartX = -spriteWidth / 2 + spriteScreenX;
-		if(drawStartX < 0) drawStartX = 0;
-		int drawEndX = spriteWidth / 2 + spriteScreenX;
-		if(drawEndX >= getWidth()) drawEndX = getWidth() - 1;
-
-		//loop through every vertical stripe of the sprite on screen
-		for(int stripe = drawStartX; stripe < drawEndX; stripe++)
+		try
 		{
-			int texX = int(256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * texWidth / spriteWidth) / 256;
-			//the conditions in the if are:
-			//1) it's in front of camera plane so you don't see things behind you
-			//2) it's on the screen (left)
-			//3) it's on the screen (right)
-			//4) mZBuffer, with perpendicular distance
-			if(transform.y > 0 && stripe > 0 && stripe < getWidth() && transform.y < mZBuffer[stripe])
-			for(int y = drawStartY; y < drawEndY; y++) //for every pixel of the current stripe
+			curLocation = mEnemies.at(spriteOrder.at(i)).getPosition();
+
+			//translate sprite position to relative to camera
+			Vector2<double> spritePos = curLocation - pos;
+
+			//transform sprite with the inverse camera matrix
+			// [ planeX   dirX ] -1                                       [ dirY      -dirX ]
+			// [               ]       =  1/(planeX*dirY-dirX*planeY) *   [                 ]
+			// [ planeY   dirY ]                                          [ -planeY  planeX ]
+
+			double invDet = 1.0 / (plane.x * dir.y - dir.x * plane.y); //required for correct matrix multiplication
+
+			//this is actually the depth inside the screen, that what Z is in 3D
+			Vector2<double> transform(invDet * (dir.y * spritePos.x - dir.x * spritePos.y),
+										invDet * (-plane.y * spritePos.x + plane.x * spritePos.y));
+
+			int spriteScreenX = int((getWidth() / 2) * (1 + transform.x / transform.y));
+
+			//calculate height of the sprite on screen
+			int spriteHeight = abs(int(getHeight() / (transform.y))); //using "transformY" instead of the real distance prevents fisheye
+			//calculate lowest and highest pixel to fill in current stripe
+			int drawStartY = -spriteHeight / 2 + getHeight() / 2;
+			if(drawStartY < 0) drawStartY = 0;
+			int drawEndY = spriteHeight / 2 + getHeight() / 2;
+			if(drawEndY >= getHeight()) drawEndY = getHeight() - 1;
+
+			//calculate width of the sprite
+			int spriteWidth = abs( int (getHeight() / (transform.y)));
+			int drawStartX = -spriteWidth / 2 + spriteScreenX;
+			if(drawStartX < 0) drawStartX = 0;
+			int drawEndX = spriteWidth / 2 + spriteScreenX;
+			if(drawEndX >= getWidth()) drawEndX = getWidth() - 1;
+
+			//loop through every vertical stripe of the sprite on screen
+			for(int stripe = drawStartX; stripe < drawEndX; stripe++)
 			{
-				int d = (y) * 256 - h * 128 + spriteHeight * 128; //256 and 128 factors to avoid floats
-				int texY = ((d * texHeight) / spriteHeight) / 256;
-				Uint32 color = mTextures[mEnemies[spriteOrder[i]].getTexture()][texWidth * texY + texX]; //get current color from the texture
-				if((color & 0xFF000000) != 0) mBuffer[y][stripe] = color; //paint pixel if it isn't black, black is the invisible color
-			}
-		}
-	}
-}
-
-void Game::LoadMap(std::string mapName)
-{
-	std::string filepath = "./Maps/" + mapName + ".txt";
-	std::ifstream infile(filepath);
-
-	for(int k = 0; k < 3; k++)
-	{
-		for(int i = 0; i < 30; i++)
-		{
-			for(int j = 0; j < 30; j++)
-			{
-				std::string line;
-				std::getline(infile, line, ',');
-
-				if (line == "")
+				int texX = int(256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * texWidth / spriteWidth) / 256;
+				//the conditions in the if are:
+				//1) it's in front of camera plane so you don't see things behind you
+				//2) it's on the screen (left)
+				//3) it's on the screen (right)
+				//4) mZBuffer, with perpendicular distance
+				Vector2<double> pos = mPlayer.getPosition();
+				Vector2<double> planeLeft = pos + mPlayer.getDirection() - mPlayer.getCameraPlane(),
+								planeRight = pos + mPlayer.getDirection() + mPlayer.getCameraPlane();
+				bool isOnScreen = ((sgn((planeLeft.x - pos.x) * (curLocation.y - pos.y) - (planeLeft.y - pos.y) * (curLocation.x - pos.x)) == -1 &&
+								   sgn((planeRight.x - pos.x) * (curLocation.y - pos.y) - (planeRight.y - pos.y) * (curLocation.x - pos.x)) == 1));
+				if(transform.y > 0 && isOnScreen && transform.y < mZBuffer[stripe])
 				{
-				std::cout << "Finished" << std::endl;
-					continue;}
+					for(int y = drawStartY; y < drawEndY; y++) //for every pixel of the current stripe
+					{
+						bool isVisible = mEnemies.at(spriteOrder.at(i)).isVisible();
+						mEnemies.at(spriteOrder.at(i)).setVisibility(true);
+						int d = (y) * 256 - h * 128 + spriteHeight * 128; //256 and 128 factors to avoid floats
+						int texY = ((d * texHeight) / spriteHeight) / 256;
+						Uint32 color = mTextures[mEnemies.at(spriteOrder.at(i)).getTexture()][texWidth * texY + texX]; //get current color from the texture
+						if((color & 0xFF000000) != 0) mBuffer[y][stripe] = color; //paint pixel if it isn't black, black is the invisible color
 
-				switch(k)
+						if (isVisible != true)
+							std::cout << "Enemy at index " << spriteOrder.at(i) << " is now visible" << std::endl;
+					}
+				}
+				else
 				{
-					case 0:
-						mMap[i][j].floor = std::stoi(line);
-						break;
-					case 1:
-						mMap[i][j].object = std::stoi(line);
-						break;
-					case 2:
-						mMap[i][j].ceiling = std::stoi(line);
-						break;
+					bool isVisible = mEnemies.at(spriteOrder.at(i)).isVisible();
+					mEnemies.at(spriteOrder.at(i)).setVisibility(false);
+
+					if (isVisible != false)
+						std::cout << "Enemy at index " << spriteOrder.at(i) << " is no longer visible" << std::endl;
 				}
 			}
 		}
+		catch (std::out_of_range &oore)
+		{
+			std::cout << oore.what() << std::endl << "EXCEPTION IN SPRITE PROJECTION" << std::endl;
+		}
 	}
-}
-
-void Game::LoadEnemies(std::string mapName)
-{
-	Enemy e(100, 20, 0, 4.0, 4.0, Textures::TestSprite);
-	mEnemies.insertAtFront(e);
-
-	e.setPosition(3, 3);
-	mEnemies.insertAtFront(e);
 }
 
 void Game::combSort(std::vector<int> &order, std::vector<double> &dist, int amount)
