@@ -34,7 +34,6 @@ private:
 
 	//1D Zbuffer
 	double mZBuffer[screenWidth];
-	int asd;
 
 	//arrays used to sort the sprites
 	//int spriteOrder[numSprites];
