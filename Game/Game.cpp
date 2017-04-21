@@ -1,31 +1,31 @@
 #include "Game.h"
-#include "../level.h"
-#include "../sprites.h"
+#include <exception>
 
 Game::Game(int width, int height)
 {
 	setWidth(width);
 	setHeight(height);
 
+	// Player Class Members
+	mPlayer.setArmor(0);
+	mPlayer.setBattery(100);
+	mPlayer.setCameraPlane(0, 0.66);
+
+	// Character Class Members
+	mPlayer.setHealth(100);
+	mPlayer.setSpeed(1);
+
+	// Object Class Members
 	mPlayer.setPosition(26, 26);
 	mPlayer.setDirection(-1, 0);
-	mPlayer.setCameraPlane(0, 0.66);
 
 	mQuit = false;
 }
 
-void Game::RunGame()
+void Game::RunGame(std::string mapName)
 {
-	int worldMap[mapWidth][mapHeight];
-
-	for(int i = 0; i < mapWidth; i++)
-	{
-		for(int j = 0; j < mapHeight; j++)
-		{
-			worldMap[i][j] = levels[0][i][j];
-		}
-	}
-
+	LoadMap(mapName);
+	LoadEnemies(mapName);
 	LoadTextures();
 
 	double time = 0; //time of current frame
@@ -38,7 +38,7 @@ void Game::RunGame()
 		int oldmx, oldmy;
 		SDL_GetMouseState(&oldmx, &oldmy);
 
-		Render(worldMap);
+		Render();
 
 		//timing for input and FPS counter
 		oldTime = time;
@@ -47,9 +47,9 @@ void Game::RunGame()
 		print(1.0 / mFrameTime); //FPS counter
 
 		readKeys();
-		CheckQuit();
-		UpdateMovement(worldMap);
 		UpdateRotation(deltaMouse);
+		UpdateMovement();
+		CheckQuit();
 
 		int mx, my;
 		SDL_GetMouseState(&mx, &my);
@@ -76,41 +76,44 @@ void Game::LoadTextures()
 	unsigned long tw, th;
 	// Ship Textures
 	// Ceiling Textures
-    success |= loadImage(mTextures[Textures::ShipCeiling], tw, th, "textures/Ship/ceiling.png");
-	success |= loadImage(mTextures[Textures::ShipCeilingLatch], tw, th, "textures/Ship/ceilingLatch.png");
+    success |= loadImage(mTextures[Textures::ShipCeiling], tw, th, "Textures/Ship/ceiling.png");
+	success |= loadImage(mTextures[Textures::ShipCeilingLatch], tw, th, "Textures/Ship/ceilingLatch.png");
 	// Wall Textures
-    success |= loadImage(mTextures[Textures::ShipWallRaised], tw, th, "textures/Ship/humanShipWall.png");
-    success |= loadImage(mTextures[Textures::ShipWallStraight], tw, th, "textures/Ship/humanShipWall2.png");
-    success |= loadImage(mTextures[Textures::ShipWallBloodRaised], tw, th, "textures/Ship/humanShipWall3.png");
-    success |= loadImage(mTextures[Textures::ShipWallBloodStraight], tw, th, "textures/Ship/humanShipWallBlood.png");
-    success |= loadImage(mTextures[Textures::ShipWallBloodStraight2], tw, th, "textures/Ship/humanShipWallBlood2.png");
-    success |= loadImage(mTextures[Textures::ShipWallCircuit], tw, th, "textures/Ship/humanShipWallCircuit.png");
-    success |= loadImage(mTextures[Textures::ShipWallPort], tw, th, "textures/Ship/humanShipWallGateClosed.png");
-    success |= loadImage(mTextures[Textures::ShipWallWindowLeft], tw, th, "textures/Ship/humanShipWallSideLeft.png");
-    success |= loadImage(mTextures[Textures::ShipWallWindowRight], tw, th, "textures/Ship/humanShipWallSideRight.png");
-    success |= loadImage(mTextures[Textures::ShipWallWindow], tw, th, "textures/Ship/humanShipWallWindow.png");
+    success |= loadImage(mTextures[Textures::ShipWallRaised], tw, th, "Textures/Ship/humanShipWall.png");
+    success |= loadImage(mTextures[Textures::ShipWallStraight], tw, th, "Textures/Ship/humanShipWall2.png");
+    success |= loadImage(mTextures[Textures::ShipWallBloodRaised], tw, th, "Textures/Ship/humanShipWall3.png");
+    success |= loadImage(mTextures[Textures::ShipWallBloodStraight], tw, th, "Textures/Ship/humanShipWallBlood.png");
+    success |= loadImage(mTextures[Textures::ShipWallBloodStraight2], tw, th, "Textures/Ship/humanShipWallBlood2.png");
+    success |= loadImage(mTextures[Textures::ShipWallCircuit], tw, th, "Textures/Ship/humanShipWallCircuit.png");
+    success |= loadImage(mTextures[Textures::ShipWallPort], tw, th, "Textures/Ship/humanShipWallGateClosed.png");
+    success |= loadImage(mTextures[Textures::ShipWallWindowLeft], tw, th, "Textures/Ship/humanShipWallSideLeft.png");
+    success |= loadImage(mTextures[Textures::ShipWallWindowRight], tw, th, "Textures/Ship/humanShipWallSideRight.png");
+    success |= loadImage(mTextures[Textures::ShipWallWindow], tw, th, "Textures/Ship/humanShipWallWindow.png");
 	// Floor Textures
-    success |= loadImage(mTextures[Textures::ShipRoomFloor], tw, th, "textures/Ship/roomFloor.png");
-    success |= loadImage(mTextures[Textures::ShipRoomFloorBlood], tw, th, "textures/Ship/roomFloorBlood.png");
-    success |= loadImage(mTextures[Textures::ShipRoomFloorBlood2], tw, th, "textures/Ship/roomFloorBlood2.png");
-    success |= loadImage(mTextures[Textures::ShipGrateBottomLeft], tw, th, "textures/Ship/hallFloorBottomLeft.png");
-    success |= loadImage(mTextures[Textures::ShipGrateBottomRight], tw, th, "textures/Ship/hallFloorBottomRight.png");
-    success |= loadImage(mTextures[Textures::ShipGrateTopLeft], tw, th, "textures/Ship/hallFloorTopLeft.png");
-    success |= loadImage(mTextures[Textures::ShipGrateTopRight], tw, th, "textures/Ship/hallFloorTopRight.png");
-    success |= loadImage(mTextures[Textures::ShipGrate], tw, th, "textures/Ship/grate.png");
+    success |= loadImage(mTextures[Textures::ShipRoomFloor], tw, th, "Textures/Ship/roomFloor.png");
+    success |= loadImage(mTextures[Textures::ShipRoomFloorBlood], tw, th, "Textures/Ship/roomFloorBlood.png");
+    success |= loadImage(mTextures[Textures::ShipRoomFloorBlood2], tw, th, "Textures/Ship/roomFloorBlood2.png");
+    success |= loadImage(mTextures[Textures::ShipGrateBottomLeft], tw, th, "Textures/Ship/hallFloorBottomLeft.png");
+    success |= loadImage(mTextures[Textures::ShipGrateBottomRight], tw, th, "Textures/Ship/hallFloorBottomRight.png");
+    success |= loadImage(mTextures[Textures::ShipGrateTopLeft], tw, th, "Textures/Ship/hallFloorTopLeft.png");
+    success |= loadImage(mTextures[Textures::ShipGrateTopRight], tw, th, "Textures/Ship/hallFloorTopRight.png");
+    success |= loadImage(mTextures[Textures::ShipGrate], tw, th, "Textures/Ship/grate.png");
 
 	// Cave Textures
 	//Ceiling Textures
-    success |= loadImage(mTextures[Textures::CaveCeiling], tw, th, "textures/Cave/caveCeiling.png");
+    success |= loadImage(mTextures[Textures::CaveCeiling], tw, th, "Textures/Cave/caveCeiling.png");
 	// Wall Textures
-    success |= loadImage(mTextures[Textures::CaveWall], tw, th, "textures/Cave/normalCaveWall.png");
-    success |= loadImage(mTextures[Textures::CaveWallMushroom], tw, th, "textures/Cave/normalCaveWallShroom.png");
-    success |= loadImage(mTextures[Textures::CaveWallMushroom2], tw, th, "textures/Cave/normalCaveWallShroom2.png");
+    success |= loadImage(mTextures[Textures::CaveWall], tw, th, "Textures/Cave/normalCaveWall.png");
+    success |= loadImage(mTextures[Textures::CaveWallMushroom], tw, th, "Textures/Cave/normalCaveWallShroom.png");
+    success |= loadImage(mTextures[Textures::CaveWallMushroom2], tw, th, "Textures/Cave/normalCaveWallShroom2.png");
 	// Floor Textures
-    success |= loadImage(mTextures[Textures::CaveFloor], tw, th, "textures/Cave/alienCaveFloor.png");
+    success |= loadImage(mTextures[Textures::CaveFloor], tw, th, "Textures/Cave/alienCaveFloor.png");
 
 	// Sprites
-	success |= loadImage(mTextures[8], tw, th, "sprites/27846.png");
+	success |= loadImage(mTextures[Textures::TestSprite], tw, th, "Textures/Sprites/27846.png");
+
+	// Menu
+	success |= loadImage(mTextures[Textures::GameLogo], tw, th, "Textures/gamelogo.png");
 
 	if (success == 0)
 		std::cout << "Textures Loaded" << std::endl;
@@ -118,12 +121,14 @@ void Game::LoadTextures()
 		std::cout << "Textures Not Loaded" << std::endl;
 }
 
-void Game::UpdateMovement(int worldMap[][mapHeight])
+void Game::UpdateMovement()
 {
-	double moveSpeed = mFrameTime * 5.0; //the constant value is in squares/second
+	double moveSpeed = mFrameTime * 4.5; //the constant value is in squares/second
 	double posX = mPlayer.getPosition().x, posY = mPlayer.getPosition().y;
 	double dirX = mPlayer.getDirection().x, dirY = mPlayer.getDirection().y;
 	double planeX = mPlayer.getCameraPlane().x, planeY = mPlayer.getCameraPlane().y;
+
+	int newMapPosX, newMapPosY;
 
 	//Sprint
 	if (keyDown(SDLK_RSHIFT) || keyDown(SDLK_LSHIFT))
@@ -134,66 +139,61 @@ void Game::UpdateMovement(int worldMap[][mapHeight])
 	//move forward if no wall in front of you
 	if (keyDown(SDLK_w) || keyDown(SDLK_UP))
 	{
-		if(worldMap[int(posX + dirX * moveSpeed)][int(posY)] == false) posX += dirX * moveSpeed;
-		if(worldMap[int(posX)][int(posY + dirY * moveSpeed)] == false) posY += dirY * moveSpeed;
+		newMapPosX = int(posX + dirX * moveSpeed * 20);
+		newMapPosY = int(posY + dirY * moveSpeed * 20);
+
+		if(newMapPosX < mapWidth && newMapPosX >= 0 && mMap[newMapPosX][int(posY)].object == false) posX += dirX * moveSpeed;
+		if(newMapPosY < mapHeight && newMapPosY >= 0 && mMap[int(posX)][newMapPosY].object == false) posY += dirY * moveSpeed;
 	}
 	//move backwards if no wall behind you
 	if (keyDown(SDLK_s) || keyDown(SDLK_DOWN))
 	{
-		if(worldMap[int(posX - dirX * moveSpeed)][int(posY)] == false) posX -= dirX * moveSpeed;
-		if(worldMap[int(posX)][int(posY - dirY * moveSpeed)] == false) posY -= dirY * moveSpeed;
+		newMapPosX = int(posX - dirX * moveSpeed * 20);
+		newMapPosY = int(posY - dirY * moveSpeed * 20);
+
+		if(newMapPosX < mapWidth && newMapPosX >= 0 && mMap[newMapPosX][int(posY)].object == false) posX -= dirX * moveSpeed;
+		if(newMapPosY < mapHeight && newMapPosY >= 0 && mMap[int(posX)][newMapPosY].object == false) posY -= dirY * moveSpeed;
 	}
 	//Strafe right
 	if (keyDown(SDLK_d))
 	{
-		if(worldMap[int(posX + planeX * moveSpeed)][int(posY)] == false) posX += planeX * moveSpeed;
-		if(worldMap[int(posX)][int(posY + planeY * moveSpeed)] == false) posY += planeY * moveSpeed;
+		newMapPosX = int(posX + planeX * moveSpeed * 20);
+		newMapPosY = int(posY + planeY * moveSpeed * 20);
+
+		if(newMapPosX < mapWidth && newMapPosX >= 0 && mMap[newMapPosX][int(posY)].object == false) posX += planeX * moveSpeed;
+		if(newMapPosY < mapHeight && newMapPosY >= 0 && mMap[int(posX)][newMapPosY].object == false) posY += planeY * moveSpeed;
 	}
 	//Strafe left
 	if (keyDown(SDLK_a))
 	{
-		if(worldMap[int(posX - planeX * moveSpeed)][int(posY)] == false) posX -= planeX * moveSpeed;
-		if(worldMap[int(posX)][int(posY - planeY * moveSpeed)] == false) posY -= planeY * moveSpeed;
+		newMapPosX = int(posX - planeX * moveSpeed * 20);
+		newMapPosY = int(posY - planeY * moveSpeed * 20);
+
+		if(newMapPosX < mapWidth && newMapPosX >= 0 && mMap[newMapPosX][int(posY)].object == false) posX -= planeX * moveSpeed;
+		if(newMapPosY < mapHeight && newMapPosY >= 0 && mMap[int(posX)][newMapPosY].object == false) posY -= planeY * moveSpeed;
 	}
 
-	mPlayer.setPosition(posX, posY);
+	mPlayer.Move(posX, posY);
+
+	//std::cout << posX << " " << posY << std::endl;
 }
 
 void Game::UpdateRotation(float deltaMouse)
 {
 	//speed modifiers
-	double rotSpeed = mFrameTime * 4.5; //the constant value is in radians/second
-	double planeX = mPlayer.getCameraPlane().x, planeY = mPlayer.getCameraPlane().y;
-	double dirX = mPlayer.getDirection().x, dirY = mPlayer.getDirection().y;
+	double rotSpeed = mFrameTime * 4.5 * (deltaMouse != 0 ? 2 : 1); //the constant value is in radians/second
 
-	//rotate to the right
 	if (deltaMouse > 0 || keyDown(SDLK_RIGHT))
-	{
-		//both camera direction and camera plane must be rotated
-		double oldDirX = dirX;
-		dirX = dirX * cos(-rotSpeed) - dirY * sin(-rotSpeed);
-		dirY = oldDirX * sin(-rotSpeed) + dirY * cos(-rotSpeed);
-		double oldPlaneX = planeX;
-		planeX = planeX * cos(-rotSpeed) - planeY * sin(-rotSpeed);
-		planeY = oldPlaneX * sin(-rotSpeed) + planeY * cos(-rotSpeed);
-	}
-	//rotate to the left
-	if (deltaMouse < 0 || keyDown(SDLK_LEFT))
-	{
-		//both camera direction and camera plane must be rotated
-		double oldDirX = dirX;
-		dirX = dirX * cos(rotSpeed) - dirY * sin(rotSpeed);
-		dirY = oldDirX * sin(rotSpeed) + dirY * cos(rotSpeed);
-		double oldPlaneX = planeX;
-		planeX = planeX * cos(rotSpeed) - planeY * sin(rotSpeed);
-		planeY = oldPlaneX * sin(rotSpeed) + planeY * cos(rotSpeed);
-	}
+		rotSpeed *= -1;
+	else if (deltaMouse < 0 || keyDown(SDLK_LEFT))
+		rotSpeed *= 1;
+	else if (deltaMouse == 0)
+		rotSpeed = 0;
 
-	mPlayer.setDirection(dirX, dirY);
-	mPlayer.setCameraPlane(planeX, planeY);
+	mPlayer.Rotate(rotSpeed);
 }
 
-void Game::Render(int worldMap[][mapHeight])
+void Game::Render()
 {
 	Vector2<double> playerPos = mPlayer.getPosition(), cameraPlane = mPlayer.getCameraPlane(), playerDir = mPlayer.getDirection();
 
@@ -205,62 +205,13 @@ void Game::Render(int worldMap[][mapHeight])
 		Vector2<double> rayPos(playerPos.x, playerPos.y);
 		Vector2<double> rayDir(playerDir.x + cameraPlane.x * cameraX, playerDir.y + cameraPlane.y * cameraX);
 
-		//which box of the map we're in
-		Vector2<int> mapPos(int(rayPos.x), int(rayPos.y));
-
-		//length of ray from current position to next x or y-side
-		Vector2<double> sideDist;
-
-		 //length of ray from one x or y-side to next x or y-side
-		Vector2<double> deltaDist(sqrt(1 + (rayDir.y * rayDir.y) / (rayDir.x * rayDir.x)),
-								  sqrt(1 + (rayDir.x * rayDir.x) / (rayDir.y * rayDir.y)));
 		double perpWallDist;
-
-		//what direction to step in x or y-direction (either +1 or -1)
-		Vector2<int> stepDir;
 
 		int hit = 0; //was there a wall hit?
 		int side; //was a NS or a EW wall hit?
-		//calculate step and initial sideDist
-		if (rayDir.x < 0)
-		{
-			stepDir.x = -1;
-			sideDist.x = (rayPos.x - mapPos.x) * deltaDist.x;
-		}
-		else
-		{
-			stepDir.x = 1;
-			sideDist.x = (mapPos.x + 1.0 - rayPos.x) * deltaDist.x;
-		}
-		if (rayDir.y < 0)
-		{
-			stepDir.y = -1;
-			sideDist.y = (rayPos.y - mapPos.y) * deltaDist.y;
-		}
-		else
-		{
-			stepDir.y = 1;
-			sideDist.y = (mapPos.y + 1.0 - rayPos.y) * deltaDist.y;
-		}
-		//perform DDA
-		while (hit == 0)
-		{
-			//jump to next map square, OR in x-direction, OR in y-direction
-			if (sideDist.x < sideDist.y)
-			{
-				sideDist.x += deltaDist.x;
-				mapPos.x += stepDir.x;
-				side = 0;
-			}
-			else
-			{
-				sideDist.y += deltaDist.y;
-				mapPos.y += stepDir.y;
-				side = 1;
-			}
-			//Check if ray has hit a wall
-			if (worldMap[mapPos.x][mapPos.y] > 0) hit = 1;
-		}
+		Vector2<double> stepDir; //what direction to step in x or y-direction (either +1 or -1)
+		Vector2<int> mapPos = Raycast(mMap, rayPos, rayDir, stepDir, hit, side);
+
 		//Calculate distance projected on camera direction (oblique distance will give fisheye effect!)
 		if (side == 0) perpWallDist = (mapPos.x - rayPos.x + (1 - stepDir.x) / 2) / rayDir.x;
 		else		   perpWallDist = (mapPos.y - rayPos.y + (1 - stepDir.y) / 2) / rayDir.y;
@@ -275,7 +226,7 @@ void Game::Render(int worldMap[][mapHeight])
 		if(drawEnd >= getHeight())drawEnd = getHeight() - 1;
 
 		//texturing calculations
-		int texNum = worldMap[mapPos.x][mapPos.y] - 1; //1 subtracted from it so that texture 0 can be used!
+		int texNum = mMap[mapPos.x][mapPos.y].object - 1; //1 subtracted from it so that texture 0 can be used!
 
 		//calculate value of wallX
 		double wallX; //where exactly the wall was hit
@@ -288,7 +239,7 @@ void Game::Render(int worldMap[][mapHeight])
 		if(side == 0 && rayDir.x > 0) texX = texWidth - texX - 1;
 		if(side == 1 && rayDir.y < 0) texX = texWidth - texX - 1;
 
-		for(int y = drawStart; y<drawEnd; y++)
+		for(int y = drawStart; y < drawEnd; y++)
 		{
 			int d = y * 256 - getHeight() * 128 + lineHeight * 128;  //256 and 128 factors to avoid floats
 			int texY = ((d * texHeight) / lineHeight) / 256;
@@ -334,7 +285,7 @@ void Game::Render(int worldMap[][mapHeight])
 		if (drawEnd < 0) drawEnd = getHeight(); //becomes < 0 when the integer overflows
 
 		//draw the floor from drawEnd to the bottom of the screen
-		for(int y = drawEnd + 1; y < getHeight(); y++)
+		for(int y = drawEnd; y < getHeight(); y++)
 		{
 			currentDist = getHeight() / (2.0 * y - getHeight()); //you could make a small lookup table for this instead
 
@@ -343,14 +294,20 @@ void Game::Render(int worldMap[][mapHeight])
 			double currentFloorX = weight * floorPos.x + (1.0 - weight) * playerPos.x;
 			double currentFloorY = weight * floorPos.y + (1.0 - weight) * playerPos.y;
 
+			int texNumCeiling = mMap[int(currentFloorY)][int(currentFloorY)].ceiling - 1,
+				texNumFloor = mMap[int(currentFloorX)][int(currentFloorY)].floor - 1;
+
 			Vector2<int> floorTexPos;
 			floorTexPos.x = int(currentFloorX * texWidth) % texWidth;
 			floorTexPos.y = int(currentFloorY * texHeight) % texHeight;
 
+			if ((texNumCeiling >= numTextures || texNumCeiling < 0) || (texNumFloor >= numTextures || texNumFloor < 0))
+				continue;
+
 			//floor
-			mBuffer[y][x] = (mTextures[Textures::ShipRoomFloor][texWidth * floorTexPos.y + floorTexPos.x] >> 1) & 8355711;
+			mBuffer[y][x] = (mTextures[texNumFloor][texWidth * floorTexPos.y + floorTexPos.x] >> 1) & 8355711;
 			//ceiling (symmetrical!)
-			mBuffer[getHeight() - y][x] = mTextures[Textures::ShipCeiling][texWidth * floorTexPos.y + floorTexPos.x];
+			mBuffer[getHeight() - y][x] = mTextures[texNumCeiling][texWidth * floorTexPos.y + floorTexPos.x];
 		}
 	}
 
@@ -361,97 +318,164 @@ void Game::Render(int worldMap[][mapHeight])
 	redraw();
 }
 
-	void Game::DrawSprites()
+void Game::DrawSprites()
+{
+	Vector2<double> pos = mPlayer.getPosition(),
+	 				dir = mPlayer.getDirection(),
+					plane = mPlayer.getCameraPlane();
+
+	Vector2<double> curLocation;
+
+	std::vector<int>	spriteOrder;
+	std::vector<double> spriteDistance;
+
+	spriteOrder.resize(mEnemies.size());
+	spriteDistance.resize(mEnemies.size());
+
+	//SPRITE CASTING
+	//sort sprites from far to close
+	for (int i = 0; i < mEnemies.size(); ++i)
 	{
-		double posX = mPlayer.getPosition().x, posY = mPlayer.getPosition().y;
-		double dirX = mPlayer.getDirection().x, dirY = mPlayer.getDirection().y;
-		double planeX = mPlayer.getCameraPlane().x, planeY = mPlayer.getCameraPlane().y;
+		curLocation = mEnemies[i].getPosition();
 
-		//SPRITE CASTING
-		//sort sprites from far to close
-    	for(int i = 0; i < numSprites; i++)
-		    {
-		      spriteOrder[i] = i;
-		      spriteDistance[i] = ((posX - sprite[i].x) * (posX - sprite[i].x) + (posY - sprite[i].y) * (posY - sprite[i].y)); //sqrt not taken, unneeded
-		    }
+		spriteOrder[i] = i;
+		spriteDistance[i] = ((pos.x - curLocation.x) * (pos.x - curLocation.x) + (pos.y - curLocation.y) * (pos.y - curLocation.y)); //sqrt not taken, unneeded
+	}
 
-	    combSort(spriteOrder, spriteDistance, numSprites);
+	combSort(spriteOrder, spriteDistance, mEnemies.size());
 
-	    //after sorting the sprites, do the projection and draw them
-		for(int i = 0; i < numSprites; i++)
-		    {
-		      //translate sprite position to relative to camera
-		      double spriteX = sprite[spriteOrder[i]].x - posX;
-		      double spriteY = sprite[spriteOrder[i]].y - posY;
+    //after sorting the sprites, do the projection and draw them
+	for (int i = 0; i < mEnemies.size(); i++)
+	{
+		curLocation = mEnemies[spriteOrder[i]].getPosition();
 
-		      //transform sprite with the inverse camera matrix
-		      // [ planeX   dirX ] -1                                       [ dirY      -dirX ]
-		      // [               ]       =  1/(planeX*dirY-dirX*planeY) *   [                 ]
-		      // [ planeY   dirY ]                                          [ -planeY  planeX ]
+		//translate sprite position to relative to camera
+		Vector2<double> spritePos = curLocation - pos;
 
-		      double invDet = 1.0 / (planeX * dirY - dirX * planeY); //required for correct matrix multiplication
+		//transform sprite with the inverse camera matrix
+		// [ planeX   dirX ] -1                                       [ dirY      -dirX ]
+		// [               ]       =  1/(planeX*dirY-dirX*planeY) *   [                 ]
+		// [ planeY   dirY ]                                          [ -planeY  planeX ]
 
-		      double transformX = invDet * (dirY * spriteX - dirX * spriteY);
-		      double transformY = invDet * (-planeY * spriteX + planeX * spriteY); //this is actually the depth inside the screen, that what Z is in 3D
+		double invDet = 1.0 / (plane.x * dir.y - dir.x * plane.y); //required for correct matrix multiplication
 
-		      int spriteScreenX = int((w / 2) * (1 + transformX / transformY));
+		//this is actually the depth inside the screen, that what Z is in 3D
+		Vector2<double> transform(invDet * (dir.y * spritePos.x - dir.x * spritePos.y),
+									invDet * (-plane.y * spritePos.x + plane.x * spritePos.y));
 
-		      //calculate height of the sprite on screen
-		      int spriteHeight = abs(int(h / (transformY))); //using "transformY" instead of the real distance prevents fisheye
-		      //calculate lowest and highest pixel to fill in current stripe
-		      int drawStartY = -spriteHeight / 2 + h / 2;
-		      if(drawStartY < 0) drawStartY = 0;
-		      int drawEndY = spriteHeight / 2 + h / 2;
-		      if(drawEndY >= h) drawEndY = h - 1;
+		int spriteScreenX = int((getWidth() / 2) * (1 + transform.x / transform.y));
 
-		      //calculate width of the sprite
-		      int spriteWidth = abs( int (h / (transformY)));
-		      int drawStartX = -spriteWidth / 2 + spriteScreenX;
-		      if(drawStartX < 0) drawStartX = 0;
-		      int drawEndX = spriteWidth / 2 + spriteScreenX;
-		      if(drawEndX >= w) drawEndX = w - 1;
+		//calculate height of the sprite on screen
+		int spriteHeight = abs(int(getHeight() / (transform.y))); //using "transformY" instead of the real distance prevents fisheye
+		//calculate lowest and highest pixel to fill in current stripe
+		int drawStartY = -spriteHeight / 2 + getHeight() / 2;
+		if(drawStartY < 0) drawStartY = 0;
+		int drawEndY = spriteHeight / 2 + getHeight() / 2;
+		if(drawEndY >= getHeight()) drawEndY = getHeight() - 1;
 
-		      //loop through every vertical stripe of the sprite on screen
-		      for(int stripe = drawStartX; stripe < drawEndX; stripe++)
-		      {
-		        int texX = int(256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * texWidth / spriteWidth) / 256;
-		        //the conditions in the if are:
-		        //1) it's in front of camera plane so you don't see things behind you
-		        //2) it's on the screen (left)
-		        //3) it's on the screen (right)
-		        //4) mZBuffer, with perpendicular distance
-		        if(transformY > 0 && stripe > 0 && stripe < w && transformY < mZBuffer[stripe])
-		        for(int y = drawStartY; y < drawEndY; y++) //for every pixel of the current stripe
-		        {
-		          int d = (y) * 256 - h * 128 + spriteHeight * 128; //256 and 128 factors to avoid floats
-		          int texY = ((d * texHeight) / spriteHeight) / 256;
-		          Uint32 color = mTextures[sprite[spriteOrder[i]].texture][texWidth * texY + texX]; //get current color from the texture
-		          if((color & 0xFF000000) != 0) mBuffer[y][stripe] = color; //paint pixel if it isn't black, black is the invisible color
-		        }
+		//calculate width of the sprite
+		int spriteWidth = abs( int (getHeight() / (transform.y)));
+		int drawStartX = -spriteWidth / 2 + spriteScreenX;
+		if(drawStartX < 0) drawStartX = 0;
+		int drawEndX = spriteWidth / 2 + spriteScreenX;
+		if(drawEndX >= getWidth()) drawEndX = getWidth() - 1;
+
+		//loop through every vertical stripe of the sprite on screen
+		for(int stripe = drawStartX; stripe < drawEndX; stripe++)
+		{
+			int texX = int(256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * texWidth / spriteWidth) / 256;
+			//the conditions in the if are:
+			//1) it's in front of camera plane so you don't see things behind you
+			//2) it's on the screen (left)
+			//3) it's on the screen (right)
+			//4) mZBuffer, with perpendicular distance
+			if(transform.y > 0 && stripe > 0 && stripe < getWidth() && transform.y < mZBuffer[stripe])
+			for(int y = drawStartY; y < drawEndY; y++) //for every pixel of the current stripe
+			{
+				int d = (y) * 256 - h * 128 + spriteHeight * 128; //256 and 128 factors to avoid floats
+				int texY = ((d * texHeight) / spriteHeight) / 256;
+				Uint32 color = mTextures[mEnemies[spriteOrder[i]].getTexture()][texWidth * texY + texX]; //get current color from the texture
+				if((color & 0xFF000000) != 0) mBuffer[y][stripe] = color; //paint pixel if it isn't black, black is the invisible color
 			}
 		}
- 	}
-
-	void Game::combSort(int* order, double* dist, int amount)
-	{
-		int gap = amount;
- 		bool swapped = false;
- 		while(gap > 1 || swapped)
- 		{
-   			//shrink factor 1.3
-   			gap = (gap * 10) / 13;
-   			if(gap == 9 || gap == 10) gap = 11;
-   			if (gap < 1) gap = 1;
-			swapped = false;
-			for(int i = 0; i < amount - gap; i++)
-   			{
-				int j = i + gap;
-				if(dist[i] < dist[j])
-	 			{
-					std::swap(dist[i], dist[j]);
-	   				std::swap(order[i], order[j]);
-	   				swapped = true;
-	 			}
-   			}
-  		}
 	}
+}
+
+void Game::LoadMap(std::string mapName)
+{
+	std::string filepath = "./Maps/" + mapName + ".txt";
+	std::ifstream infile(filepath);
+
+	for(int k = 0; k < 3; k++)
+	{
+		for(int i = 0; i < 30; i++)
+		{
+			for(int j = 0; j < 30; j++)
+			{
+				std::string line;
+				std::getline(infile, line, ',');
+
+				if (line == "")
+				{
+				std::cout << "Finished" << std::endl;
+					continue;}
+
+				switch(k)
+				{
+					case 0:
+						mMap[i][j].floor = std::stoi(line);
+						break;
+					case 1:
+						mMap[i][j].object = std::stoi(line);
+						break;
+					case 2:
+						mMap[i][j].ceiling = std::stoi(line);
+						break;
+				}
+			}
+		}
+	}
+}
+
+void Game::LoadEnemies(std::string mapName)
+{
+	Enemy e(100, 20, 0, 4.0, 4.0, Textures::TestSprite);
+	mEnemies.insertAtFront(e);
+
+	e.setPosition(3, 3);
+	mEnemies.insertAtFront(e);
+}
+
+void Game::combSort(std::vector<int> &order, std::vector<double> &dist, int amount)
+{
+	int gap = amount, temp = 0;
+	double tempDist = 0;
+	bool swapped = false;
+	while(gap > 1 || swapped)
+	{
+		//shrink factor 1.3
+		gap = (gap * 10) / 13;
+		if(gap == 9 || gap == 10) gap = 11;
+		if (gap < 1) gap = 1;
+
+		swapped = false;
+		for(int i = 0; i < amount - gap; i++)
+		{
+			int j = i + gap;
+			if(dist[i] < dist[j])
+			{
+				//std::swap(dist[i], dist[j]);
+				//std::swap(order[i], order[j]);
+				tempDist = dist[i];
+				dist[i] = dist[j];
+				dist[j] = tempDist;
+
+				temp = order[i];
+				order[i] = order[j];
+				order[j] = temp;
+
+				swapped = true;
+			}
+		}
+	}
+}

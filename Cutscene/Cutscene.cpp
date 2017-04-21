@@ -1,9 +1,7 @@
 #include "Cutscene.h"
 
-CutsceneManager::CutsceneManager(int start)
+CutsceneManager::CutsceneManager()
 {
-	mCurrentScene = start;
-
 	//sets all cutscenes to default state
 	for (int i = 0; i < numCutscenes; ++i)
 	{
@@ -14,15 +12,15 @@ CutsceneManager::CutsceneManager(int start)
 
 	//this is where scenes information is defined
 
-	//SCENE1. andy moving mouth
+	//SCENE1. andy moving mouth. 2 frames long
 	mSceneType[SCENE1] = SceneType::ANIMATED;
 	mNumFrames[SCENE1] = 2;
 	mFrameSpeeds[SCENE1] = .005;
 
-	//SCENE7. this is the scene where andy fixes the code. 4 frames long
+	//SCENE7. this is the scene where andy fixes the code. 7 frames long
 	mSceneType[SCENE7] = SceneType::PROGRESSIVE;
 	mNumFrames[SCENE7] = 7;
-	mFrameSpeeds[SCENE7] = .003;
+	mFrameSpeeds[SCENE7] = .005;
 
 	//skipped frames (part of animations)
 	mNumFrames[SCENE1_2] = 0;
@@ -37,8 +35,6 @@ CutsceneManager::CutsceneManager(int start)
 
 	LoadImages();
 	LoadText();
-
-	mQuit = false;
 }
 
 void CutsceneManager::LoadImages()
@@ -104,13 +100,14 @@ void CutsceneManager::PlayRange(int start, int end)
 		if (mNumFrames[i] != 0)
 		{
 			std::cout << "displaying scene " << i+1 << std::endl;
+			//this makes me think that cutscenes COULD be objects. but constructing them all seems cumbersome since they won't change
 			DrawCutscene(i, mSceneType[i], mFrameSpeeds[i], mNumFrames[i]);
 		}
 	}
 }
 
 //dankest function I ever wrote so wonderful
-void CutsceneManager::DrawCutscene(int scene, SceneType type, double frameDelay, int numFrames)
+void CutsceneManager::DrawCutscene(int scene, SceneType type, double frameSpeed, int numFrames)
 {
 	//clears screen right before drawing
 	cls();
@@ -247,7 +244,7 @@ void CutsceneManager::DrawCutscene(int scene, SceneType type, double frameDelay,
 		}
 
 		lastAnimOffset = animOffset;
-		animOffset = (int) (tick * frameDelay);
+		animOffset = (int) (tick * frameSpeed);
 
 		redraw();
 		}

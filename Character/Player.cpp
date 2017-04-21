@@ -1,43 +1,39 @@
 #include "Player.h"
 
-Player::Player(double posX, double posY, double dirX, double dirY, double cameraX, double cameraY)
+Player::Player() :
+	Character(0, 0, 0, 0, 0, 0, -1)
 {
-	setPosition(posX, posY);
-	setDirection(dirX, dirY);
+	setArmor(0);
+	setBattery(0);
+}
+
+Player::Player(int health, int armor, int battery, double speed, double posX, double posY, double dirX, double dirY, double cameraX, double cameraY) :
+	Character(health, speed, posX, posY, dirX, dirY, -1)
+{
 	setCameraPlane(cameraX, cameraY);
 }
 
-Player::Player(Vector2<double> pos, Vector2<double> dir, Vector2<double> camera)
+Player::Player(int health, int armor, int battery, double speed, Vector2<double> pos, Vector2<double> dir, Vector2<double> camera) :
+	Character(health, speed, pos, dir, -1)
 {
-	setPosition(pos.x, pos.y);
-	setDirection(dir.x, dir.y);
+	setArmor(armor);
+	setBattery(battery);
 	setCameraPlane(camera.x, camera.y);
 }
 
-Vector2<double> Player::getPosition() const { return mPosition; }
-Vector2<double> Player::getDirection() const { return mDirection; }
 Vector2<double> Player::getCameraPlane() const { return mCameraPlane; }
+int Player::getArmor() const { return mArmor; }
+int Player::getBattery() const { return mBattery; }
 
-void Player::setPosition(const Vector2<double> pos) { setPosition(pos.x, pos.y); }
-void Player::setPosition(const double posX, const double posY)
-{
-	mPosition.setX(posX);
-	mPosition.setY(posY);
-}
-
-void Player::setDirection(const Vector2<double> dir) { setDirection(dir.x, dir.y); }
-void Player::setDirection(const double dirX, const double dirY)
-{
-	mDirection.setX(dirX);
-	mDirection.setY(dirY);
-}
-
-void Player::setCameraPlane(const Vector2<double> cam) { setCameraPlane(cam.x, cam.y); }
-void Player::setCameraPlane(const double camX, const double camY)
+void Player::setCameraPlane(const Vector2<double> &cam) { setCameraPlane(cam.x, cam.y); }
+void Player::setCameraPlane(const double &camX, const double &camY)
 {
 	mCameraPlane.setX(camX);
 	mCameraPlane.setY(camY);
 }
+
+void Player::setArmor(const int &armor) { mArmor = armor; }
+void Player::setBattery(const int &battery) { mBattery = battery; }
 
 void Player::TakeDamage(int damage)
 {
@@ -49,8 +45,20 @@ void Player::TakeDamage(int damage)
 	}
 }
 
-void Player::Move()
+void Player::Move(double x, double y)
 {
+	mPosition.setX(x);
+	mPosition.setY(y);
+}
+
+void Player::Rotate(double rotSpeed)
+{
+	double oldDirX = mDirection.x;
+	mDirection.x = mDirection.x * cos(rotSpeed) - mDirection.y * sin(rotSpeed);
+	mDirection.y = oldDirX * sin(rotSpeed) + mDirection.y * cos(rotSpeed);
+	double oldPlaneX = mCameraPlane.x;
+	mCameraPlane.x = mCameraPlane.x * cos(rotSpeed) - mCameraPlane.y * sin(rotSpeed);
+	mCameraPlane.y = oldPlaneX * sin(rotSpeed) + mCameraPlane.y * cos(rotSpeed);
 }
 
 void Player::Shoot()

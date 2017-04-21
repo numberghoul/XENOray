@@ -1,21 +1,18 @@
 #include "Cutscene/Cutscene.h"
+#include "Menu/Menu.h"
 #include "Game/Game.h"
 
 int main(int /*argc*/, char */*argv*/[])
 {
 	screen(screenWidth, screenHeight, 0, "EPITOME");
 
-	CutsceneManager cutsceneName(0);
+	CutsceneManager cm;
 
 	//plays the intro
-	cutsceneName.PlayRange(SCENE1, SCENE8);
+	cm.PlayRange(SCENE1, SCENE5);
 
-	//cutsceneName.DrawCutscene(SCENE8, STATIC);
-
-	//Game game;
-	//game.RunGame();
-
-	sleep();
+	Game game;
+	game.RunGame("e1m1");
 
 	return 0;
 }
