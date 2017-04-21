@@ -56,6 +56,10 @@ void DisplayMenu()
 
 void StartGame()
 {
+	CutsceneManager cm;
+
+	//plays the intro
+	cm.PlayRange(SCENE1, SCENE5);
 	Game game;
 	game.RunGame("e1m1");
 }
