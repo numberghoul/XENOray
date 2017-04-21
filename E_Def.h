@@ -47,5 +47,8 @@ enum Textures
 
 Vector2<int> Raycast(mapTile map[][mapHeight], Vector2<double> rayPos, Vector2<double> rayDir,	Vector2<double> &stepDir,
 	int &hit, int &side);
+double SqrDistFromPointToRay(Vector2<double> rayPoint1, Vector2<int> rayPoint2, Vector2<double> point);
+
+int sgn(double val);
 
 void BAD();

@@ -158,7 +158,7 @@ public:
 		return true;
 	}
 
-	T &operator[](int index)
+	T &at(int index)
 	{
 		Node<T> *curNode = mpHead;
 		for (int i = 0; i < index && curNode != nullptr; ++i)
@@ -169,6 +169,15 @@ public:
 			std::string ex = "Data does not exist at index " + std::to_string(index);
 			throw std::out_of_range(ex);
 		}
+
+		return curNode->getData();
+	}
+
+	T &operator[](int index)
+	{
+		Node<T> *curNode = mpHead;
+		for (int i = 0; i < index && curNode != nullptr; ++i)
+			curNode = curNode->getNext();
 
 		return curNode->getData();
 	}

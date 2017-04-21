@@ -16,12 +16,14 @@ Enemy::Enemy(int health, int damage, double speed, double posX, double posY, int
 int Enemy::getDamage() const { return mDamage; }
 void Enemy::setDamage(const int &damage) { mDamage = damage; }
 
+bool Enemy::isVisible() const { return mIsVisible; }
+void Enemy::setVisibility(const bool &visibility) { mIsVisible = visibility; }
+
 void Enemy::TakeDamage(int damage)
 {
-	mHealth -= damage;
-	if (mHealth <= 0)
+	setHealth(getHealth() - damage);
+	if (getHealth() <= 0)
 	{
-		mHealth = 0;
 		Die();
 	}
 }
@@ -38,4 +40,6 @@ void Enemy::Shoot()
 
 void Enemy::Die()
 {
+	std::cout << "I DIED!!!";
+	mIsDead = true;
 }
