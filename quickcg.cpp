@@ -992,14 +992,18 @@ int loadImage(std::vector<Uint32>& out, unsigned long& w, unsigned long& h, cons
 //defined below to draw the letter pixel by pixel
 void drawLetter(unsigned char n, int x, int y, const ColorRGB& color, bool bg, const ColorRGB& color2)
 {
-  int u,v;
+	int u,v;
 
-  for (v = 0; v < 8; v++)
-  for (u = 0; u < 8; u++)
-  {
-    if(font[n][u][v]) pset(x + u, y + v, color);
-    else if(bg) pset(x + u, y + v, color2);
-  }
+	for (v = 0; v < 8; v++)
+	for (u = 0; u < 8; u++)
+	{
+		//no way andy
+		for (int i = 0; i < 2; ++i)
+		{
+			if(font[n][u][v]) pset(x + u, y + v, color);
+			else if(bg) pset(x + u, y + v, color2);
+		}
+	}
 }
 
 //Draws a string of text

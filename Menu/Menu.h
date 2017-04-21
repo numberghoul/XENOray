@@ -2,6 +2,8 @@
 
 #include "../E_Def.h"
 #include "../UI/UI.h"
+#include "../Game/Game.h"
+#include "../Cutscene/Cutscene.h"
 
 /*======================================================
 
@@ -9,3 +11,4 @@
 
 ========================================================*/
 void DisplayMenu();
+void StartGame();

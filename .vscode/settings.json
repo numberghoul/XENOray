@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
     "files.associations": {
         "cctype": "cpp",
@@ -37,4 +38,8 @@
         "typeinfo": "cpp",
         "utility": "cpp"
     }
+=======
+// Place your settings in this file to overwrite default and user settings.
+{
+>>>>>>> 7f88caf986399e55b61ff0b63d10776309cbde51
 }
