@@ -259,33 +259,17 @@ void Game::UpdateRotation(float deltaMouse)
 
 void Game::CheckShoot()
 {
-	double cameraX;
-	Vector2<double> stepDir, rayDir,
-					rayPos(mPlayer.getPosition().x, mPlayer.getPosition().y);
-	Vector2<int> hitPos;
-	int hit, side;
 
 	if (keyDown(SDLK_SPACE))
 	{
 		for (int i = 0; i < mEnemies.size() && mEnemies.at(i).isVisible(); ++i)
 		{
 			Enemy &e = mEnemies.at(i);
-			bool isHit = false;
-			for (int x = getWidth() - 50; x <= getWidth() + 50 && !isHit; x++)
+			if (e.isVisible())
 			{
-				cameraX = 2 * x / double(getWidth()) - 1;
-				rayDir.setX(mPlayer.getDirection().x + mPlayer.getCameraPlane().x * cameraX);
-				rayDir.setY(mPlayer.getDirection().y + mPlayer.getCameraPlane().y * cameraX);
-
-				mPlayer.Shoot();
-				hitPos = Raycast(mMap, rayPos, rayDir, stepDir, hit, side);
-
-				double dist =  SqrDistFromPointToRay(rayPos, hitPos, e.getPosition());
-
-				if (dist <= 1.5)
+				std::cout << std::endl << e.getCameraX() << std::endl;
+				if (e.getCameraX() < 75)
 				{
-					std::cout << "HIT" << std::endl;
-					isHit = true;
 					e.TakeDamage(2);
 					if (e.isDead())
 						mEnemies.deleteAt(i);
@@ -457,7 +441,9 @@ void Game::DrawSprites()
 	{
 		try
 		{
-			curLocation = mEnemies.at(spriteOrder.at(i)).getPosition();
+			Enemy &e = mEnemies.at(spriteOrder.at(i));
+			e.setCameraX(INT_MAX);
+			curLocation = e.getPosition();
 
 			//translate sprite position to relative to camera
 			Vector2<double> spritePos = curLocation - pos;
@@ -506,13 +492,15 @@ void Game::DrawSprites()
 								   sgn((planeRight.x - pos.x) * (curLocation.y - pos.y) - (planeRight.y - pos.y) * (curLocation.x - pos.x)) == 1));
 				if(transform.y > 0 && isOnScreen && transform.y < mZBuffer[stripe])
 				{
+					if (abs(getWidth() / 2 - stripe) < e.getCameraX())
+						e.setCameraX(abs(getWidth() / 2 - stripe));
 					for(int y = drawStartY; y < drawEndY; y++) //for every pixel of the current stripe
 					{
 						bool isVisible = mEnemies.at(spriteOrder.at(i)).isVisible();
 						mEnemies.at(spriteOrder.at(i)).setVisibility(true);
 						int d = (y) * 256 - h * 128 + spriteHeight * 128; //256 and 128 factors to avoid floats
 						int texY = ((d * texHeight) / spriteHeight) / 256;
-						Uint32 color = mTextures[mEnemies.at(spriteOrder.at(i)).getTexture()][texWidth * texY + texX]; //get current color from the texture
+						Uint32 color = mTextures[e.getTexture()][texWidth * texY + texX]; //get current color from the texture
 						if((color & 0xFF000000) != 0) mBuffer[y][stripe] = color; //paint pixel if it isn't black, black is the invisible color
 
 						if (isVisible != true)

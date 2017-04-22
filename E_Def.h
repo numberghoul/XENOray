@@ -7,6 +7,7 @@
 #include <fstream>
 #include <exception>
 #include <cmath>
+#include <climits>
 
 #include "HelperClasses/Vector2.h"
 #include "quickcg.h"
