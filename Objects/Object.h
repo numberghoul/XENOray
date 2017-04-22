@@ -1,5 +1,5 @@
 #pragma once
-#include "../HelperClasses/Vector2.h"
+#include "../E_Def.h"
 
 class Object
 {

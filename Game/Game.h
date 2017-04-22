@@ -31,7 +31,7 @@ private:
 	int mScreenWidth, mScreenHeight;
 	std::vector<Uint32> mTextures[numTextures];
 	std::vector<Uint32> mUI;
-	std::vector<Uint32> mGUN[5];
+	std::vector<Uint32> mGUN;//[4];
 	Uint32 mBuffer[screenHeight][screenWidth];
 
 	//1D Zbuffer

@@ -136,7 +136,7 @@ void Game::LoadTextures()
 	success |= loadImage(mUI, tw, th, "Textures/UI/ofallonui.png");
 
 	//Gun
-	success |= loadImage(mGUN[0], tw, th, "Textures/UI/raid.png");
+	success |= loadImage(mGUN, tw, th, "Textures/UI/raid.png");
 
 	if (success == 0)
 		std::cout << "Textures Loaded" << std::endl;

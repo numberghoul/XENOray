@@ -1,7 +1,6 @@
 #pragma once
 #include "../Objects/Object.h"
 #include <SDL/SDL.h>
-#include <SDL/SDL_mixer.h>
 
 class Character : public Object
 {
