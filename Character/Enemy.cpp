@@ -34,10 +34,7 @@ void Enemy::setCameraX(const int &cameraX)
 void Enemy::TakeDamage(int damage)
 {
 	setHealth(getHealth() - damage);
-	if (getHealth() <= 0)
-	{
-		Die();
-	}
+	if (getHealth() <= 0) { Die(); }
 	else { playSound(mDamageSound); }
 }
 

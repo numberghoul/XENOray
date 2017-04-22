@@ -31,18 +31,11 @@ private:
 	Player mPlayer;
 	double mFrameTime;
 	int mScreenWidth, mScreenHeight;
-	std::vector<Uint32> mTextures[numTextures];
-	std::vector<Uint32> mUI;
-	std::vector<Uint32> mGUN[4];
+	std::vector<Uint32> mTextures[numTextures],
+						mGuns[numGunTextures],
+						mUI;
 	std::vector<Mix_Chunk *> mSounds;
 	Uint32 mBuffer[screenHeight][screenWidth];
-	int curGunFrame = 0;
-	bool isShooting;
-	int ticks;
-	int oldTicks;
-
-	// Cooldown
-	double cooldown;
 
 	//1D Zbuffer
 	double mZBuffer[screenWidth];
@@ -63,6 +56,7 @@ private:
 	//function used to sort the sprites
 	void combSort(std::vector<int> &order, std::vector<double> &dist, int amount);
 
+	void InitPlayer();
 	void LoadMap(std::string mapName);
 	void LoadEnemies(std::string mapName);
 	void LoadSounds();
@@ -73,7 +67,6 @@ private:
 
 	void DrawSprites();
 
-	void AnimateGun();
 	void DrawUI();
 
 	void UpdateMovement();

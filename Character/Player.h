@@ -1,6 +1,6 @@
 #pragma once
 #include "Character.h"
-#include <unistd.h>
+#include "../Objects/Gun.h"
 
 class Player : public Character
 {
@@ -16,6 +16,7 @@ public:
 	Vector2<double> getCameraPlane() const;
 	int getArmor() const;
 	int getBattery() const;
+	Gun &getCurrentGun();
 
 	// Setters
 	void setCameraPlane(const Vector2<double> &cam);
@@ -29,11 +30,14 @@ public:
 	void Move(double x, double y) override; // x and y represent the differences in the position vector components
 	void Rotate(double rotSpeed);
 	void Shoot() override;
+	void AddGun(Vector2<int> screenPos, int damage, int shotDelay, int defaultTexture);
+	void AddGun(int screenX, int screenY, int damage, int shotDelay, int defaultTexture);
 
 private:
 	Vector2<double> mCameraPlane;
 
-	int mArmor, mBattery;
+	int mArmor, mBattery, mCurrentGun;
+	std::vector<Gun> mGuns;
 
 	void Die();
 };

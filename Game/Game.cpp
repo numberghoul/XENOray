@@ -5,6 +5,20 @@ Game::Game(int width, int height)
 	setWidth(width);
 	setHeight(height);
 
+	// Audio
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096) < 0)
+		BAD();
+	mQuit = false;
+}
+
+Game::~Game()
+{
+	for (int i = 0; i < numSounds; ++i)
+		Mix_FreeChunk(mSounds.at(i));
+}
+
+void Game::InitPlayer()
+{
 	// Player Class Members
 	mPlayer.setArmor(0);
 	mPlayer.setBattery(100);
@@ -18,20 +32,16 @@ Game::Game(int width, int height)
 	mPlayer.setPosition(26, 26);
 	mPlayer.setDirection(-1, 0);
 
-	// Audio
-	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096) < 0)
-		BAD();
-	mQuit = false;
-}
-
-Game::~Game()
-{
-	for (int i = 0; i < numSounds; ++i)
-		Mix_FreeChunk(mSounds.at(i));
+	// Inwit default gun
+	mPlayer.AddGun((screenHeight * 3) / 4 - 300, (screenWidth/2) - 366/2, 2, 1000, GunTextures::Raid);
+	mPlayer.getCurrentGun().addAnimationFrame(GunTextures::RaidAnim1);
+	mPlayer.getCurrentGun().addAnimationFrame(GunTextures::RaidAnim2);
+	mPlayer.getCurrentGun().addAnimationFrame(GunTextures::RaidAnim3);
 }
 
 void Game::RunGame(std::string mapName)
 {
+	InitPlayer();
 	LoadSounds();
 	LoadTextures();
 	LoadMap(mapName);
@@ -53,8 +63,8 @@ void Game::RunGame(std::string mapName)
 		for (int i = -5; i <= 5; ++i)
 			for (int j = -5; j <= 5; ++j)
 			{
-				if (i == 0 || j == 0)
-				mBuffer[screenHeight/2 + i][screenWidth/2 + j] = RGBtoINT(ColorRGB(0,255,0));
+				if (i < 2 && j < 2)
+				mBuffer[screenHeight/2 + i][screenWidth/2 + j] = RGBtoINT(ColorRGB(255,0,0));
 			}
 		drawBuffer(mBuffer[0]);
 		for(int x = 0; x < getWidth(); x++) for(int y = 0; y < getHeight(); y++) mBuffer[y][x] = 0; //clear the buffer instead of cls()
@@ -94,9 +104,10 @@ void Game::LoadTextures()
 {
 	int success = 0;
 
+	// Initialize Each Image Buffer
 	for(int i = 0; i < numTextures; i++) mTextures[i].resize(texWidth * texHeight);
+	for(int i = 0; i < numGunTextures; i++) mGuns[i].resize(gunTexWidth * gunTexHeight);
 	mUI.resize(256*800);
-	for(int i = 0; i < 4; i++) mGUN[i].resize(366*342);
 
 	unsigned long tw, th;
 	// Ship Textures
@@ -144,10 +155,10 @@ void Game::LoadTextures()
 	success |= loadImage(mUI, tw, th, "Textures/UI/ofallonui.png");
 
 	//Gun
-	success |= loadImage(mGUN[0], tw, th, "Textures/UI/raid.png");
-	success |= loadImage(mGUN[1], tw, th, "Textures/UI/raidboom1.png");
-	success |= loadImage(mGUN[2], tw, th, "Textures/UI/raidboom2.png");
-	success |= loadImage(mGUN[3], tw, th, "Textures/UI/raidboom3.png");
+	success |= loadImage(mGuns[GunTextures::Raid], tw, th, "Textures/UI/raid.png");
+	success |= loadImage(mGuns[GunTextures::RaidAnim1], tw, th, "Textures/UI/raidboom1.png");
+	success |= loadImage(mGuns[GunTextures::RaidAnim2], tw, th, "Textures/UI/raidboom2.png");
+	success |= loadImage(mGuns[GunTextures::RaidAnim3], tw, th, "Textures/UI/raidboom3.png");
 
 	if (success == 0)
 		std::cout << "Textures Loaded" << std::endl;
@@ -294,15 +305,13 @@ void Game::UpdateRotation(float deltaMouse)
 
 void Game::CheckShoot()
 {
+	Gun &gun = mPlayer.getCurrentGun();
 
-	if (keyDown(SDLK_SPACE) && cooldown + 500 < getTicks())
+	gun.update();
+	if (keyDown(SDLK_SPACE) && gun.canShoot())
 	{
-		if(!isShooting)
-		{
-			isShooting = true;
-		}
+		mPlayer.Shoot();
 
-		cooldown = getTicks();
 		for (int i = 0; i < mEnemies.size(); ++i)
 		{
 			Enemy &e = mEnemies.at(i);
@@ -314,6 +323,9 @@ void Game::CheckShoot()
 			}
 		}
 	}
+
+	if (gun.isShooting())
+		gun.animate();
 }
 
 void Game::Render()
@@ -435,8 +447,6 @@ void Game::Render()
 	}
 
 	Game::DrawSprites();
-
-	if(isShooting) AnimateGun();
 
 	Game::DrawUI();
 }
@@ -593,33 +603,19 @@ void Game::combSort(std::vector<int> &order, std::vector<double> &dist, int amou
 	}
 }
 
-void Game::AnimateGun()
-{
-	if((ticks - oldTicks) == 10)
-	{
-		oldTicks = ticks;
-		curGunFrame++;
-		std::cout << curGunFrame << std::endl;
-	}
-
-	ticks++;
-
-		
-	if(curGunFrame == 4){ curGunFrame = 0; isShooting = false; ticks = 0;}
-}
-
 void Game::DrawUI()
 {
+	Gun &gun = mPlayer.getCurrentGun();
 	int uiYOffset = (screenHeight * 3) / 4;
-	int gunYOffset = uiYOffset - 0, gunXOffset = (screenWidth/2) + 0;
+	int gunYOffset = gun.getScreenPos().x, gunXOffset = gun.getScreenPos().y;
 	double skipX = screenWidth / 800;
 	double skipY = (screenHeight - uiYOffset) / 150;
 
-	for(int x = gunXOffset; x < gunXOffset + 366; x++)
+	for(int x = gunXOffset; x < gunXOffset + gunTexWidth; x++)
 	{
-		for(int y = gunYOffset; y < gunYOffset + 342; y++)
+		for(int y = gunYOffset; y < gunYOffset + gunTexHeight; y++)
 		{
-			Uint32 color = mGUN[curGunFrame][366 * (y - gunYOffset) + (x - gunXOffset)];
+			Uint32 color = mGuns[gun.getCurrentTexture()][gunTexWidth * (y - gunYOffset) + (x - gunXOffset)];
 			if (color & 0xFF000000)
 				mBuffer[y][x] = color;
 		}

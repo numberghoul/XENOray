@@ -24,10 +24,14 @@ using namespace QuickCG;
 #define texWidth 64
 #define texHeight 64
 
+#define gunTexWidth 366
+#define gunTexHeight 342
+
 #define mapWidth 30
 #define mapHeight 30
 
 #define numTextures 28
+#define numGunTextures 4
 #define numSounds 2
 
 typedef struct mapTile
@@ -47,6 +51,11 @@ enum Textures
 	CaveCeiling, CaveWall, CaveWallMushroom, CaveWallMushroom2, CaveFloor, TestSprite,
 
 	GameLogo, UI
+};
+
+enum GunTextures
+{
+	Raid, RaidAnim1, RaidAnim2, RaidAnim3
 };
 
 enum Sounds
