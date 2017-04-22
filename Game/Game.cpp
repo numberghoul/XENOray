@@ -42,11 +42,12 @@ void Game::RunGame(std::string mapName)
 
 		Render();
 
+		//DRAW CROSSHAIR
 		for (int i = -5; i <= 5; ++i)
 			for (int j = -5; j <= 5; ++j)
 			{
 				if (i == 0 || j == 0)
-				mBuffer[screenHeight/2 + i][screenWidth/2 + j] = RGBtoINT(ColorRGB(255,0,0));
+				mBuffer[screenHeight/2 + i][screenWidth/2 + j] = RGBtoINT(ColorRGB(0,255,0));
 			}
 		drawBuffer(mBuffer[0]);
 		for(int x = 0; x < getWidth(); x++) for(int y = 0; y < getHeight(); y++) mBuffer[y][x] = 0; //clear the buffer instead of cls()
@@ -133,6 +134,9 @@ void Game::LoadTextures()
 
 	//UIStuff
 	success |= loadImage(mUI, tw, th, "Textures/UI/ofallonui.png");
+
+	//Gun
+	success |= loadImage(mGUN[0], tw, th, "Textures/UI/raid.png");
 
 	if (success == 0)
 		std::cout << "Textures Loaded" << std::endl;
@@ -557,12 +561,32 @@ void Game::combSort(std::vector<int> &order, std::vector<double> &dist, int amou
 
 void Game::DrawUI()
 {
-	for(int x = 0; x < getWidth(); x++)
+	int uiYOffset = (screenHeight * 3) / 4;
+	int gunYOffset = uiYOffset - 120, gunXOffset = (screenWidth/2) + 10;
+	double skipX = screenWidth / 800;
+	double skipY = (screenHeight - uiYOffset) / 150;
+
+	for(int x = gunXOffset; x < gunXOffset + 198; x++)
 	{
-		for(int y = 450; y < getHeight(); y++)
+		for(int y = gunYOffset; y < gunYOffset + 168; y++)
 		{
-			//mBuffer[y][x] = mUI[800 * (y - 344) + x];
-			mBuffer[y][x] = 0;
+			Uint32 color = mGUN[198 * (y - gunYOffset) + (x - gunXOffset)];
+			if (color & 0xFF000000)
+				mBuffer[y][x] = color;
+		}
+	}
+	for(int x = 0; x < 800; x++)
+	{
+		for(int y = 0; y < 150; y++)
+		{
+			for (double i = x * skipX; i < screenWidth && i < x * skipX + skipX; i++)
+			{
+				for (double j = y * skipY; j < screenHeight && j < y * skipY + skipY; j++)
+				{
+					mBuffer[int(j) + uiYOffset][int(i)] = mUI[800 * (y) + x];
+				}
+			}
+			//mBuffer[y][x] = 0;
 		}
 	}
 }
