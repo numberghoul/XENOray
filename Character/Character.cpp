@@ -19,21 +19,6 @@ Character::Character(int health, double speed, Vector2<double> pos, Vector2<doub
 // Destructor
 Character::~Character()
 {
-	if (mDamageSound != nullptr && mDamageSound->allocated)
-	{
-		Mix_FreeChunk(mDamageSound);
-		mDamageSound = nullptr;
-	}
-	if (mTauntSound != nullptr && mTauntSound->allocated)
-	{
-		Mix_FreeChunk(mTauntSound);
-		mTauntSound = nullptr;
-	}
-	if (mDeathSound != nullptr && mDeathSound->allocated)
-	{
-		Mix_FreeChunk(mDeathSound);
-		mDeathSound = nullptr;
-	}
 }
 
 // Getters
@@ -44,8 +29,8 @@ double Character::getSpeed() const { return mSpeed; }
 void Character::setHealth(int health) { mHealth = health; }
 void Character::setSpeed(double speed) { mSpeed = speed; }
 
-void Character::loadDamageSound(std::string fileName) { mDamageSound = Mix_LoadWAV(fileName.c_str()); }
-void Character::loadTauntSound(std::string fileName) { mTauntSound = Mix_LoadWAV(fileName.c_str()); }
-void Character::loadDeathSound(std::string fileName) { mDeathSound = Mix_LoadWAV(fileName.c_str()); }
+void Character::setDamageSound(Mix_Chunk *damageSound) { mDamageSound = damageSound; }
+void Character::setTauntSound(Mix_Chunk *tauntSound) { mTauntSound = tauntSound; }
+void Character::setDeathSound(Mix_Chunk *deathSound) { mDeathSound = deathSound; }
 
 bool Character::isDead() { return mIsDead; }

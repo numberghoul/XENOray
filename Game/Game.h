@@ -18,6 +18,8 @@ class Game
 public:
 	Game(int width = screenWidth, int height = screenHeight);
 
+	~Game();
+
 	int getWidth() const { return mScreenWidth; }
 	int getHeight() const { return mScreenHeight; }
 
@@ -32,11 +34,15 @@ private:
 	std::vector<Uint32> mTextures[numTextures];
 	std::vector<Uint32> mUI;
 	std::vector<Uint32> mGUN[4];
+	std::vector<Mix_Chunk *> mSounds;
 	Uint32 mBuffer[screenHeight][screenWidth];
-	int curGunFrame;
+	int curGunFrame = 0;
 	bool isShooting;
 	int ticks;
 	int oldTicks;
+
+	// Cooldown
+	double cooldown;
 
 	//1D Zbuffer
 	double mZBuffer[screenWidth];
@@ -59,7 +65,7 @@ private:
 
 	void LoadMap(std::string mapName);
 	void LoadEnemies(std::string mapName);
-
+	void LoadSounds();
 	void LoadTextures();
 
 	void Render();

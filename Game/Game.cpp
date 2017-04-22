@@ -24,11 +24,18 @@ Game::Game(int width, int height)
 	mQuit = false;
 }
 
+Game::~Game()
+{
+	for (int i = 0; i < numSounds; ++i)
+		Mix_FreeChunk(mSounds.at(i));
+}
+
 void Game::RunGame(std::string mapName)
 {
+	LoadSounds();
+	LoadTextures();
 	LoadMap(mapName);
 	LoadEnemies(mapName);
-	LoadTextures();
 
 	double time = 0; //time of current frame
 	double oldTime = 0; //time of previous frame
@@ -148,15 +155,33 @@ void Game::LoadTextures()
 		std::cout << "Textures Not Loaded" << std::endl;
 }
 
+void Game::LoadSounds()
+{
+	bool success = true;
+
+	mSounds.resize(numSounds);
+
+	mSounds[Sounds::DamageSound] = Mix_LoadWAV("sound/urgh.wav");
+	mSounds[Sounds::WillhelmScream] = Mix_LoadWAV("sound/willhelm.wav");
+
+	for (int i = 0; i < numSounds; i++)
+		success &= (mSounds[i] != nullptr);
+
+	if (success)
+		std::cout << "Sound Chunks Loaded" << std::endl;
+	else
+		BAD();
+}
+
 void Game::LoadEnemies(std::string mapName)
 {
-	Enemy e(3, 20, 0, 4.0, 4.0, Textures::TestSprite);
+	Enemy e(5, 20, 0, 4.0, 4.0, Textures::TestSprite);
+	e.setDamageSound(mSounds[Sounds::DamageSound]);
+	e.setDeathSound(mSounds[Sounds::WillhelmScream]);
 	mEnemies.insertAtFront(e);
-	mEnemies.at(0).loadDeathSound("sound/urgh.wav");
 
 	e.setPosition(22.5, 3);
 	mEnemies.insertAtFront(e);
-	mEnemies.at(1).loadDeathSound("sound/urgh.wav");
 }
 
 void Game::LoadMap(std::string mapName)
@@ -255,7 +280,7 @@ void Game::UpdateMovement()
 void Game::UpdateRotation(float deltaMouse)
 {
 	//speed modifiers
-	double rotSpeed = mFrameTime * 3 * (deltaMouse != 0 ? 2 : 1); //the constant value is in radians/second
+	double rotSpeed = mFrameTime * 2 * (deltaMouse != 0 ? 2 : 1); //the constant value is in radians/second
 
 	if (deltaMouse > 0 || keyDown(SDLK_RIGHT))
 		rotSpeed *= -1;
@@ -270,18 +295,20 @@ void Game::UpdateRotation(float deltaMouse)
 void Game::CheckShoot()
 {
 
-	if (keyDown(SDLK_SPACE))
+	if (keyDown(SDLK_SPACE) && cooldown + 500 < getTicks())
 	{
 		if(!isShooting)
 		{
 			isShooting = true;
 		}
-		for (int i = 0; i < mEnemies.size() && mEnemies.at(i).isVisible(); ++i)
+
+		cooldown = getTicks();
+		for (int i = 0; i < mEnemies.size(); ++i)
 		{
 			Enemy &e = mEnemies.at(i);
 			if (e.isVisible() && e.getCameraX() == 0)
 			{
-				e.TakeDamage(2);
+				e.TakeDamage(1);
 				if (e.isDead())
 					mEnemies.deleteAt(i);
 			}
@@ -508,24 +535,20 @@ void Game::DrawSprites()
 						e.setCameraX(abs(getWidth() / 2 - stripe));
 					for(int y = drawStartY; y < drawEndY; y++) //for every pixel of the current stripe
 					{
-						bool isVisible = mEnemies.at(spriteOrder.at(i)).isVisible();
-						mEnemies.at(spriteOrder.at(i)).setVisibility(true);
+						// Update visibility
+						bool isVisible = e.isVisible();
+						e.setVisibility(true);
+
 						int d = (y) * 256 - h * 128 + spriteHeight * 128; //256 and 128 factors to avoid floats
 						int texY = ((d * texHeight) / spriteHeight) / 256;
 						Uint32 color = mTextures[e.getTexture()][texWidth * texY + texX]; //get current color from the texture
 						if((color & 0xFF000000) != 0) mBuffer[y][stripe] = color; //paint pixel if it isn't black, black is the invisible color
-
-						//if (isVisible != true)
-						//	std::cout << "Enemy at index " << spriteOrder.at(i) << " is now visible" << std::endl;
 					}
 				}
 				else
 				{
-					bool isVisible = mEnemies.at(spriteOrder.at(i)).isVisible();
-					mEnemies.at(spriteOrder.at(i)).setVisibility(false);
-
-					//if (isVisible != false)
-					//	std::cout << "Enemy at index " << spriteOrder.at(i) << " is no longer visible" << std::endl;
+					bool isVisible = e.isVisible();
+					e.setVisibility(false);
 				}
 			}
 		}
@@ -572,7 +595,7 @@ void Game::combSort(std::vector<int> &order, std::vector<double> &dist, int amou
 
 void Game::AnimateGun()
 {
-	if((ticks - oldTicks) == 5)
+	if((ticks - oldTicks) == 10)
 	{
 		oldTicks = ticks;
 		curGunFrame++;
@@ -588,7 +611,7 @@ void Game::AnimateGun()
 void Game::DrawUI()
 {
 	int uiYOffset = (screenHeight * 3) / 4;
-	int gunYOffset = uiYOffset - 10, gunXOffset = (screenWidth/2) + 10;
+	int gunYOffset = uiYOffset - 0, gunXOffset = (screenWidth/2) + 0;
 	double skipX = screenWidth / 800;
 	double skipY = (screenHeight - uiYOffset) / 150;
 

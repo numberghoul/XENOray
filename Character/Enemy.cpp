@@ -38,6 +38,7 @@ void Enemy::TakeDamage(int damage)
 	{
 		Die();
 	}
+	else { playSound(mDamageSound); }
 }
 
 void Enemy::Move(double x, double y)
@@ -52,9 +53,6 @@ void Enemy::Shoot()
 
 void Enemy::Die()
 {
-	std::thread musicThread(playSound, mDeathSound);
-
+	playSound(mDeathSound);
 	mIsDead = true;
-
-	musicThread.detach();
 }
