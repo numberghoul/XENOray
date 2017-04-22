@@ -69,10 +69,15 @@ int sgn(double val) { return (0.0 < val) - (val < 0.0); }
 
 void playSound(Mix_Chunk *sound)
 {
+	std::thread musicThread(_playSound, sound);
+	musicThread.detach();
+}
+
+void _playSound(Mix_Chunk *sound)
+{
 	if (Mix_PlayChannel(-1, sound, 0) < 0)
 		std::cout << SDL_GetError() << std::endl;
-	sleep(1);
-	Mix_HaltChannel(-1);
+	sleep(2);
 }
 
 void BAD() // WHEN DID HAPPEN BAD?!

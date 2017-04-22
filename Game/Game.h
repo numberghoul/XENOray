@@ -37,6 +37,9 @@ private:
 	std::vector<Mix_Chunk *> mSounds;
 	Uint32 mBuffer[screenHeight][screenWidth];
 
+	// Cooldown
+	double cooldown;
+
 	//1D Zbuffer
 	double mZBuffer[screenWidth];
 

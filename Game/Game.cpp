@@ -153,15 +153,27 @@ void Game::LoadTextures()
 
 void Game::LoadSounds()
 {
+	bool success = true;
+
 	mSounds.resize(numSounds);
 
 	mSounds[Sounds::DamageSound] = Mix_LoadWAV("sound/urgh.wav");
+	mSounds[Sounds::WillhelmScream] = Mix_LoadWAV("sound/willhelm.wav");
+
+	for (int i = 0; i < numSounds; i++)
+		success &= (mSounds[i] != nullptr);
+
+	if (success)
+		std::cout << "Sound Chunks Loaded" << std::endl;
+	else
+		BAD();
 }
 
 void Game::LoadEnemies(std::string mapName)
 {
-	Enemy e(3, 20, 0, 4.0, 4.0, Textures::TestSprite);
-	e.setDeathSound(mSounds[Sounds::DamageSound]);
+	Enemy e(5, 20, 0, 4.0, 4.0, Textures::TestSprite);
+	e.setDamageSound(mSounds[Sounds::DamageSound]);
+	e.setDeathSound(mSounds[Sounds::WillhelmScream]);
 	mEnemies.insertAtFront(e);
 
 	e.setPosition(22.5, 3);
@@ -264,7 +276,7 @@ void Game::UpdateMovement()
 void Game::UpdateRotation(float deltaMouse)
 {
 	//speed modifiers
-	double rotSpeed = mFrameTime * 3 * (deltaMouse != 0 ? 2 : 1); //the constant value is in radians/second
+	double rotSpeed = mFrameTime * 2 * (deltaMouse != 0 ? 2 : 1); //the constant value is in radians/second
 
 	if (deltaMouse > 0 || keyDown(SDLK_RIGHT))
 		rotSpeed *= -1;
@@ -279,14 +291,15 @@ void Game::UpdateRotation(float deltaMouse)
 void Game::CheckShoot()
 {
 
-	if (keyDown(SDLK_SPACE))
+	if (keyDown(SDLK_SPACE) && cooldown + 500 < getTicks())
 	{
+		cooldown = getTicks();
 		for (int i = 0; i < mEnemies.size(); ++i)
 		{
 			Enemy &e = mEnemies.at(i);
 			if (e.isVisible() && e.getCameraX() == 0)
 			{
-				e.TakeDamage(2);
+				e.TakeDamage(1);
 				if (e.isDead())
 					mEnemies.deleteAt(i);
 			}
