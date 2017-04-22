@@ -31,8 +31,12 @@ private:
 	int mScreenWidth, mScreenHeight;
 	std::vector<Uint32> mTextures[numTextures];
 	std::vector<Uint32> mUI;
-	std::vector<Uint32> mGUN;//[4];
+	std::vector<Uint32> mGUN[4];
 	Uint32 mBuffer[screenHeight][screenWidth];
+	int curGunFrame;
+	bool isShooting;
+	int ticks;
+	int oldTicks;
 
 	//1D Zbuffer
 	double mZBuffer[screenWidth];
@@ -63,6 +67,7 @@ private:
 
 	void DrawSprites();
 
+	void AnimateGun();
 	void DrawUI();
 
 	void UpdateMovement();

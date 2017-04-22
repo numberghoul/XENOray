@@ -89,6 +89,7 @@ void Game::LoadTextures()
 
 	for(int i = 0; i < numTextures; i++) mTextures[i].resize(texWidth * texHeight);
 	mUI.resize(256*800);
+	for(int i = 0; i < 4; i++) mGUN[i].resize(366*342);
 
 	unsigned long tw, th;
 	// Ship Textures
@@ -136,7 +137,10 @@ void Game::LoadTextures()
 	success |= loadImage(mUI, tw, th, "Textures/UI/ofallonui.png");
 
 	//Gun
-	success |= loadImage(mGUN, tw, th, "Textures/UI/raid.png");
+	success |= loadImage(mGUN[0], tw, th, "Textures/UI/raid.png");
+	success |= loadImage(mGUN[1], tw, th, "Textures/UI/raidboom1.png");
+	success |= loadImage(mGUN[2], tw, th, "Textures/UI/raidboom2.png");
+	success |= loadImage(mGUN[3], tw, th, "Textures/UI/raidboom3.png");
 
 	if (success == 0)
 		std::cout << "Textures Loaded" << std::endl;
@@ -152,6 +156,7 @@ void Game::LoadEnemies(std::string mapName)
 
 	e.setPosition(22.5, 3);
 	mEnemies.insertAtFront(e);
+	mEnemies.at(1).loadDeathSound("sound/urgh.wav");
 }
 
 void Game::LoadMap(std::string mapName)
@@ -267,6 +272,10 @@ void Game::CheckShoot()
 
 	if (keyDown(SDLK_SPACE))
 	{
+		if(!isShooting)
+		{
+			isShooting = true;
+		}
 		for (int i = 0; i < mEnemies.size() && mEnemies.at(i).isVisible(); ++i)
 		{
 			Enemy &e = mEnemies.at(i);
@@ -399,6 +408,8 @@ void Game::Render()
 	}
 
 	Game::DrawSprites();
+
+	if(isShooting) AnimateGun();
 
 	Game::DrawUI();
 }
@@ -559,18 +570,33 @@ void Game::combSort(std::vector<int> &order, std::vector<double> &dist, int amou
 	}
 }
 
+void Game::AnimateGun()
+{
+	if((ticks - oldTicks) == 5)
+	{
+		oldTicks = ticks;
+		curGunFrame++;
+		std::cout << curGunFrame << std::endl;
+	}
+
+	ticks++;
+
+		
+	if(curGunFrame == 4){ curGunFrame = 0; isShooting = false; ticks = 0;}
+}
+
 void Game::DrawUI()
 {
 	int uiYOffset = (screenHeight * 3) / 4;
-	int gunYOffset = uiYOffset - 120, gunXOffset = (screenWidth/2) + 10;
+	int gunYOffset = uiYOffset - 10, gunXOffset = (screenWidth/2) + 10;
 	double skipX = screenWidth / 800;
 	double skipY = (screenHeight - uiYOffset) / 150;
 
-	for(int x = gunXOffset; x < gunXOffset + 198; x++)
+	for(int x = gunXOffset; x < gunXOffset + 366; x++)
 	{
-		for(int y = gunYOffset; y < gunYOffset + 168; y++)
+		for(int y = gunYOffset; y < gunYOffset + 342; y++)
 		{
-			Uint32 color = mGUN[198 * (y - gunYOffset) + (x - gunXOffset)];
+			Uint32 color = mGUN[curGunFrame][366 * (y - gunYOffset) + (x - gunXOffset)];
 			if (color & 0xFF000000)
 				mBuffer[y][x] = color;
 		}
