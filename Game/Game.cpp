@@ -147,7 +147,7 @@ void Game::LoadEnemies(std::string mapName)
 	mEnemies.at(0).loadDeathSound("sound/urgh.wav");
 
 	e.setPosition(22.5, 3);
-	//mEnemies.insertAtFront(e);
+	mEnemies.insertAtFront(e);
 }
 
 void Game::LoadMap(std::string mapName)
@@ -266,7 +266,7 @@ void Game::CheckShoot()
 		for (int i = 0; i < mEnemies.size() && mEnemies.at(i).isVisible(); ++i)
 		{
 			Enemy &e = mEnemies.at(i);
-			if (e.isVisible() && e.getCameraX() < 25)
+			if (e.isVisible() && e.getCameraX() == 0)
 			{
 				e.TakeDamage(2);
 				if (e.isDead())

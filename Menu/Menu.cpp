@@ -27,8 +27,7 @@ void DisplayMenu()
 		{
 			int mx, my;
 			SDL_GetMouseState(&mx, &my);
-			StartButton.OnClick(mx, my);
-			success = 1;
+			success = StartButton.OnClick(mx, my);;
 		}
 
 	double skipX = screenWidth / mw;

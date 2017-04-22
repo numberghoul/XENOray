@@ -16,5 +16,8 @@ bool Button::OnClick(int clickx, int clicky)
 	&& clicky < mLowerRight.y && clicky > mUpperLeft.y)
 	{
 		Do();
+		return 1;
 	}
+
+	return 0;
 }
