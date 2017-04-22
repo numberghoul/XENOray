@@ -20,9 +20,9 @@ public:
 	void setHealth(int health);
 	void setSpeed(double speed);
 	
-	void loadDamageSound(std::string fileName);
-	void loadTauntSound(std::string fileName);
-	void loadDeathSound(std::string fileName);
+	void setDamageSound(Mix_Chunk *damageSound);
+	void setTauntSound(Mix_Chunk *tauntSound);
+	void setDeathSound(Mix_Chunk *deathSound);
 
 	bool isDead();
 
