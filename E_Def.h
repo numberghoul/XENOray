@@ -9,6 +9,7 @@
 #include <cmath>
 #include <thread>
 #include <SDL/SDL_mixer.h>
+#include <climits>
 
 #include "HelperClasses/Vector2.h"
 #include "quickcg.h"
