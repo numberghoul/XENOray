@@ -24,7 +24,7 @@ using namespace QuickCG;
 #define mapWidth 30
 #define mapHeight 30
 
-#define numTextures 27
+#define numTextures 28
 
 typedef struct mapTile
 {
@@ -42,7 +42,7 @@ enum Textures
 
 	CaveCeiling, CaveWall, CaveWallMushroom, CaveWallMushroom2, CaveFloor, TestSprite,
 
-	GameLogo
+	GameLogo, UI
 };
 
 Vector2<int> Raycast(mapTile map[][mapHeight], Vector2<double> rayPos, Vector2<double> rayDir,	Vector2<double> &stepDir,

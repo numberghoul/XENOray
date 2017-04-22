@@ -12,8 +12,8 @@ void DisplayMenu()
 	else
 		std::cout << "Textures Not Loaded" << std::endl;
 
-	Vector2<double> startPos(0, 0);
-	Vector2<double> startSize(100, 60);
+	Vector2<double> startPos((screenWidth/2) - 75, screenHeight/2);
+	Vector2<double> startSize(150, 40);
 	std::vector<Uint32> startImg;
 	Button StartButton(startPos, startSize, startImg, &StartGame);
 
@@ -50,6 +50,14 @@ void DisplayMenu()
 		}
 	}
 
+	for (int x = StartButton.getUpX(); x < StartButton.getLowX(); x++)
+	{
+		for(int y = StartButton.getUpY(); y < StartButton.getLowY(); y++)
+		{
+			pset(x, y, ColorRGB(0,0,0));
+		}
+	}
+
 	redraw();
 }
 }
@@ -59,7 +67,7 @@ void StartGame()
 	CutsceneManager cm;
 
 	//plays the intro
-	cm.PlayRange(SCENE1, SCENE5);
+	//cm.PlayRange(SCENE1, SCENE5);
 	Game game;
 	game.RunGame("e1m1");
 }
