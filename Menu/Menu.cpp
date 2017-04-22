@@ -33,7 +33,7 @@ void DisplayMenu()
 
 	double skipX = screenWidth / mw;
 	double skipY = screenHeight / mh;
-	std::cout << skipX << " " << skipX << std::endl;
+	//std::cout << skipX << " " << skipX << std::endl;
 
 	//draw each pixel of the image
 	for(int y = 0; y < mh; y++)

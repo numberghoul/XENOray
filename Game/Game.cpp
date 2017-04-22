@@ -19,8 +19,8 @@ Game::Game(int width, int height)
 	mPlayer.setDirection(-1, 0);
 
 	// Audio
-	Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096);
-
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096) < 0)
+		BAD();
 	mQuit = false;
 }
 
@@ -144,9 +144,10 @@ void Game::LoadEnemies(std::string mapName)
 {
 	Enemy e(3, 20, 0, 4.0, 4.0, Textures::TestSprite);
 	mEnemies.insertAtFront(e);
+	mEnemies.at(0).loadDeathSound("sound/urgh.wav");
 
 	e.setPosition(22.5, 3);
-	mEnemies.insertAtFront(e);
+	//mEnemies.insertAtFront(e);
 }
 
 void Game::LoadMap(std::string mapName)
@@ -265,15 +266,11 @@ void Game::CheckShoot()
 		for (int i = 0; i < mEnemies.size() && mEnemies.at(i).isVisible(); ++i)
 		{
 			Enemy &e = mEnemies.at(i);
-			if (e.isVisible())
+			if (e.isVisible() && e.getCameraX() < 25)
 			{
-				std::cout << std::endl << e.getCameraX() << std::endl;
-				if (e.getCameraX() < 75)
-				{
-					e.TakeDamage(2);
-					if (e.isDead())
-						mEnemies.deleteAt(i);
-				}
+				e.TakeDamage(2);
+				if (e.isDead())
+					mEnemies.deleteAt(i);
 			}
 		}
 	}
@@ -503,8 +500,8 @@ void Game::DrawSprites()
 						Uint32 color = mTextures[e.getTexture()][texWidth * texY + texX]; //get current color from the texture
 						if((color & 0xFF000000) != 0) mBuffer[y][stripe] = color; //paint pixel if it isn't black, black is the invisible color
 
-						if (isVisible != true)
-							std::cout << "Enemy at index " << spriteOrder.at(i) << " is now visible" << std::endl;
+						//if (isVisible != true)
+						//	std::cout << "Enemy at index " << spriteOrder.at(i) << " is now visible" << std::endl;
 					}
 				}
 				else
@@ -512,8 +509,8 @@ void Game::DrawSprites()
 					bool isVisible = mEnemies.at(spriteOrder.at(i)).isVisible();
 					mEnemies.at(spriteOrder.at(i)).setVisibility(false);
 
-					if (isVisible != false)
-						std::cout << "Enemy at index " << spriteOrder.at(i) << " is no longer visible" << std::endl;
+					//if (isVisible != false)
+					//	std::cout << "Enemy at index " << spriteOrder.at(i) << " is no longer visible" << std::endl;
 				}
 			}
 		}

@@ -52,6 +52,6 @@ void Enemy::Shoot()
 
 void Enemy::Die()
 {
-	std::cout << "I DIED!!!";
+	Mix_PlayChannel(0, mDeathSound, 0);
 	mIsDead = true;
 }
