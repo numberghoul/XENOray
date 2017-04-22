@@ -57,6 +57,29 @@ Vector2<int> Raycast(mapTile map[][mapHeight], Vector2<double> rayPos, Vector2<d
 	return mapPos;
 }
 
+double SqrDistFromPointToRay(Vector2<double> rayPoint1, Vector2<int> rayPoint2, Vector2<double> point)
+{
+	double numerator = std::abs((rayPoint2.y - rayPoint1.y) * point.x - (rayPoint2.x - rayPoint1.x) * point.y + rayPoint2.x*rayPoint1.y - rayPoint2.y * rayPoint1.x);
+	double denom = ((rayPoint2.y - rayPoint1.y) * (rayPoint2.y - rayPoint1.y) + (rayPoint2.x - rayPoint1.x) * (rayPoint2.x - rayPoint1.x));
+
+	return (numerator * numerator) / denom;
+}
+
+int sgn(double val) { return (0.0 < val) - (val < 0.0); }
+
+void playSound(Mix_Chunk *sound)
+{
+	std::thread musicThread(_playSound, sound);
+	musicThread.detach();
+}
+
+void _playSound(Mix_Chunk *sound)
+{
+	if (Mix_PlayChannel(-1, sound, 0) < 0)
+		std::cout << SDL_GetError() << std::endl;
+	sleep(2);
+}
+
 void BAD() // WHEN DID HAPPEN BAD?!
 {
 	std::cout << "BAD" << std::endl;

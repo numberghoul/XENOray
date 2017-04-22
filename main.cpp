@@ -1,4 +1,3 @@
-#include "Cutscene/Cutscene.h"
 #include "Menu/Menu.h"
 
 int main(int /*argc*/, char */*argv*/[])

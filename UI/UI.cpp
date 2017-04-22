@@ -2,7 +2,7 @@
 
 Button::Button(Vector2<double> pos, Vector2<double> size, std::vector<Uint32> sprite, void (* action)())
 {
-	mUpperLeft.x = pos.x; mLowerRight.y = pos.y;
+	mUpperLeft.x = pos.x; mUpperLeft.y = pos.y;
 	mSprite = sprite;
 	Do = action;
 
@@ -16,5 +16,8 @@ bool Button::OnClick(int clickx, int clicky)
 	&& clicky < mLowerRight.y && clicky > mUpperLeft.y)
 	{
 		Do();
+		return true;
 	}
+
+	return false;
 }

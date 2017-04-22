@@ -1,1 +1,1 @@
-g++ *.cpp -o Epitome Game/*.cpp Character/*.cpp Cutscene/*.cpp HelperClasses/*.cpp Menu/*.cpp UI/*.cpp Objects/*.cpp -lSDL -std=c++11
+g++ *.cpp -o Epitome Game/*.cpp Character/*.cpp Cutscene/*.cpp HelperClasses/*.cpp Menu/*.cpp UI/*.cpp Objects/*.cpp -lSDL -lSDL_mixer -std=c++11

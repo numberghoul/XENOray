@@ -24,6 +24,7 @@ Player::Player(int health, int armor, int battery, double speed, Vector2<double>
 Vector2<double> Player::getCameraPlane() const { return mCameraPlane; }
 int Player::getArmor() const { return mArmor; }
 int Player::getBattery() const { return mBattery; }
+Gun &Player::getCurrentGun() { return mGuns.at(mCurrentGun); }
 
 void Player::setCameraPlane(const Vector2<double> &cam) { setCameraPlane(cam.x, cam.y); }
 void Player::setCameraPlane(const double &camX, const double &camY)
@@ -63,8 +64,22 @@ void Player::Rotate(double rotSpeed)
 
 void Player::Shoot()
 {
+	//playSound(mShootSound);
+	getCurrentGun().shoot();
 }
 
 void Player::Die()
 {
+}
+
+void Player::AddGun(int screenX, int screenY, int damage, int shotDelay, int defaultTexture)
+{
+	Gun g(screenX, screenY, damage, shotDelay, defaultTexture);
+	mGuns.push_back(g);
+}
+
+void Player::AddGun(Vector2<int> screenPos, int damage, int shotDelay, int defaultTexture)
+{
+	Gun g(screenPos, damage, shotDelay, defaultTexture);
+	mGuns.push_back(g);
 }

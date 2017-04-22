@@ -18,6 +18,8 @@ class Game
 public:
 	Game(int width = screenWidth, int height = screenHeight);
 
+	~Game();
+
 	int getWidth() const { return mScreenWidth; }
 	int getHeight() const { return mScreenHeight; }
 
@@ -29,7 +31,10 @@ private:
 	Player mPlayer;
 	double mFrameTime;
 	int mScreenWidth, mScreenHeight;
-	std::vector<Uint32> mTextures[numTextures];
+	std::vector<Uint32> mTextures[numTextures],
+						mGuns[numGunTextures],
+						mUI;
+	std::vector<Mix_Chunk *> mSounds;
 	Uint32 mBuffer[screenHeight][screenWidth];
 
 	//1D Zbuffer
@@ -52,9 +57,10 @@ private:
 	//function used to sort the sprites
 	void combSort(std::vector<int> &order, std::vector<double> &dist, int amount);
 
+	void InitPlayer();
 	void LoadMap(std::string mapName);
 	void LoadEnemies(std::string mapName);
-
+	void LoadSounds();
 	void LoadTextures();
 
 	void Render();
@@ -63,6 +69,9 @@ private:
 
 	void DrawSprites();
 
+	void DrawUI();
+
 	void UpdateMovement();
 	void UpdateRotation(float deltaMouse);
+	void CheckShoot();
 };
