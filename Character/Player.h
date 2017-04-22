@@ -1,5 +1,6 @@
 #pragma once
 #include "Character.h"
+#include <unistd.h>
 
 class Player : public Character
 {
@@ -29,6 +30,7 @@ public:
 	void Rotate(double rotSpeed);
 	void Shoot() override;
 
+	void PlayerDeath() { Mix_PlayChannel(-1, mDeathSound, 0); }
 private:
 	Vector2<double> mCameraPlane;
 

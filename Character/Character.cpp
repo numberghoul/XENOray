@@ -19,9 +19,21 @@ Character::Character(int health, double speed, Vector2<double> pos, Vector2<doub
 // Destructor
 Character::~Character()
 {
-	Mix_FreeChunk(mDamageSound);
-	Mix_FreeChunk(mTauntSound);
-	Mix_FreeChunk(mDeathSound);
+	if (mDamageSound != nullptr && mDamageSound->allocated)
+	{
+		Mix_FreeChunk(mDamageSound);
+		mDamageSound = nullptr;
+	}
+	if (mTauntSound != nullptr && mTauntSound->allocated)
+	{
+		Mix_FreeChunk(mTauntSound);
+		mTauntSound = nullptr;
+	}
+	if (mDeathSound != nullptr && mDeathSound->allocated)
+	{
+		Mix_FreeChunk(mDeathSound);
+		mDeathSound = nullptr;
+	}
 }
 
 // Getters
