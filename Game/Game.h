@@ -30,6 +30,7 @@ private:
 	double mFrameTime;
 	int mScreenWidth, mScreenHeight;
 	std::vector<Uint32> mTextures[numTextures];
+	std::vector<Uint32> mUI;
 	Uint32 mBuffer[screenHeight][screenWidth];
 
 	//1D Zbuffer
@@ -60,6 +61,8 @@ private:
 	void CheckQuit();
 
 	void DrawSprites();
+
+	void DrawUI();
 
 	void UpdateMovement();
 	void UpdateRotation(float deltaMouse);

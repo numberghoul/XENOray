@@ -21,7 +21,6 @@ Game::Game(int width, int height)
 	// Audio
 	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096) < 0)
 		BAD();
-    
 	mQuit = false;
 }
 
@@ -43,6 +42,15 @@ void Game::RunGame(std::string mapName)
 
 		Render();
 
+		for (int i = -5; i <= 5; ++i)
+			for (int j = -5; j <= 5; ++j)
+			{
+				if (i == 0 || j == 0)
+				mBuffer[screenHeight/2 + i][screenWidth/2 + j] = RGBtoINT(ColorRGB(255,0,0));
+			}
+		drawBuffer(mBuffer[0]);
+		for(int x = 0; x < getWidth(); x++) for(int y = 0; y < getHeight(); y++) mBuffer[y][x] = 0; //clear the buffer instead of cls()
+
 		//timing for input and FPS counter
 		oldTime = time;
 		time = getTicks();
@@ -63,6 +71,9 @@ void Game::RunGame(std::string mapName)
 
 		SDL_WarpMouse(screenWidth/2, screenHeight/2);
 		SDL_ShowCursor(0);
+
+		redraw();
+		//std::cout << mEnemies[0].isVisible() << " " << mEnemies[1].isVisible() << std::endl;
 	}
 }
 
@@ -76,6 +87,7 @@ void Game::LoadTextures()
 	int success = 0;
 
 	for(int i = 0; i < numTextures; i++) mTextures[i].resize(texWidth * texHeight);
+	mUI.resize(256*800);
 
 	unsigned long tw, th;
 	// Ship Textures
@@ -118,6 +130,9 @@ void Game::LoadTextures()
 
 	// Menu
 	success |= loadImage(mTextures[Textures::GameLogo], tw, th, "Textures/gamelogo.png");
+
+	//UIStuff
+	success |= loadImage(mUI, tw, th, "Textures/UI/ofallonui.png");
 
 	if (success == 0)
 		std::cout << "Textures Loaded" << std::endl;
@@ -231,7 +246,7 @@ void Game::UpdateMovement()
 void Game::UpdateRotation(float deltaMouse)
 {
 	//speed modifiers
-	double rotSpeed = mFrameTime * 4.5 * (deltaMouse != 0 ? 2 : 1); //the constant value is in radians/second
+	double rotSpeed = mFrameTime * 3 * (deltaMouse != 0 ? 2 : 1); //the constant value is in radians/second
 
 	if (deltaMouse > 0 || keyDown(SDLK_RIGHT))
 		rotSpeed *= -1;
@@ -257,7 +272,7 @@ void Game::CheckShoot()
 		{
 			Enemy &e = mEnemies.at(i);
 			bool isHit = false;
-			for (int x = getWidth() - 80; x <= getWidth() + 80 && !isHit; x++)
+			for (int x = getWidth() - 50; x <= getWidth() + 50 && !isHit; x++)
 			{
 				cameraX = 2 * x / double(getWidth()) - 1;
 				rayDir.setX(mPlayer.getDirection().x + mPlayer.getCameraPlane().x * cameraX);
@@ -401,9 +416,7 @@ void Game::Render()
 
 	Game::DrawSprites();
 
-	drawBuffer(mBuffer[0]);
-	for(int x = 0; x < getWidth(); x++) for(int y = 0; y < getHeight(); y++) mBuffer[y][x] = 0; //clear the buffer instead of cls()
-	redraw();
+	Game::DrawUI();
 }
 
 void Game::DrawSprites()
@@ -554,6 +567,18 @@ void Game::combSort(std::vector<int> &order, std::vector<double> &dist, int amou
 
 				swapped = true;
 			}
+		}
+	}
+}
+
+void Game::DrawUI()
+{
+	for(int x = 0; x < getWidth(); x++)
+	{
+		for(int y = 450; y < getHeight(); y++)
+		{
+			//mBuffer[y][x] = mUI[800 * (y - 344) + x];
+			mBuffer[y][x] = 0;
 		}
 	}
 }

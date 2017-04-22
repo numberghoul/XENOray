@@ -2,7 +2,7 @@
 
 Button::Button(Vector2<double> pos, Vector2<double> size, std::vector<Uint32> sprite, void (* action)())
 {
-	mUpperLeft.x = pos.x; mLowerRight.y = pos.y;
+	mUpperLeft.x = pos.x; mUpperLeft.y = pos.y;
 	mSprite = sprite;
 	Do = action;
 
