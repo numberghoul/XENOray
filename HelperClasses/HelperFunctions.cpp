@@ -67,6 +67,11 @@ double SqrDistFromPointToRay(Vector2<double> rayPoint1, Vector2<int> rayPoint2, 
 
 int sgn(double val) { return (0.0 < val) - (val < 0.0); }
 
+void playSound(Mix_Chunk *sound)
+{
+	Mix_PlayChannel(-1, sound, 0);
+}
+
 void BAD() // WHEN DID HAPPEN BAD?!
 {
 	std::cout << "BAD" << std::endl;

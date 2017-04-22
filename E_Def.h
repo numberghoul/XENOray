@@ -7,6 +7,8 @@
 #include <fstream>
 #include <exception>
 #include <cmath>
+#include <thread>
+#include <SDL/SDL_mixer.h>
 
 #include "HelperClasses/Vector2.h"
 #include "quickcg.h"
@@ -50,5 +52,7 @@ Vector2<int> Raycast(mapTile map[][mapHeight], Vector2<double> rayPos, Vector2<d
 double SqrDistFromPointToRay(Vector2<double> rayPoint1, Vector2<int> rayPoint2, Vector2<double> point);
 
 int sgn(double val);
+
+void playSound(Mix_Chunk *sound);
 
 void BAD();

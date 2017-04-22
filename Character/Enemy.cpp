@@ -40,6 +40,9 @@ void Enemy::Shoot()
 
 void Enemy::Die()
 {
-	Mix_PlayChannel(0, mDeathSound, 0);
+	std::thread musicThread(playSound, mDeathSound);
+
 	mIsDead = true;
+
+	musicThread.detach();
 }
