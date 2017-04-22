@@ -1,5 +1,11 @@
 #include "Game.h"
 #include <exception>
+#include <random>
+
+#define U32Size 4294967295 //all possible colors
+
+std::default_random_engine gen;
+std::uniform_int_distribution<int> dis(0,U32Size), dirDis(8,24);
 
 Game::Game(int width, int height)
 {
@@ -49,6 +55,7 @@ void Game::RunGame(std::string mapName)
 		readKeys();
 		UpdateRotation(deltaMouse);
 		UpdateMovement();
+		CheckPause();
 		CheckQuit();
 
 		int mx, my;
@@ -57,6 +64,7 @@ void Game::RunGame(std::string mapName)
 		deltaMouse = mx - oldmx;
 		deltaMouse /= 1000.0f;
 
+		//remember to UNCOMMENT. obviously you did it
 		SDL_WarpMouse(screenWidth/2, screenHeight/2);
 		SDL_ShowCursor(0);
 	}
@@ -64,7 +72,68 @@ void Game::RunGame(std::string mapName)
 
 void Game::CheckQuit()
 {
-	mQuit = keyDown(SDLK_ESCAPE);
+	//failsafe
+	mQuit = keyDown(SDLK_1);
+}
+
+//replaces CheckQuit because pause now quits too
+void Game::CheckPause()
+{
+	mPause = keyPressed(SDLK_ESCAPE);
+
+	if (mPause)
+	{
+		int mx, my;
+		//std::cout << "pause" << std::endl;
+
+		//YOU CAN OVERLOAD PARANTHESES AHHHHH BONER RISING
+		Uint32 coolMod = gen();
+		Uint32 coolMod2 = gen();
+		int mod = gen();
+		Uint32 colorOffset = dis(gen);
+		//determines direction of lines
+		Uint32 dir = dirDis(gen);
+		Uint32 dir2 = dirDis(gen);
+		
+		//used for converting back and forth
+		ColorRGB color;
+		Uint32 colorI;
+
+		while (mPause)
+		{
+			//std::cout << "in loop" << std::endl;
+
+			SDL_GetMouseState(&mx, &my);
+
+			readKeys();
+			
+			if (keyPressed(SDLK_ESCAPE))
+			{ 
+				//std::cout << "unpause" << std::endl;
+				mPause = false;
+			}
+
+			//pause background
+			//settled on fractal-like function that emulates DOS color depth sort of thing
+			for (int i = 0; i < screenWidth; ++i)
+			for (int j = 0; j < screenHeight; ++j)
+			{
+				//converts random num to color struct
+				color = INTtoRGB((( i/dir * (coolMod % mod) + j/dir2 * (coolMod2 % mod)) + colorOffset) / 4);
+				//black and white
+				color.r = color.b;
+				color.g = color.b;
+				color.b = color.b;
+				//converts back for printing to screen
+				colorI = RGBtoINT(color);
+				mBuffer[j][i] = colorI;
+			}
+
+			drawBuffer(mBuffer[0]);
+		
+			redraw();
+		}
+	}
 }
 
 void Game::LoadTextures()
@@ -305,7 +374,7 @@ void Game::Render()
 				continue;
 
 			//floor
-			mBuffer[y][x] = (mTextures[texNumFloor][texWidth * floorTexPos.y + floorTexPos.x] >> 1) & 8355711;
+			mBuffer[y][x] = (mTextures[texNumFloor][texWidth * floorTexPos.y + floorTexPos.x] >> 1) & 8355711; //stupid number is transparency
 			//ceiling (symmetrical!)
 			mBuffer[getHeight() - y][x] = mTextures[texNumCeiling][texWidth * floorTexPos.y + floorTexPos.x];
 		}

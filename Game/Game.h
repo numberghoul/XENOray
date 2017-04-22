@@ -41,6 +41,7 @@ private:
 
 	// Keeps track on whether the user has pressed escape
 	bool mQuit;
+	bool mPause;
 
 	mapTile mMap[mapWidth][mapHeight];
 
@@ -58,6 +59,7 @@ private:
 
 	void Render();
 	void CheckQuit();
+	void CheckPause();
 
 	void DrawSprites();
 
