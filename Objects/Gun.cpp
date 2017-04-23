@@ -8,6 +8,9 @@ Gun::Gun (Vector2<int> screenPos, int damage, int shotDelay, int defaultTexture)
     mShotDelay = shotDelay;
     mCurrentFrameIndex = 0;
     mIsShooting = false;
+
+    mGameOldTicks = mGameTicks = 0;
+    mAnimOldTicks = mAnimTicks = 0;
 }
 
 Gun::Gun (int screenX, int screenY, int damage, int shotDelay, int defaultTexture)
@@ -19,6 +22,9 @@ Gun::Gun (int screenX, int screenY, int damage, int shotDelay, int defaultTextur
     mShotDelay = shotDelay;
     mCurrentFrameIndex = 0;
     mIsShooting = false;
+
+    mGameOldTicks = mGameTicks = 0;
+    mAnimOldTicks = mAnimTicks = 0;
 }
 
 int Gun::getDamage() const { return mDamage; }

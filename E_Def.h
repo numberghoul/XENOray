@@ -32,7 +32,7 @@ using namespace QuickCG;
 
 #define numTextures 28
 #define numGunTextures 4
-#define numSounds 2
+#define numSounds 3
 
 typedef struct mapTile
 {
@@ -60,7 +60,7 @@ enum GunTextures
 
 enum Sounds
 {
-	DamageSound, WillhelmScream
+	DamageSound, WillhelmScream, ShootSound
 };
 
 Vector2<int> Raycast(mapTile map[][mapHeight], Vector2<double> rayPos, Vector2<double> rayDir,	Vector2<double> &stepDir,

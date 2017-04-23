@@ -64,7 +64,7 @@ void Player::Rotate(double rotSpeed)
 
 void Player::Shoot()
 {
-	//playSound(mShootSound);
+	playSound(mShootSound);
 	getCurrentGun().shoot();
 }
 
