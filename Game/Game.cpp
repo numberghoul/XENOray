@@ -57,8 +57,8 @@ void Game::RunGame(std::string mapName)
 		readKeys();
 		UpdateRotation(deltaMouse);
 		UpdateMovement();
-		CheckPause();
 		CheckShoot();
+		CheckPause();
 		//this will be removed in final build. used until pause menu has quit feature
 		CheckQuit();
 
@@ -68,7 +68,6 @@ void Game::RunGame(std::string mapName)
 		deltaMouse = mx - oldmx;
 		deltaMouse /= 1000.0f;
 
-		//remember to UNCOMMENT. obviously you did it
 		SDL_WarpMouse(screenWidth/2, screenHeight/2);
 		SDL_ShowCursor(0);
 

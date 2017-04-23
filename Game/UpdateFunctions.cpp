@@ -135,7 +135,7 @@ void Game::CheckPause()
 		int mx, my;
 		//std::cout << "pause" << std::endl;
 
-		//YOU CAN OVERLOAD PARANTHESES AHHHHH BONER RISING
+		//YOU CAN OVERLOAD PARANTHESES
 		Uint32 coolMod = gen();
 		Uint32 coolMod2 = gen();
 		int mod = gen();
