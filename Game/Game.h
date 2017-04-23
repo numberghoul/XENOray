@@ -35,6 +35,7 @@ private:
 						mGuns[numGunTextures],
 						mUI;
 	std::vector<Mix_Chunk *> mSounds;
+	std::vector<Mix_Music *> mSongs;
 	Uint32 mBuffer[screenHeight][screenWidth];
 
 	//1D Zbuffer

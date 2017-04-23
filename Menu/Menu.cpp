@@ -2,6 +2,10 @@
 
 void DisplayMenu()
 {
+		// Audio
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096) < 0)
+		BAD();
+
 	std::vector<ColorRGB> BG;
 	int success =0;
 	unsigned long mw, mh;
@@ -16,6 +20,10 @@ void DisplayMenu()
 	Vector2<double> startSize(150, 40);
 	std::vector<Uint32> startImg;
 	Button StartButton(startPos, startSize, startImg, &StartGame);
+
+	Mix_Music* menuMusic = Mix_LoadMUS("Music/CallMe8bit.wav");
+
+	playSong(menuMusic);
 
 	success = 0;
 	while(!success)
@@ -63,7 +71,9 @@ void DisplayMenu()
 
 void StartGame()
 {
+	//Mix_FreeMusic(menuMusic);
 	CutsceneManager cm;
+
 
 	//plays the intro
 	//cm.PlayRange(SCENE1, SCENE5);

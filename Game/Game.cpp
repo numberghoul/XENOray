@@ -5,9 +5,6 @@ Game::Game(int width, int height)
 	setWidth(width);
 	setHeight(height);
 
-	// Audio
-	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096) < 0)
-		BAD();
 	mQuit = false;
 }
 
@@ -33,7 +30,7 @@ void Game::InitPlayer()
 	mPlayer.setDirection(-1, 0);
 
 	// Inwit default gun
-	mPlayer.AddGun((screenHeight * 3) / 4 - 300, (screenWidth/2) - 366/2, 2, 1000, GunTextures::Raid);
+	mPlayer.AddGun((screenHeight * 3) / 4 - 300, (screenWidth/2) - 250/2, 2, 1000, GunTextures::Raid);
 	mPlayer.getCurrentGun().addAnimationFrame(GunTextures::RaidAnim1);
 	mPlayer.getCurrentGun().addAnimationFrame(GunTextures::RaidAnim2);
 	mPlayer.getCurrentGun().addAnimationFrame(GunTextures::RaidAnim3);
@@ -52,6 +49,8 @@ void Game::RunGame(std::string mapName)
 	double oldTime = 0; //time of previous frame
 
 	float deltaMouse = 0.0f;
+
+	playSong(mSongs[Songs::AndySong]);
 
 	while(!mQuit)
 	{
@@ -182,6 +181,20 @@ void Game::LoadSounds()
 
 	if (success)
 		std::cout << "Sound Chunks Loaded" << std::endl;
+	else
+		BAD();
+
+	//MUSIC
+	mSongs.resize(numSongs);
+
+	mSongs[Songs::AndySong] = Mix_LoadMUS("Music/Andy.wav");
+	std::cout << SDL_GetError();
+
+	for (int i = 0; i < numSongs; i++)
+		success &= (mSongs[i] != nullptr);
+
+	if (success)
+		std::cout << "Music Loaded" << std::endl;
 	else
 		BAD();
 }

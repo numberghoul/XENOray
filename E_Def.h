@@ -33,6 +33,7 @@ using namespace QuickCG;
 #define numTextures 28
 #define numGunTextures 4
 #define numSounds 3
+#define numSongs 1
 
 typedef struct mapTile
 {
@@ -63,6 +64,11 @@ enum Sounds
 	DamageSound, WillhelmScream, ShootSound
 };
 
+enum Songs
+{
+	AndySong
+};
+
 Vector2<int> Raycast(mapTile map[][mapHeight], Vector2<double> rayPos, Vector2<double> rayDir,	Vector2<double> &stepDir,
 	int &hit, int &side);
 double SqrDistFromPointToRay(Vector2<double> rayPoint1, Vector2<int> rayPoint2, Vector2<double> point);
@@ -74,5 +80,10 @@ void playSound(Mix_Chunk *sound);
 
 // Bound to its own thread so that the sleep function can be called without halting the program
 void _playSound(Mix_Chunk *sound);
+
+//Same as above but using Mix_Music
+void playSong(Mix_Music *sound);
+
+void _playSong(Mix_Music *sound);
 
 void BAD();
