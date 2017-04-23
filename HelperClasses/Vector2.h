@@ -38,15 +38,12 @@ public:
 		return std::sqrt(std::pow(getX() - other.getX(), 2) + std::pow(getY() - other.getY(), 2));
 	}
 
-	static Vector2<T> normalize(Vector2<T> vector)
+	void normalize()
 	{
-		Vector2<T> newVector;
-
-		newVector.setX(vector.getX() / vector.getMagnitude());
-		newVector.setY(vector.getY() / vector.getMagnitude());
-		newVector.updateMagnitude();
-
-		return newVector;
+		updateMagnitude();
+		setX(getX() / getMagnitude());
+		setY(getY() / getMagnitude());
+		updateMagnitude();
 	}
 
 private:
@@ -72,5 +69,12 @@ template <class T>
 Vector2<T> operator-(const Vector2<T> &v1, const Vector2<T> &v2)
 {
 	Vector2<T> v3(v1.x - v2.x, v1.y - v2.y);
+	return v3;
+}
+
+template <class T>
+Vector2<T> operator*(const double &c, const Vector2<T> &v2)
+{
+	Vector2<T> v3(c * v2.x, c * v2.y);
 	return v3;
 }

@@ -37,14 +37,11 @@ private:
 						mGuns[numGunTextures],
 						mUI;
 	std::vector<Mix_Chunk *> mSounds;
+	std::vector<Mix_Music *> mSongs;
 	Uint32 mBuffer[screenHeight][screenWidth];
 
 	//1D Zbuffer
 	double mZBuffer[screenWidth];
-
-	//arrays used to sort the sprites
-	//int spriteOrder[numSprites];
-	//double spriteDistance[numSprites];
 
 	// Keeps track on whether the user has pressed escape
 	bool mQuit;

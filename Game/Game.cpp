@@ -8,9 +8,6 @@ Game::Game(int width, int height)
 	setWidth(width);
 	setHeight(height);
 
-	// Audio
-	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096) < 0)
-		BAD();
 	mQuit = false;
 }
 
@@ -18,42 +15,24 @@ Game::~Game()
 {
 	for (int i = 0; i < numSounds; ++i)
 		Mix_FreeChunk(mSounds.at(i));
-}
-
-void Game::InitPlayer()
-{
-	// Player Class Members
-	mPlayer.setArmor(0);
-	mPlayer.setBattery(100);
-	mPlayer.setCameraPlane(0, 0.66);
-
-	// Character Class Members
-	mPlayer.setHealth(100);
-	mPlayer.setSpeed(1);
-
-	// Object Class Members
-	mPlayer.setPosition(26, 26);
-	mPlayer.setDirection(-1, 0);
-
-	// Inwit default gun
-	mPlayer.AddGun((screenHeight * 3) / 4 - 300, (screenWidth/2) - 366/2, 2, 1000, GunTextures::Raid);
-	mPlayer.getCurrentGun().addAnimationFrame(GunTextures::RaidAnim1);
-	mPlayer.getCurrentGun().addAnimationFrame(GunTextures::RaidAnim2);
-	mPlayer.getCurrentGun().addAnimationFrame(GunTextures::RaidAnim3);
+	for ( int i = 0; i < numSongs; ++i)
+		Mix_FreeMusic(mSongs.at(i));
 }
 
 void Game::RunGame(std::string mapName)
 {
-	InitPlayer();
 	LoadSounds();
 	LoadTextures();
 	LoadMap(mapName);
 	LoadEnemies(mapName);
+	InitPlayer();
 
 	double time = 0; //time of current frame
 	double oldTime = 0; //time of previous frame
 
 	float deltaMouse = 0.0f;
+
+	playSong(mSongs[Songs::AndySong]);
 
 	while(!mQuit)
 	{
@@ -695,6 +674,7 @@ void Game::DrawUI()
 				mBuffer[y][x] = color;
 		}
 	}
+
 	for(int x = 0; x < 800; x++)
 	{
 		for(int y = 0; y < 150; y++)

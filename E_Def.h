@@ -33,7 +33,8 @@ using namespace QuickCG;
 
 #define numTextures 28
 #define numGunTextures 4
-#define numSounds 2
+#define numSounds 3
+#define numSongs 1
 
 #define U32Size 4294967295 //all possible colors
 
@@ -63,7 +64,12 @@ enum GunTextures
 
 enum Sounds
 {
-	DamageSound, WillhelmScream
+	DamageSound, WillhelmScream, ShootSound
+};
+
+enum Songs
+{
+	AndySong
 };
 
 Vector2<int> Raycast(mapTile map[][mapHeight], Vector2<double> rayPos, Vector2<double> rayDir,	Vector2<double> &stepDir,
@@ -77,5 +83,10 @@ void playSound(Mix_Chunk *sound);
 
 // Bound to its own thread so that the sleep function can be called without halting the program
 void _playSound(Mix_Chunk *sound);
+
+//Same as above but using Mix_Music
+void playSong(Mix_Music *sound);
+
+void _playSong(Mix_Music *sound);
 
 void BAD();

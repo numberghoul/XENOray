@@ -2,6 +2,10 @@
 
 void DisplayMenu()
 {
+		// Audio
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096) < 0)
+		BAD();
+
 	std::vector<ColorRGB> BG;
 	int success =0;
 	unsigned long mw, mh;
@@ -12,6 +16,12 @@ void DisplayMenu()
 		std::cout << "Textures Loaded" << std::endl;
 	else
 		std::cout << "Textures Not Loaded" << std::endl;
+
+	success = false;
+
+	Mix_Music* menuMusic = Mix_LoadMUS("Music/CallMe8bit.wav");
+
+	playSong(menuMusic);
 
 	success = false;
 
@@ -58,7 +68,9 @@ void DisplayMenu()
 
 void StartGame()
 {
+	//Mix_FreeMusic(menuMusic);
 	CutsceneManager cm;
+
 
 	//plays the intro
 	//cm.PlayRange(SCENE1, SCENE5);

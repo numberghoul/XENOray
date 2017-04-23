@@ -77,7 +77,20 @@ void _playSound(Mix_Chunk *sound)
 {
 	if (Mix_PlayChannel(-1, sound, 0) < 0)
 		std::cout << SDL_GetError() << std::endl;
-	sleep(2);
+	sleep(1);
+}
+
+void playSong(Mix_Music *sound)
+{
+	std::thread musicThread(_playSong, sound);
+	musicThread.detach();
+}
+
+void _playSong(Mix_Music *sound)
+{
+	if (Mix_PlayMusic(sound, -1) < 0)
+		std::cout << SDL_GetError() << std::endl;
+	sleep(1);
 }
 
 void BAD() // WHEN DID HAPPEN BAD?!
