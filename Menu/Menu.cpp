@@ -2,7 +2,7 @@
 
 void DisplayMenu()
 {
-		// Audio
+	// Audio
 	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096) < 0)
 		BAD();
 
@@ -66,6 +66,8 @@ void DisplayMenu()
 	}
 }
 
+//this function is really weird I don't know if I like it
+//-Ryan
 void StartGame()
 {
 	//Mix_FreeMusic(menuMusic);
