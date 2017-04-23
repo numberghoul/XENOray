@@ -16,11 +16,13 @@ void Game::InitPlayer()
 	mPlayer.setDirection(-1, 0);
 
 	// Inwit default gun
-	mPlayer.AddGun((screenHeight * 3) / 4 - 300, (screenWidth/2) - 366/2, 2, 1000, GunTextures::Raid);
+	mPlayer.AddGun((screenHeight * 3) / 4 - 300, (screenWidth/2) - 250/2, 2, 1000, GunTextures::Raid);
 	mPlayer.getCurrentGun().addAnimationFrame(GunTextures::RaidAnim1);
 	mPlayer.getCurrentGun().addAnimationFrame(GunTextures::RaidAnim2);
 	mPlayer.getCurrentGun().addAnimationFrame(GunTextures::RaidAnim3);
 	mPlayer.setShootSound(mSounds[Sounds::ShootSound]);
+
+	std::cout << "Player Initialized" << std::endl;
 }
 
 void Game::LoadTextures()
@@ -99,6 +101,8 @@ void Game::LoadSounds()
 	mSounds[Sounds::WillhelmScream] = Mix_LoadWAV("sound/willhelm.wav");
 	mSounds[Sounds::ShootSound] = Mix_LoadWAV("sound/rap.wav");
 
+	
+
 	for (int i = 0; i < numSounds; i++)
 		success &= (mSounds[i] != nullptr);
 
@@ -106,6 +110,20 @@ void Game::LoadSounds()
 		std::cout << "Sound Chunks Loaded" << std::endl;
 	else
 		BAD();
+
+ 	//MUSIC
+ 	mSongs.resize(numSongs);
+ 
+ 	mSongs[Songs::AndySong] = Mix_LoadMUS("Music/Andy.wav");
+ 	std::cout << SDL_GetError();
+ 
+ 	for (int i = 0; i < numSongs; i++)
+ 		success &= (mSongs[i] != nullptr);
+ 
+ 	if (success)
+ 		std::cout << "Music Loaded" << std::endl;
+ 	else
+ 		BAD();
 }
 
 void Game::LoadEnemies(std::string mapName)
@@ -117,6 +135,7 @@ void Game::LoadEnemies(std::string mapName)
 
 	e.setPosition(22.5, 3);
 	mEnemies.insertAtFront(e);
+	std::cout << "Enemies Loaded" << std::endl;
 }
 
 void Game::LoadMap(std::string mapName)
@@ -135,8 +154,9 @@ void Game::LoadMap(std::string mapName)
 
 				if (line == "")
 				{
-				std::cout << "Finished" << std::endl;
-					continue;}
+					std::cout << "Finished" << std::endl;
+					continue;
+				}
 
 				switch(k)
 				{
@@ -153,4 +173,6 @@ void Game::LoadMap(std::string mapName)
 			}
 		}
 	}
+
+	std::cout << "Map Loaded" << std::endl;
 }
