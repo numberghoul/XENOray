@@ -129,34 +129,43 @@ void Game::CheckPause()
 		ColorRGB color;
 		Uint32 colorI;
 
+		//button objects
+		Button resume(Vector2<double>(screenWidth/2, screenHeight/2 + 400), nullptr);
+
+		//pause background
+		//settled on fractal-like function that emulates DOS color depth sort of thing
+		for (int i = 0; i < screenWidth; ++i)
+		for (int j = 0; j < screenHeight; ++j)
+		{
+			//converts random num to color struct
+			color = INTtoRGB((( i/dir * (coolMod % mod) + j/dir2 * (coolMod2 % mod)) + colorOffset) / 4);
+			//black and white
+			color.r = color.b;
+			color.g = color.b;
+			color.b = color.b;
+			//converts back for printing to screen
+			colorI = RGBtoINT(color);
+			mBuffer[j][i] = colorI;
+		}
+
 		while (mPause)
 		{
 			//std::cout << "in loop" << std::endl;
 
+			//used for button logic
 			SDL_GetMouseState(&mx, &my);
 
 			readKeys();
+
+			if (SDL_GetMouseState)
+			{
+				std::cout << "pressed mouse did" << std::endl;
+			}
 			
 			if (keyPressed(SDLK_ESCAPE))
 			{ 
 				//std::cout << "unpause" << std::endl;
 				mPause = false;
-			}
-
-			//pause background
-			//settled on fractal-like function that emulates DOS color depth sort of thing
-			for (int i = 0; i < screenWidth; ++i)
-			for (int j = 0; j < screenHeight; ++j)
-			{
-				//converts random num to color struct
-				color = INTtoRGB((( i/dir * (coolMod % mod) + j/dir2 * (coolMod2 % mod)) + colorOffset) / 4);
-				//black and white
-				color.r = color.b;
-				color.g = color.b;
-				color.b = color.b;
-				//converts back for printing to screen
-				colorI = RGBtoINT(color);
-				mBuffer[j][i] = colorI;
 			}
 
 			drawBuffer(mBuffer[0]);

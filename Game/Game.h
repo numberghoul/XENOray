@@ -5,6 +5,8 @@
 #include "../Character/Enemy.h"
 #include "../HelperClasses/List.h"
 
+#include "../UI/UI.h"
+
 typedef struct sprite
 {
 	double x, y;

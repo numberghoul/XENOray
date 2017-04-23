@@ -6,22 +6,22 @@ void DisplayMenu()
 	int success =0;
 	unsigned long mw, mh;
   	success = loadImage(BG, mw, mh, "Textures/gamelogo.png");
+	Button StartButton(Vector2<double>(screenWidth/2 - 200, screenHeight/2), &StartGame);
 
 	if (success == 0)
 		std::cout << "Textures Loaded" << std::endl;
 	else
 		std::cout << "Textures Not Loaded" << std::endl;
 
-	Vector2<double> startPos((screenWidth/2) - 75, screenHeight/2);
-	Vector2<double> startSize(150, 40);
-	std::vector<Uint32> startImg;
-	Button StartButton(startPos, startSize, startImg, &StartGame);
+	success = false;
 
-	success = 0;
 	while(!success)
 	{
 		SDL_Event event;
 		SDL_PollEvent(&event);
+
+		//could use MOUSEBUTTONDOWN to change button graphic
+		//but how to do that with function pointers
 
 		if( event.type == SDL_MOUSEBUTTONUP )
 		{
@@ -30,35 +30,30 @@ void DisplayMenu()
 			success = StartButton.OnClick(mx, my);
 		}
 
-	double skipX = screenWidth / mw;
-	double skipY = screenHeight / mh;
-	//std::cout << skipX << " " << skipX << std::endl;
+		double skipX = screenWidth / mw;
+		double skipY = screenHeight / mh;
+		//std::cout << skipX << " " << skipX << std::endl;
 
-	//draw each pixel of the image
-	for(int y = 0; y < mh; y++)
-	{
-		for(int x = 0; x < mw; x++)
+		//draw each pixel of the image
+		for(int y = 0; y < mh; y++)
 		{
-			for (int i = x * skipX; i < screenWidth && i < x * skipX + skipX; i++)
+			for(int x = 0; x < mw; x++)
 			{
-				for (int j = y * skipY; j < screenHeight && j < y * skipY + skipY; j++)
+				for (int i = x * skipX; i < screenWidth && i < x * skipX + skipX; i++)
 				{
-					pset(i, j, BG[y * mw + x]);
+					for (int j = y * skipY; j < screenHeight && j < y * skipY + skipY; j++)
+					{
+						pset(i, j, BG[y * mw + x]);
+					}
 				}
 			}
 		}
-	}
 
-	for (int x = StartButton.getUpX(); x < StartButton.getLowX(); x++)
-	{
-		for(int y = StartButton.getUpY(); y < StartButton.getLowY(); y++)
-		{
-			pset(x, y, ColorRGB(0,0,0));
-		}
-	}
+		//draws the button. vector would allow drawing all buttons
+		StartButton.Draw();
 
-	redraw();
-}
+		redraw();
+	}
 }
 
 void StartGame()
