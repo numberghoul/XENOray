@@ -37,15 +37,16 @@ void Game::InitPlayer()
 	mPlayer.getCurrentGun().addAnimationFrame(GunTextures::RaidAnim1);
 	mPlayer.getCurrentGun().addAnimationFrame(GunTextures::RaidAnim2);
 	mPlayer.getCurrentGun().addAnimationFrame(GunTextures::RaidAnim3);
+	mPlayer.setShootSound(mSounds[Sounds::ShootSound]);
 }
 
 void Game::RunGame(std::string mapName)
 {
-	InitPlayer();
 	LoadSounds();
 	LoadTextures();
 	LoadMap(mapName);
 	LoadEnemies(mapName);
+	InitPlayer();
 
 	double time = 0; //time of current frame
 	double oldTime = 0; //time of previous frame
@@ -174,6 +175,7 @@ void Game::LoadSounds()
 
 	mSounds[Sounds::DamageSound] = Mix_LoadWAV("sound/urgh.wav");
 	mSounds[Sounds::WillhelmScream] = Mix_LoadWAV("sound/willhelm.wav");
+	mSounds[Sounds::ShootSound] = Mix_LoadWAV("sound/rap.wav");
 
 	for (int i = 0; i < numSounds; i++)
 		success &= (mSounds[i] != nullptr);
