@@ -1,5 +1,8 @@
 #include "Game.h"
 
+std::default_random_engine gen;
+std::uniform_int_distribution<int> dis(0,U32Size), dirDis(8,24);
+
 void Game::UpdateMovement()
 {
 	double moveSpeed = mFrameTime * 4.5; //the constant value is in squares/second
@@ -123,5 +126,72 @@ void Game::CheckShoot()
 
 void Game::CheckQuit()
 {
-	mQuit = keyDown(SDLK_ESCAPE);
+	//failsafe
+	mQuit = keyDown(SDLK_1);
+}
+
+//replaces CheckQuit because pause now quits too
+void Game::CheckPause()
+{
+	mPause = keyPressed(SDLK_ESCAPE);
+
+	if (mPause)
+	{
+		int mx, my;
+		//std::cout << "pause" << std::endl;
+
+		//YOU CAN OVERLOAD PARANTHESES
+		Uint32 coolMod = gen();
+		Uint32 coolMod2 = gen();
+		int mod = gen();
+		Uint32 colorOffset = dis(gen);
+		//determines direction of lines
+		Uint32 dir = dirDis(gen);
+		Uint32 dir2 = dirDis(gen);
+		
+		//used for converting back and forth
+		ColorRGB color;
+		Uint32 colorI;
+
+		//button objects
+		Button resume(Vector2<double>(screenWidth/2, screenHeight/2 + 400), nullptr);
+
+		//pause background
+		//settled on fractal-like function that emulates DOS color depth sort of thing
+		for (int i = 0; i < screenWidth; ++i)
+		for (int j = 0; j < screenHeight; ++j)
+		{
+			//converts random num to color struct
+			color = INTtoRGB((( i/dir * (coolMod % mod) + j/dir2 * (coolMod2 % mod)) + colorOffset) / 4);
+			//black and white
+			color.r = color.b;
+			color.g = color.b;
+			color.b = color.b;
+			//converts back for printing to screen
+			colorI = RGBtoINT(color);
+			mBuffer[j][i] = colorI;
+		}
+
+		while (mPause)
+		{
+			//std::cout << "in loop" << std::endl;
+
+			//used for button logic
+			SDL_GetMouseState(&mx, &my);
+
+			readKeys();
+			
+			//this is where buttons logic should go
+			
+			if (keyPressed(SDLK_ESCAPE))
+			{ 
+				//std::cout << "unpause" << std::endl;
+				mPause = false;
+			}
+
+			drawBuffer(mBuffer[0]);
+		
+			redraw();
+		}
+	}
 }

@@ -12,6 +12,8 @@ Game::~Game()
 {
 	for (int i = 0; i < numSounds; ++i)
 		Mix_FreeChunk(mSounds.at(i));
+	for ( int i = 0; i < numSongs; ++i)
+		Mix_FreeMusic(mSongs.at(i));
 }
 
 void Game::RunGame(std::string mapName)
@@ -56,6 +58,8 @@ void Game::RunGame(std::string mapName)
 		UpdateRotation(deltaMouse);
 		UpdateMovement();
 		CheckShoot();
+		CheckPause();
+		//this will be removed in final build. used until pause menu has quit feature
 		CheckQuit();
 
 		int mx, my;

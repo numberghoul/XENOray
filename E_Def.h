@@ -10,6 +10,7 @@
 #include <thread>
 #include <SDL/SDL_mixer.h>
 #include <climits>
+#include <random>
 
 #include "HelperClasses/Vector2.h"
 #include "quickcg.h"
@@ -34,6 +35,8 @@ using namespace QuickCG;
 #define numGunTextures 4
 #define numSounds 3
 #define numSongs 1
+
+#define U32Size 4294967295 //all possible colors
 
 typedef struct mapTile
 {

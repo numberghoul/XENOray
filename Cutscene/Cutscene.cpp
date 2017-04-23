@@ -32,7 +32,6 @@ CutsceneManager::CutsceneManager()
 	mNumFrames[SCENE7_6] = 0;
 	mNumFrames[SCENE7_7] = 0;
 
-
 	LoadImages();
 	LoadText();
 }
