@@ -53,10 +53,15 @@ void Game::UpdateMovement()
 		int i = -1, j = -1;
 		for (i = -1; i <= 1 && !collides; ++i)
 			for (j = -1; j <= 1 && !collides; ++j)
-				if(newMapPosX + i * 0.1 < mapWidth  && newMapPosX + i * 0.1 >= 0 &&
-				   newMapPosY + j * 0.1 < mapHeight && newMapPosY + j * 0.1 >= 0 &&
-				   mMap[int(newMapPosX + i * 0.1)][int(newMapPosY + j * 0.1)].object != false)
+			{
+				Vector2<double> check(i, j);
+				check.normalize();
+
+				if(newMapPosX + check.x * 0.05 < mapWidth  && newMapPosX + check.x * 0.05 >= 0 &&
+				   newMapPosY + check.y * 0.05 < mapHeight && newMapPosY + check.y * 0.05 >= 0 &&
+				   mMap[int(newMapPosX + check.x * 0.05)][int(newMapPosY + check.y * 0.05)].object != false)
 				   collides = true;
+			}
 
 		if(!collides)
 		{
@@ -103,7 +108,7 @@ void Game::CheckShoot()
 		for (int i = 0; i < mEnemies.size(); ++i)
 		{
 			Enemy &e = mEnemies.at(i);
-			if (e.isVisible() && e.getCameraX() == 0)
+			if (e.isVisible() && e.getCameraX() == 0 && (e.getPosition() - mPlayer.getPosition()).getSqrMagnitude() < 50)
 			{
 				e.TakeDamage(1);
 				if (e.isDead())

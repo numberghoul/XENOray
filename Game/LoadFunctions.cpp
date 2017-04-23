@@ -101,8 +101,6 @@ void Game::LoadSounds()
 	mSounds[Sounds::WillhelmScream] = Mix_LoadWAV("sound/willhelm.wav");
 	mSounds[Sounds::ShootSound] = Mix_LoadWAV("sound/rap.wav");
 
-	
-
 	for (int i = 0; i < numSounds; i++)
 		success &= (mSounds[i] != nullptr);
 

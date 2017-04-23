@@ -27,6 +27,7 @@ public:
 	T getX() const { return x; }
 	T getY() const { return y; }
 	float getMagnitude() const { return std::sqrt(mMagnitude); }
+	float getSqrMagnitude() const { return mMagnitude; }
 
 	// Setters
 	void setX(const T _x) { x = _x; }
